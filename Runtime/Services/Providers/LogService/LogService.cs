@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Ju
 {
-public class LogService : IService, ILogService
+public class LogService : ILogService
 {
 	public event LogServiceEvent OnDebugMessage = delegate { };
 	public event LogServiceEvent OnInfoMessage = delegate { };

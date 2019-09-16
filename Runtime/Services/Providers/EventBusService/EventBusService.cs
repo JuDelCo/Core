@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using Handle = System.Object;
 using EventAction = System.Object;
-using MessageType = System.Type;
+using EventType = System.Type;
 
 namespace Ju
 {
-public class MessageBusService : IService, ILoggableService
+public class EventBusService : IEventBusService
 {
 	public event LogMessageEvent OnLogDebug = delegate {};
 	public event LogMessageEvent OnLogInfo = delegate { };
@@ -14,16 +14,16 @@ public class MessageBusService : IService, ILoggableService
 	public event LogMessageEvent OnLogWarning = delegate { };
 	public event LogMessageEvent OnLogError = delegate { };
 
-    private Dictionary<Handle, List<Tuple<MessageType, EventAction>>> suscribers = null;
-    private Dictionary<MessageType, List<EventAction>> actions = null;
-    private Dictionary<MessageType, List<EventAction>> actionsDisabled = null;
+    private Dictionary<Handle, List<Tuple<EventType, EventAction>>> suscribers = null;
+    private Dictionary<EventType, List<EventAction>> actions = null;
+    private Dictionary<EventType, List<EventAction>> actionsDisabled = null;
     private uint callStackCounter = 0;
 
 	public void Setup()
 	{
-	    suscribers = new Dictionary<Handle, List<Tuple<MessageType, EventAction>>>();
-		actions = new Dictionary<MessageType, List<EventAction>>();
-		actionsDisabled = new Dictionary<MessageType, List<EventAction>>();
+	    suscribers = new Dictionary<Handle, List<Tuple<EventType, EventAction>>>();
+		actions = new Dictionary<EventType, List<EventAction>>();
+		actionsDisabled = new Dictionary<EventType, List<EventAction>>();
 	}
 
 	public void Start()
@@ -34,7 +34,7 @@ public class MessageBusService : IService, ILoggableService
 	{
 		var type = typeof(T);
 
-        if(action == null)
+        if (action == null)
         {
             OnLogError("Suscribe action of type {0} can't be null", type.ToString());
             return;
@@ -42,9 +42,9 @@ public class MessageBusService : IService, ILoggableService
 
 		if (!suscribers.ContainsKey(handle))
 		{
-			suscribers.Add(handle, new List<Tuple<MessageType, EventAction>>());
+			suscribers.Add(handle, new List<Tuple<EventType, EventAction>>());
 		}
-		suscribers[handle].Add(new Tuple<MessageType, Handle>(type, action));
+		suscribers[handle].Add(new Tuple<EventType, Handle>(type, action));
 
         if (!actions.ContainsKey(type))
         {
@@ -65,7 +65,7 @@ public class MessageBusService : IService, ILoggableService
 		{
 			foreach (var tuple in suscribers[handle])
 			{
-                if(actionsDisabled[tuple.Item1].Remove(tuple.Item2))
+                if (actionsDisabled[tuple.Item1].Remove(tuple.Item2))
                 {
 				    actions[tuple.Item1].Add(tuple.Item2);
                 }
@@ -102,12 +102,7 @@ public class MessageBusService : IService, ILoggableService
 		}
     }
 
-	public void Fire<T>() where T : new()
-	{
-        Fire<T>(new T());
-    }
-
-    public void Fire<T>(T message)
+    public void Fire<T>(T data)
     {
 		var type = typeof(T);
 
@@ -117,20 +112,27 @@ public class MessageBusService : IService, ILoggableService
 
             for (int i = actionList.Count - 1; i >= 0; --i)
             {
-                if(callStackCounter > 0)
+                if (callStackCounter > 0)
                 {
                     OnLogWarning("An event action has fired another event. This can lead to stackoverflow issues.");
                 }
 
 				callStackCounter++;
 
-				try
+				if (System.Diagnostics.Debugger.IsAttached)
 				{
-                    ((Action<T>)actionList[i])(message);
+					((Action<T>)actionList[i])(data);
 				}
-				catch (Exception e)
+				else
 				{
-					OnLogError("Exception running action for {0} event: {1}\n{2}", typeof(T).ToString(), e.Message, e.StackTrace);
+					try
+					{
+						((Action<T>)actionList[i])(data);
+					}
+					catch (Exception e)
+					{
+						OnLogError("Exception running action for {0} event: {1}\n{2}", typeof(T).ToString(), e.Message, e.StackTrace);
+					}
 				}
 
                 callStackCounter--;

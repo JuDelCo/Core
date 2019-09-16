@@ -17,6 +17,14 @@ See also
 Documentation
 =====================
 
+#### Services
+
+- LogService
+    * Handles all logging across all services and your code.
+    * **Note**: The LogService is internally automatically registered for you.
+- EventBusService
+    * Useful event bus to communicate your objects in a decoupled way.
+
 #### Usage
 
 First, create your service classes and make sure they inherit from IService interface.
@@ -35,7 +43,7 @@ public class CustomService : IService
 	{
   	// Here you can initialize your service.
 	}
-  
+
 	public void CustomMethod()
 	{
 	}
