@@ -1,9 +1,9 @@
 
 namespace Ju
 {
-public interface IService
-{
-	void Setup();
-	void Start();
-}
+	public interface IService
+	{
+		void Setup();
+		void Start();
+	}
 }
