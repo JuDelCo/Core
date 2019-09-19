@@ -33,6 +33,11 @@ Documentation
 - Observable
     * Generic type that handles action subscribers to value changes of any type.
 
+#### Helpers
+
+- IEnumerable
+    * Map, Filter and Reduce alias methods using original LINQ methods.
+
 #### Usage
 
 First, create your service classes and make sure they inherit from IService interface.
