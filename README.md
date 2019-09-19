@@ -24,6 +24,9 @@ Documentation
     * **Note**: The LogService is internally automatically registered for you.
 - EventBusService
     * Useful event bus to communicate your objects in a decoupled way.
+- DataService
+    * Useful service to store a reference of all data in the application.
+    * Handles individual multiple data types in lists and unique data types in shared mode.
 
 #### Usage
 

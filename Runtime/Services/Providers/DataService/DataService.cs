@@ -36,7 +36,7 @@ namespace Ju
 			sharedItems[type] = obj;
 		}
 
-		public T GetShared<T>() where T : class
+		public T GetShared<T>(bool autoCreate = true) where T : class, new()
 		{
 			var type = typeof(T);
 			T instance = null;
@@ -44,6 +44,12 @@ namespace Ju
 			if (sharedItems.ContainsKey(type))
 			{
 				instance = (T)sharedItems[type];
+			}
+
+			if (instance == null && autoCreate)
+			{
+				instance = new T();
+				sharedItems[type] = instance;
 			}
 
 			return instance;
