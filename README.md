@@ -28,6 +28,11 @@ Documentation
     * Useful service to store a reference of all data in the application.
     * Handles individual multiple data types in lists and unique data types in shared mode.
 
+#### Classes
+
+- Observable
+    * Generic type that handles action subscribers to value changes of any type.
+
 #### Usage
 
 First, create your service classes and make sure they inherit from IService interface.
