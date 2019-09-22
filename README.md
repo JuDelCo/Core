@@ -19,28 +19,30 @@ Documentation
 
 #### Services
 
-- LogService
+- ```LogService```
     * Handles all logging across all services and your code.
-    * **Note**: The LogService is internally automatically registered for you.
-- EventBusService
+    * **Note**: This service is internally automatically registered for you.
+- ```EventBusService```
     * Useful event bus to communicate your objects in a decoupled way.
-- DataService
+- ```DataService```
     * Useful service to store a reference of all data in the application.
     * Handles individual multiple data types in lists and unique data types in shared mode.
 
 #### Classes
 
-- Observable
+- ```Observable```
     * Generic type that handles action subscribers to value changes of any type.
 
 #### Helpers
 
-- IEnumerable
+- ```IEnumerable```
     * Map, Filter and Reduce alias methods using original LINQ methods.
 
-#### Usage
 
-First, create your service classes and make sure they inherit from IService interface.
+Usage
+=====================
+
+First, create your service classes and make sure they inherit from ```IService``` interface.
 
 ```csharp
 using Ju;

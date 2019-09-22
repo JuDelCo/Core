@@ -11,9 +11,19 @@ namespace Ju
 			return self.Select(selector);
 		}
 
+		public static List<TResult> MapList<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, TResult> selector)
+		{
+			return self.Select(selector).ToList();
+		}
+
 		public static IEnumerable<TSource> Filter<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
 		{
 			return self.Where(predicate);
+		}
+
+		public static List<TSource> FilterList<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
+		{
+			return self.Where(predicate).ToList();
 		}
 
 		public static TSource Reduce<TSource>(this IEnumerable<TSource> self, Func<TSource, TSource, TSource> func)
