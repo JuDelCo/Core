@@ -11,6 +11,7 @@ Any feedback is welcome !
 See also
 =====================
 
+- [Core ECS](https://github.com/JuDelCo/CoreECS) - Deterministic lightweight ECS framework
 - [Core Unity](https://github.com/JuDelCo/CoreUnity) - Core services extension for Unity3D
 
 
@@ -89,6 +90,18 @@ Before the program finalizes, you should dispose the services using:
 // Dispose all services, also the event "OnApplicationQuit" will fire.
 Services.Dispose();
 ```
+
+
+Install
+=====================
+
+If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
+
+```
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git",
+```
+
+otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.
 
 
 The MIT License (MIT)
