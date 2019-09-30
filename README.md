@@ -11,6 +11,7 @@ Any feedback is welcome !
 See also
 =====================
 
+- [Core Math](https://github.com/JuDelCo/CoreMath) - Simple linear algebra math library
 - [Core ECS](https://github.com/JuDelCo/CoreECS) - Deterministic lightweight ECS framework
 - [Core Unity](https://github.com/JuDelCo/CoreUnity) - Core services extension for Unity3D
 
