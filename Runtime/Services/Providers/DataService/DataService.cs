@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Identifier = System.String;
 
 namespace Ju
 {
@@ -11,104 +12,147 @@ namespace Ju
 		public event LogMessageEvent OnLogWarning = delegate { };
 		public event LogMessageEvent OnLogError = delegate { };
 
-		private Dictionary<Type, object> sharedItems;
-		private Dictionary<Type, object> items;
+		private Dictionary<Type, Dictionary<Identifier, object>> sharedItems;
+		private Dictionary<Type, Dictionary<Identifier, object>> listItems;
+
+		private static readonly Identifier DEFAULT_ID = "base";
 
 		public void Setup()
 		{
-			sharedItems = new Dictionary<Type, object>();
-			items = new Dictionary<Type, object>();
+			sharedItems = new Dictionary<Type, Dictionary<Identifier, object>>();
+			listItems = new Dictionary<Type, Dictionary<Identifier, object>>();
 		}
 
 		public void Start()
 		{
 		}
 
-		public void SetShared<T>(T obj)
+		public void Set<T>(T obj)
+		{
+			Set(obj, DEFAULT_ID);
+		}
+
+		public void Set<T>(T obj, string id)
 		{
 			var type = typeof(T);
 
-			if (sharedItems.ContainsKey(type))
+			if (!sharedItems.ContainsKey(type))
+			{
+				sharedItems.Add(type, new Dictionary<Identifier, object>());
+			}
+
+			if (sharedItems[type].ContainsKey(id))
 			{
 				OnLogWarning("A shared object of type {0} was already stored");
 			}
 
-			sharedItems[type] = obj;
+			sharedItems[type][id] = obj;
 		}
 
-		public T GetShared<T>(bool autoCreate = true) where T : class, new()
+		public T Get<T>() where T : class
+		{
+			return Get<T>(DEFAULT_ID);
+		}
+
+		public T Get<T>(string id) where T : class
 		{
 			var type = typeof(T);
 			T instance = null;
 
 			if (sharedItems.ContainsKey(type))
 			{
-				instance = (T)sharedItems[type];
-			}
-
-			if (instance == null && autoCreate)
-			{
-				instance = new T();
-				sharedItems[type] = instance;
+				if (sharedItems[type].ContainsKey(id))
+				{
+					instance = (T)sharedItems[type][id];
+				}
 			}
 
 			return instance;
 		}
 
-		public void RemoveShared<T>()
+		public void Unset<T>()
+		{
+			Unset<T>(DEFAULT_ID);
+		}
+
+		public void Unset<T>(string id)
 		{
 			var type = typeof(T);
 
 			if (sharedItems.ContainsKey(type))
 			{
-				sharedItems.Remove(type);
+				if (sharedItems[type].ContainsKey(id))
+				{
+					sharedItems[type].Remove(id);
+				}
 			}
 		}
 
-		public void Add<T>(T obj)
+		public void ListAdd<T>(T obj)
+		{
+			ListAdd(obj, DEFAULT_ID);
+		}
+
+		public void ListAdd<T>(T obj, string id)
 		{
 			var type = typeof(T);
 			List<T> list = null;
 
-			if (!items.ContainsKey(type))
+			if (!listItems.ContainsKey(type))
+			{
+				listItems.Add(type, new Dictionary<Identifier, object>());
+			}
+
+			if (!listItems[type].ContainsKey(id))
 			{
 				list = new List<T>();
-				items[type] = list;
+				listItems[type][id] = list;
 			}
 			else
 			{
-				list = (List<T>)items[type];
+				list = (List<T>)listItems[type][id];
 			}
 
 			list.Add(obj);
 		}
 
-		public List<T> GetList<T>()
+		public List<T> ListGet<T>()
+		{
+			return ListGet<T>(DEFAULT_ID);
+		}
+
+		public List<T> ListGet<T>(string id)
 		{
 			var type = typeof(T);
 			List<T> list = null;
 
-			if (items.ContainsKey(type))
+			if (listItems.ContainsKey(type))
 			{
-				list = (List<T>)items[type];
+				if (listItems[type].ContainsKey(id))
+				{
+					list = (List<T>)listItems[type][id];
+				}
 			}
 
 			return list;
 		}
 
-		public void Remove<T>(T obj)
+		public void ListRemove<T>(T obj)
+		{
+			ListRemove(obj, DEFAULT_ID);
+		}
+
+		public void ListRemove<T>(T obj, string id)
 		{
 			var type = typeof(T);
 
-			if (items.ContainsKey(type))
+			if (listItems.ContainsKey(type))
 			{
-				var list = (List<T>)items[type];
-
-				list.Remove(obj);
-
-				if (list.Count == 0)
+				if (listItems[type].ContainsKey(id))
 				{
-					items.Remove(type);
+					var list = (List<T>)listItems[type][id];
+
+					list.Remove(obj);
 				}
 			}
 		}
