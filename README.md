@@ -34,11 +34,15 @@ Documentation
 
 - ```Observable```
     * Generic type that handles action subscribers to value changes of any type.
+- ```ObjectPool```
+    * Simple generic object pool using a stack internally.
 
 #### Helpers
 
 - ```IEnumerable```
     * Map, Filter and Reduce alias methods using original LINQ methods.
+- ```String```
+    * Extension methods for creating hashes based on the string.
 
 
 Usage
