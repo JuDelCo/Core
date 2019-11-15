@@ -69,12 +69,12 @@ public class CustomService : IService
 {
 	public void Setup()
 	{
-  	// Here you can resolve the service dependencies.
+		// Here you can resolve the service dependencies.
 	}
 
 	public void Start()
 	{
-  	// Here you can initialize your service.
+		// Here you can initialize your service.
 	}
 
 	public void CustomMethod()
