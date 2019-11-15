@@ -16,7 +16,19 @@ See also
 - [Core Unity](https://github.com/JuDelCo/CoreUnity) - Core services extension for Unity3D
 
 
-Documentation
+Install
+=====================
+
+If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
+
+```
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git",
+```
+
+otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.
+
+
+Contents
 =====================
 
 #### Services
@@ -45,7 +57,7 @@ Documentation
     * Extension methods for creating hashes based on the string.
 
 
-Usage
+Documentation
 =====================
 
 First, create your service classes and make sure they inherit from ```IService``` interface.
@@ -95,18 +107,6 @@ Before the program finalizes, you should dispose the services using:
 // Dispose all services, also the event "OnApplicationQuit" will fire.
 Services.Dispose();
 ```
-
-
-Install
-=====================
-
-If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
-
-```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git",
-```
-
-otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.
 
 
 The MIT License (MIT)
