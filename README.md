@@ -13,7 +13,6 @@ See also
 
 - [Core Math](https://github.com/JuDelCo/CoreMath) - Simple linear algebra math library
 - [Core ECS](https://github.com/JuDelCo/CoreECS) - Deterministic lightweight ECS framework
-- [Core Unity](https://github.com/JuDelCo/CoreUnity) - Core services extension for Unity3D
 
 
 Install
@@ -25,7 +24,7 @@ If you are using Unity, update the dependencies in the ```/Packages/manifest.jso
 	"com.judelco.core": "https://github.com/JuDelCo/Core.git",
 ```
 
-otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.
+otherwise, use this package as it is in native C# applications, it will work just fine.
 
 
 Contents
@@ -42,12 +41,26 @@ Contents
     * Useful service to store a reference of all data in the application.
     * Handles individual multiple data types in lists and unique data types in shared mode.
 
+#### Services (Unity3D)
+
+- ```LogUnityService```
+    * Redirects all logs to Unity console (critical in Unity environments).
+- ```UnityService```
+    * Handles Unity coroutines and exposes several Unity engine events.
+- ```DataServiceUnityExtensions```
+    * Add some helper methods to handle ScriptableObjects in DataService.
+
 #### Classes
 
 - ```Observable```
     * Generic type that handles action subscribers to value changes of any type.
 - ```ObjectPool```
     * Simple generic object pool using a stack internally.
+
+#### Classes (Unity3D)
+
+- ```MonoBehaviourSubscriber```
+    * Base MonoBehaviour class to handle Enable, Disable and UnSuscribe methods for EventBus.
 
 #### Helpers
 
@@ -57,10 +70,73 @@ Contents
     * Extension methods for creating hashes based on the string.
 
 
-Documentation
+Documentation (Unity3D)
 =====================
 
-First, create your service classes and make sure they inherit from ```IService``` interface.
+It's recomended to create a static class anywhere in your project to register all your services automatically.
+
+```csharp
+using UnityEngine;
+using Ju;
+
+public static class Bootstrap
+{
+	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+	private static void Init()
+	{
+		Services.RegisterService<ILogUnityService, LogUnityService>();
+		Services.RegisterService<IEventBusService, EventBusService>();
+		Services.RegisterService<IDataService, DataService>();
+		Services.RegisterService<IUnityService, UnityService>();
+
+		// Register your services here (see Core documentation)
+	}
+}
+```
+
+You can name the class and the method to whatever you want.
+
+You can also create a static class where you name each service you use frequently as syntactic sugar:
+
+```csharp
+using Ju;
+
+public static class Core
+{
+	public static T Get<T>() => Services.Get<T>();
+	public static T Get<T>(string id) => Services.Get<T>(id);
+	public static void Fire<T>(T msg) => Services.Get<IEventBusService>().Fire(msg);
+	public static ILogService Log => Services.Get<ILogService>();
+	public static IEventBusService Event => Services.Get<IEventBusService>();
+	public static IDataService Data => Services.Get<IDataService>();
+	public static IUnityService Unity => Services.Get<IUnityService>();
+
+	// ... add more shorthands as you need
+}
+
+// Now you can use the static class Core to access your services or custom shorthand methods !
+```
+
+... and since ```Log``` service usage is very common, you can even use a wrapper to write less code when logging:
+
+```csharp
+public static class Log
+{
+	public static void Debug(string msg, params object[] args) => Core.Log.Debug(msg, args);
+	public static void Info(string msg, params object[] args) => Core.Log.Info(msg, args);
+	public static void Notice(string msg, params object[] args) => Core.Log.Notice(msg, args);
+	public static void Warning(string msg, params object[] args) => Core.Log.Warning(msg, args);
+	public static void Error(string msg, params object[] args) => Core.Log.Error(msg, args);
+}
+
+// Now you can use Log.Debug("test") anywhere in your code !
+```
+
+
+Documentation (Generic)
+=====================
+
+Create your service classes and make sure they inherit from ```IService``` interface.
 
 ```csharp
 using Ju;
@@ -112,7 +188,7 @@ Services.Dispose();
 The MIT License (MIT)
 =====================
 
-Copyright © 2016-2019 Juan Delgado (JuDelCo)
+Copyright © 2016-2020 Juan Delgado (JuDelCo)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

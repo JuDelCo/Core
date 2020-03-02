@@ -2,7 +2,7 @@
   "name": "com.judelco.core",
   "displayName": "JuDelCo Core",
   "description": "Service locator, object factory and basic services to ease the development of C# applications",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "unity": "2018.3",
   "dependencies": {
   },
