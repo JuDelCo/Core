@@ -89,12 +89,16 @@ public static class Bootstrap
 		Services.RegisterService<IDataService, DataService>();
 		Services.RegisterService<IUnityService, UnityService>();
 
-		// Register your services here (see Core documentation)
+		// Register your services here
 	}
 }
 ```
 
 You can name the class and the method to whatever you want.
+
+
+Documentation (Generic)
+=====================
 
 You can also create a static class where you name each service you use frequently as syntactic sugar:
 
@@ -109,7 +113,7 @@ public static class Core
 	public static ILogService Log => Services.Get<ILogService>();
 	public static IEventBusService Event => Services.Get<IEventBusService>();
 	public static IDataService Data => Services.Get<IDataService>();
-	public static IUnityService Unity => Services.Get<IUnityService>();
+	//public static IUnityService Unity => Services.Get<IUnityService>();
 
 	// ... add more shorthands as you need
 }
@@ -131,10 +135,6 @@ public static class Log
 
 // Now you can use Log.Debug("test") anywhere in your code !
 ```
-
-
-Documentation (Generic)
-=====================
 
 Create your service classes and make sure they inherit from ```IService``` interface.
 
@@ -168,6 +168,8 @@ Services.RegisterLazyService<CustomService>();
 // Register service and initialize them right away.
 Services.RegisterService<CustomService>();
 ```
+
+NOTE: If you are using Unity3D, use the tip in the Unity3D documentation above.
 
 You can also register a object factory using:
 
