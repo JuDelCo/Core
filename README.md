@@ -11,7 +11,7 @@ Any feedback is welcome !
 See also
 =====================
 
-- [Core Math](https://github.com/JuDelCo/CoreMath) - Simple linear algebra math library
+- [Core Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics and IK
 - [Core ECS](https://github.com/JuDelCo/CoreECS) - Deterministic lightweight ECS framework
 
 
@@ -169,7 +169,7 @@ Services.RegisterLazyService<CustomService>();
 Services.RegisterService<CustomService>();
 ```
 
-NOTE: If you are using Unity3D, use the tip in the Unity3D documentation above.
+**NOTE**: If you are using Unity3D, use the tip in the Unity3D documentation above.
 
 You can also register a object factory using:
 
