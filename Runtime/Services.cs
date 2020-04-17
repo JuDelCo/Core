@@ -112,7 +112,7 @@ namespace Ju
 
 				if (typeof(ILoggableService).IsAssignableFrom(service.GetType()))
 				{
-					Get<ILogService>().SuscribeLoggable((ILoggableService)service);
+					Get<ILogService>().SubscribeLoggable((ILoggableService)service);
 				}
 
 				service.Setup();

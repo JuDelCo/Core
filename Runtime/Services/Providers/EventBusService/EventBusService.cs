@@ -14,41 +14,56 @@ namespace Ju
 		public event LogMessageEvent OnLogWarning = delegate { };
 		public event LogMessageEvent OnLogError = delegate { };
 
-		private Dictionary<Handle, List<Tuple<EventType, EventAction>>> suscribers = null;
-		private Dictionary<EventType, List<EventAction>> actions = null;
+		private Dictionary<Handle, List<Tuple<EventType, EventAction>>> subscribers = null;
+		private Dictionary<EventType, List<Tuple<Handle, EventAction>>> actions = null;
 		private Dictionary<EventType, List<EventAction>> actionsDisabled = null;
+		private Func<Handle, bool> invalidHandleTest;
+		private Func<Handle, bool> enabledHandleTest;
 		private uint callStackCounter = 0;
 
-		public void Setup()
+		public virtual void Setup()
 		{
-			suscribers = new Dictionary<Handle, List<Tuple<EventType, EventAction>>>();
-			actions = new Dictionary<EventType, List<EventAction>>();
+			subscribers = new Dictionary<Handle, List<Tuple<EventType, EventAction>>>();
+			actions = new Dictionary<EventType, List<Tuple<Handle, EventAction>>>();
 			actionsDisabled = new Dictionary<EventType, List<EventAction>>();
+
+			invalidHandleTest = delegate (Handle handle) { return (handle == null); };
+			enabledHandleTest = delegate (Handle handle) { return true; };
 		}
 
 		public void Start()
 		{
 		}
 
-		public void Suscribe<T>(Handle handle, Action<T> action)
+		public void SetInvalidHandleTest(Func<Handle, bool> invalidHandleTest)
+		{
+			this.invalidHandleTest = invalidHandleTest;
+		}
+
+		public void SetEnabledHandleTest(Func<Handle, bool> enabledHandleTest)
+		{
+			this.enabledHandleTest = enabledHandleTest;
+		}
+
+		public void Subscribe<T>(Handle handle, Action<T> action)
 		{
 			var type = typeof(T);
 
 			if (action == null)
 			{
-				OnLogError("Suscribe action of type {0} can't be null", type.ToString());
+				OnLogError("Subscribe action of type {0} can't be null", type.ToString());
 				return;
 			}
 
-			if (!suscribers.ContainsKey(handle))
+			if (!subscribers.ContainsKey(handle))
 			{
-				suscribers.Add(handle, new List<Tuple<EventType, EventAction>>());
+				subscribers.Add(handle, new List<Tuple<EventType, EventAction>>());
 			}
-			suscribers[handle].Add(new Tuple<EventType, Handle>(type, action));
+			subscribers[handle].Add(new Tuple<EventType, Handle>(type, action));
 
 			if (!actions.ContainsKey(type))
 			{
-				actions.Add(type, new List<EventAction>());
+				actions.Add(type, new List<Tuple<Handle, EventAction>>());
 			}
 
 			if (!actionsDisabled.ContainsKey(type))
@@ -56,18 +71,18 @@ namespace Ju
 				actionsDisabled.Add(type, new List<EventAction>());
 			}
 
-			actions[type].Add(action);
+			actions[type].Add(new Tuple<Handle, EventAction>(handle, action));
 		}
 
 		public void Enable(Handle handle)
 		{
-			if (suscribers.ContainsKey(handle))
+			if (subscribers.ContainsKey(handle))
 			{
-				foreach (var tuple in suscribers[handle])
+				foreach (var tuple in subscribers[handle])
 				{
 					if (actionsDisabled[tuple.Item1].Remove(tuple.Item2))
 					{
-						actions[tuple.Item1].Add(tuple.Item2);
+						actions[tuple.Item1].Add(new Tuple<Handle, EventAction>(handle, tuple.Item2));
 					}
 				}
 			}
@@ -75,30 +90,42 @@ namespace Ju
 
 		public void Disable(Handle handle)
 		{
-			if (suscribers.ContainsKey(handle))
+			if (subscribers.ContainsKey(handle))
 			{
-				foreach (var tuple in suscribers[handle])
+				foreach (var tuple in subscribers[handle])
 				{
-					if (actions[tuple.Item1].Remove(tuple.Item2))
+					foreach (var t in actions[tuple.Item1])
 					{
-						actionsDisabled[tuple.Item1].Add(tuple.Item2);
+						if (t.Item1 == handle)
+						{
+							actionsDisabled[tuple.Item1].Add(t.Item2);
+						}
 					}
+
+					actions[tuple.Item1].RemoveIf((t) =>
+					{
+						return t.Item1 == handle;
+					});
 				}
 			}
 		}
 
-		public void UnSuscribe(Handle handle)
+		public void UnSubscribe(Handle handle)
 		{
-			if (suscribers.ContainsKey(handle))
+			if (subscribers.ContainsKey(handle))
 			{
-				foreach (var tuple in suscribers[handle])
+				foreach (var tuple in subscribers[handle])
 				{
-					actions[tuple.Item1].Remove(tuple.Item2);
+					actions[tuple.Item1].RemoveIf((t) =>
+					{
+						return t.Item1 == handle;
+					});
+
 					actionsDisabled[tuple.Item1].Remove(tuple.Item2);
 				}
 
-				suscribers[handle].Clear();
-				suscribers.Remove(handle);
+				subscribers[handle].Clear();
+				subscribers.Remove(handle);
 			}
 		}
 
@@ -106,37 +133,55 @@ namespace Ju
 		{
 			var type = typeof(T);
 
-			if (actions.ContainsKey(type))
+			if (!actions.ContainsKey(type))
 			{
-				var actionList = actions[type];
+				return;
+			}
 
-				for (int i = actionList.Count - 1; i >= 0; --i)
+			var actionList = actions[type];
+
+			for (int i = actionList.Count - 1; i >= 0; --i)
+			{
+				if (callStackCounter > 0)
 				{
-					if (callStackCounter > 0)
-					{
-						OnLogWarning("An event action has fired another event. This can lead to stackoverflow issues.");
-					}
-
-					callStackCounter++;
-
-					if (System.Diagnostics.Debugger.IsAttached)
-					{
-						((Action<T>)actionList[i])(data);
-					}
-					else
-					{
-						try
-						{
-							((Action<T>)actionList[i])(data);
-						}
-						catch (Exception e)
-						{
-							OnLogError("Exception running action for {0} event: {1}\n{2}", typeof(T).ToString(), e.Message, e.StackTrace);
-						}
-					}
-
-					callStackCounter--;
+					OnLogWarning("An event action has fired another event. This can lead to stackoverflow issues.");
 				}
+
+				var handle = actionList[i].Item1;
+
+				if (invalidHandleTest(handle))
+				{
+					actionList.RemoveAt(i);
+
+					continue;
+				}
+
+				if (!enabledHandleTest(handle))
+				{
+					continue;
+				}
+
+				var action = (Action<T>)actionList[i].Item2;
+
+				callStackCounter++;
+
+				if (System.Diagnostics.Debugger.IsAttached)
+				{
+					action(data);
+				}
+				else
+				{
+					try
+					{
+						action(data);
+					}
+					catch (Exception e)
+					{
+						OnLogError("Exception running action for {0} event: {1}\n{2}", typeof(T).ToString(), e.Message, e.StackTrace);
+					}
+				}
+
+				callStackCounter--;
 			}
 		}
 	}

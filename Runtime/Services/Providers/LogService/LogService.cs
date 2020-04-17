@@ -29,7 +29,7 @@ namespace Ju
 			minLogLevel = logLevel;
 		}
 
-		public void SuscribeLoggable(ILoggableService loggable, LogLevel logLevel = LogLevel.Debug)
+		public void SubscribeLoggable(ILoggableService loggable, LogLevel logLevel = LogLevel.Debug)
 		{
 			if (logLevel <= LogLevel.Debug)
 			{

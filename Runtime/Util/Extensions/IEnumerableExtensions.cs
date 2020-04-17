@@ -40,5 +40,16 @@ namespace Ju
 		{
 			return self == null || !self.Any();
 		}
+
+		public static void RemoveIf<TSource>(this ICollection<TSource> self, Func<TSource, bool> condition)
+		{
+			for (int i = (self.Count() - 1); i >= 0; --i)
+			{
+				if (condition(self.ElementAt(i)))
+				{
+					self.Remove(self.ElementAt(i));
+				}
+			}
+		}
 	}
 }

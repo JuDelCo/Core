@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Identifier = System.String;
 
@@ -6,6 +7,9 @@ namespace Ju
 {
 	public class DataService : IDataService
 	{
+		public event DataServiceListEvent OnListAdd = delegate { };
+		public event DataServiceListEvent OnListRemove = delegate { };
+
 		public event LogMessageEvent OnLogDebug = delegate { };
 		public event LogMessageEvent OnLogInfo = delegate { };
 		public event LogMessageEvent OnLogNotice = delegate { };
@@ -84,8 +88,25 @@ namespace Ju
 				if (sharedItems[type].ContainsKey(id))
 				{
 					sharedItems[type].Remove(id);
+
+					if (sharedItems[type].Count == 0)
+					{
+						listItems.Remove(type);
+					}
 				}
 			}
+		}
+
+		public List<Type> GetTypes()
+		{
+			var types = new List<Type>();
+
+			foreach (var key in sharedItems.Keys)
+			{
+				types.Add(key);
+			}
+
+			return types;
 		}
 
 		public void ListAdd<T>(T obj)
@@ -95,8 +116,9 @@ namespace Ju
 
 		public void ListAdd<T>(T obj, string id)
 		{
-			var type = typeof(T);
-			List<T> list = null;
+			var type = obj.GetType();
+
+			IList list = null;
 
 			if (!listItems.ContainsKey(type))
 			{
@@ -105,15 +127,17 @@ namespace Ju
 
 			if (!listItems[type].ContainsKey(id))
 			{
-				list = new List<T>();
+				list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
 				listItems[type][id] = list;
 			}
 			else
 			{
-				list = (List<T>)listItems[type][id];
+				list = (IList)listItems[type][id];
 			}
 
 			list.Add(obj);
+
+			OnListAdd(type, obj);
 		}
 
 		public List<T> ListGet<T>()
@@ -144,17 +168,41 @@ namespace Ju
 
 		public void ListRemove<T>(T obj, string id)
 		{
-			var type = typeof(T);
+			var type = obj.GetType();
 
 			if (listItems.ContainsKey(type))
 			{
 				if (listItems[type].ContainsKey(id))
 				{
-					var list = (List<T>)listItems[type][id];
+					var list = (IList)listItems[type][id];
 
 					list.Remove(obj);
+
+					if (list.Count == 0)
+					{
+						listItems[type].Remove(id);
+
+						if (listItems[type].Count == 0)
+						{
+							listItems.Remove(type);
+						}
+					}
+
+					OnListRemove(type, obj);
 				}
 			}
+		}
+
+		public List<Type> ListGetTypes()
+		{
+			var types = new List<Type>();
+
+			foreach (var key in listItems.Keys)
+			{
+				types.Add(key);
+			}
+
+			return types;
 		}
 	}
 }

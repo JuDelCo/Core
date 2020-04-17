@@ -31,6 +31,11 @@ namespace Ju
 			return new ObservableUnsubscriber<T>(actions, action);
 		}
 
+		public bool HasSubscribers()
+		{
+			return (actions.Count > 0);
+		}
+
 		public void Trigger()
 		{
 			for (int i = actions.Count - 1; i >= 0; --i)

@@ -33,7 +33,7 @@ namespace Ju
 		event LogGeneralServiceEvent OnAnyMessage;
 
 		void SetLogLevel(LogLevel logLevel);
-		void SuscribeLoggable(ILoggableService loggable, LogLevel logLevel = LogLevel.Debug);
+		void SubscribeLoggable(ILoggableService loggable, LogLevel logLevel = LogLevel.Debug);
 
 		void Debug(string message, params object[] args);
 		void Info(string message, params object[] args);

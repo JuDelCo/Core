@@ -59,13 +59,15 @@ Contents
 
 #### Classes (Unity3D)
 
-- ```MonoBehaviourSubscriber```
-    * Base MonoBehaviour class to handle Enable, Disable and UnSuscribe methods for EventBus.
+- ```MonoBehaviourActor```
+    * Handles methods for EventBus and Data services and for Observables.
 
 #### Helpers
 
 - ```IEnumerable```
     * Map, Filter and Reduce alias methods using original LINQ methods.
+- ```MonoBehaviour```
+    * MonoBehaviour extension methods for EventBus and getting common properties.
 - ```String```
     * Extension methods for creating hashes based on the string.
 
@@ -85,7 +87,7 @@ public static class Bootstrap
 	private static void Init()
 	{
 		Services.RegisterService<ILogUnityService, LogUnityService>();
-		Services.RegisterService<IEventBusService, EventBusService>();
+		Services.RegisterService<IEventBusService, EventBusUnityService>();
 		Services.RegisterService<IDataService, DataService>();
 		Services.RegisterService<IUnityService, UnityService>();
 
