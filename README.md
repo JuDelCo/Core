@@ -21,7 +21,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.12.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.13.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -32,47 +32,50 @@ Contents
 
 #### Services
 
-- ```LogService```
+- ```Log```
     * Handles all logging across all services and your code.
     * **Note**: This service is internally automatically registered for you.
-- ```EventBusService```
+- ```EventBus```
     * Useful event bus to communicate your objects in a decoupled way.
-- ```DataService```
+- ```Data```
     * Useful service to store a reference of all data in the application.
     * Handles individual multiple data types in lists and unique data types in shared mode.
-- ```CoroutineService```
+- ```Coroutine```
     * Handles your coroutines state in plain C#, no MonoBehaviours used.
-- ```TaskService```
+- ```Task```
     * Allows you to run tasks that need to be updated over time.
 	* Exposes several helper functions that returns promises.
 
 #### Services (Unity3D)
 
-- ```LogUnityService```
+- ```LogUnity```
     * Redirects all logs to Unity console (critical in Unity environments).
-- ```UnityService```
+- ```Unity```
     * Exposes several Unity engine events and ticks Coroutine and Task services.
-- ```DataServiceUnityExtensions```
+- ```Data (Unity Extensions)```
     * Add some helper methods to handle ScriptableObjects in DataService.
+- ```Coroutine (Unity Extensions)```
+    * Add some helper methods to use the Coroutine service within Behaviours.
+	* Add new types of Yield instructions based on Unity Time class.
 
-#### Classes
+#### Util
 
+- ```Promise```
+    * Promise class to defer actions until after a previous condition is resolved.
 - ```Observable```
     * Generic type that handles action subscribers to value changes of any type.
 - ```ObjectPool```
     * Simple generic object pool using a stack internally.
 
-#### Classes (Unity3D)
+#### Util (Unity3D)
 
 - ```MonoBehaviourActor```
     * Handles methods for EventBus and Data services and for Observables.
 
-#### Helpers
+#### Extensions
 
 - ```IEnumerable```
     * Map, Filter and Reduce alias methods using original LINQ methods.
-- ```Promise```
-    * Promise class to defer actions until after a previous condition is resolved.
 - ```MonoBehaviour```
     * MonoBehaviour extension methods for EventBus and getting common properties.
 - ```String```
@@ -93,7 +96,7 @@ public static class Bootstrap
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 	private static void Init()
 	{
-		// Generic services
+		// Core services
 
 		Services.RegisterService<IEventBusService, EventBusService>();
 		Services.RegisterService<ITaskService, TaskService>();
