@@ -6,6 +6,16 @@ namespace Ju
 {
 	public static class IEnumerableExtensions
 	{
+		public static T[] ToArray<T>(this IEnumerable<T> self)
+		{
+			return self.ToArray();
+		}
+
+		public static List<T> ToList<T>(this IEnumerable<T> self)
+		{
+			return self.ToList();
+		}
+
 		public static IEnumerable<TResult> Map<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, TResult> selector)
 		{
 			return self.Select(selector);
@@ -26,14 +36,14 @@ namespace Ju
 			return self.Where(predicate).ToList();
 		}
 
-		public static TSource Reduce<TSource>(this IEnumerable<TSource> self, Func<TSource, TSource, TSource> func)
+		public static TSource Reduce<TSource>(this IEnumerable<TSource> self, Func<TSource, TSource, TSource> function)
 		{
-			return self.Aggregate(func);
+			return self.Aggregate(function);
 		}
 
-		public static TResult Reduce<TSource, TResult>(this IEnumerable<TSource> self, TResult seed, Func<TResult, TSource, TResult> func)
+		public static TResult Reduce<TSource, TResult>(this IEnumerable<TSource> self, TResult startValue, Func<TResult, TSource, TResult> function)
 		{
-			return self.Aggregate<TSource, TResult>(seed, func);
+			return self.Aggregate<TSource, TResult>(startValue, function);
 		}
 
 		public static bool IsNullOrEmpty<T>(this IEnumerable<T> self)

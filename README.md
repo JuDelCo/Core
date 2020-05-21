@@ -21,7 +21,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.12.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -40,13 +40,18 @@ Contents
 - ```DataService```
     * Useful service to store a reference of all data in the application.
     * Handles individual multiple data types in lists and unique data types in shared mode.
+- ```CoroutineService```
+    * Handles your coroutines state in plain C#, no MonoBehaviours used.
+- ```TaskService```
+    * Allows you to run tasks that need to be updated over time.
+	* Exposes several helper functions that returns promises.
 
 #### Services (Unity3D)
 
 - ```LogUnityService```
     * Redirects all logs to Unity console (critical in Unity environments).
 - ```UnityService```
-    * Handles Unity coroutines and exposes several Unity engine events.
+    * Exposes several Unity engine events and ticks Coroutine and Task services.
 - ```DataServiceUnityExtensions```
     * Add some helper methods to handle ScriptableObjects in DataService.
 
@@ -66,6 +71,8 @@ Contents
 
 - ```IEnumerable```
     * Map, Filter and Reduce alias methods using original LINQ methods.
+- ```Promise```
+    * Promise class to defer actions until after a previous condition is resolved.
 - ```MonoBehaviour```
     * MonoBehaviour extension methods for EventBus and getting common properties.
 - ```String```
@@ -86,9 +93,16 @@ public static class Bootstrap
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 	private static void Init()
 	{
-		Services.RegisterService<ILogUnityService, LogUnityService>();
-		Services.RegisterService<IEventBusService, EventBusUnityService>();
+		// Generic services
+
+		Services.RegisterService<IEventBusService, EventBusService>();
+		Services.RegisterService<ITaskService, TaskService>();
+		Services.RegisterService<ICoroutineService, CoroutineService>();
 		Services.RegisterService<IDataService, DataService>();
+
+		// Unity related services
+
+		Services.RegisterService<ILogUnityService, LogUnityService>();
 		Services.RegisterService<IUnityService, UnityService>();
 
 		// Register your services here
@@ -114,6 +128,8 @@ public static class Core
 	public static void Fire<T>(T msg) => Services.Get<IEventBusService>().Fire(msg);
 	public static ILogService Log => Services.Get<ILogService>();
 	public static IEventBusService Event => Services.Get<IEventBusService>();
+	public static ITaskService Task => Services.Get<ITaskService>();
+	public static ICoroutineService Coroutine => Services.Get<ICoroutineService>();
 	public static IDataService Data => Services.Get<IDataService>();
 	//public static IUnityService Unity => Services.Get<IUnityService>();
 
