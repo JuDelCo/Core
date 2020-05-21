@@ -17,9 +17,11 @@ namespace Ju
 		}
 	}
 
+	internal delegate void TaskUpdateEvent(float deltaTime);
+
 	public class TaskService : ITaskService
 	{
-		public event TaskUpdateEvent OnTick = delegate { };
+		internal event TaskUpdateEvent OnTick = delegate { };
 
 		public event LogMessageEvent OnLogDebug = delegate { };
 		public event LogMessageEvent OnLogInfo = delegate { };
@@ -36,27 +38,13 @@ namespace Ju
 
 		public void Start()
 		{
+			Services.Get<IEventBusService>().Subscribe<LoopUpdateEvent>(this, e => Tick(e.deltaTime));
 		}
 
 		public void Tick(float deltaTime)
 		{
 			TickActions();
-
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				OnTick(deltaTime);
-			}
-			else
-			{
-				try
-				{
-					OnTick(deltaTime);
-				}
-				catch (Exception e)
-				{
-					OnLogError("Uncaught Exception: {0}", e.Message);
-				}
-			}
+			OnTick(deltaTime);
 		}
 
 		private void TickActions()

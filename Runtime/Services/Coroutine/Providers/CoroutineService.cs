@@ -33,9 +33,10 @@ namespace Ju
 
 		public void Start()
 		{
+			Services.Get<IEventBusService>().Subscribe<LoopUpdateEvent>(this, e => Tick());
 		}
 
-		public void Tick()
+		private void Tick()
 		{
 			lock (coroutines)
 			{

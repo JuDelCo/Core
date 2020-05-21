@@ -21,7 +21,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.13.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.14.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -198,6 +198,12 @@ You can also register a object factory using:
 // A new object of type CustomClass will be created in each call.
 // You can pass any function or lambda to build your new object.
 Services.RegisterFactory<CustomClass>(() => new CustomClass());
+```
+
+During the lifecycle of your app you need to fire loop update events so the Coroutine and Task services work as intended:
+
+```csharp
+Core.Fire(new LoopUpdateEvent(deltaTime));
 ```
 
 Before the program finalizes, you should dispose the services using:

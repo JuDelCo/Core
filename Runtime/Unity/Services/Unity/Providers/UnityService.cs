@@ -1,7 +1,6 @@
 
 #if UNITY_2018_3_OR_NEWER
 
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,10 +9,6 @@ namespace Ju
 {
 	public class UnityService : IUnityService
 	{
-		public event UnityServiceEvent OnUpdate = delegate { };
-		public event UnityServiceEvent OnFixedUpdate = delegate { };
-		public event UnityServiceEvent OnSceneLoaded = delegate { };
-		public event UnityServiceFocusEvent OnApplicationFocus = delegate { };
 		public event UnityServiceQuitRequestedEvent OnApplicationWantsToQuit;
 
 		public event LogMessageEvent OnLogDebug = delegate { };
@@ -22,6 +17,7 @@ namespace Ju
 		public event LogMessageEvent OnLogWarning = delegate { };
 		public event LogMessageEvent OnLogError = delegate { };
 
+		private IEventBusService eventService;
 		private UnityServiceBehaviour monoBehaviour;
 		private bool behaviourInitialized = false;
 
@@ -73,35 +69,27 @@ namespace Ju
 
 		public void Start()
 		{
-			try
-			{
-				var taskService = Services.Get<ITaskService>();
-				OnUpdate += () => taskService.Tick(Time.deltaTime);
-
-				var coroutineService = Services.Get<ICoroutineService>();
-				OnUpdate += () => coroutineService.Tick();
-			}
-			catch (Exception) { }
+			eventService = Services.Get<IEventBusService>();
 		}
 
 		private void OnUnityUpdate()
 		{
-			OnUpdate();
+			eventService.Fire(new LoopUpdateEvent(Time.deltaTime));
 		}
 
 		private void OnUnityFixedUpdate()
 		{
-			OnFixedUpdate();
+			eventService.Fire(new LoopFixedUpdateEvent(Time.fixedDeltaTime));
 		}
 
 		private void OnUnitySceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
 		{
-			OnSceneLoaded();
+			eventService.Fire(new UnitySceneLoadedEvent(scene.buildIndex, scene.name, loadSceneMode));
 		}
 
 		private void OnUnityApplicationFocus(bool hasFocus)
 		{
-			OnApplicationFocus(hasFocus);
+			eventService.Fire(new UnityApplicationFocusEvent(hasFocus));
 		}
 
 		private bool OnUnityApplicationWantsToQuit()
