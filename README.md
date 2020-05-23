@@ -3,8 +3,6 @@ Core
 
 Core is a service locator, object factory and a collection of basic services to ease the development of C# applications or games.
 
-This package will follow a [semantic versioning](http://semver.org/).
-
 Any feedback is welcome !
 
 
@@ -21,7 +19,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.14.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.15.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.

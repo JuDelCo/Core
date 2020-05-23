@@ -19,8 +19,6 @@ namespace Ju
 		private Dictionary<Type, Dictionary<Identifier, object>> sharedItems;
 		private Dictionary<Type, Dictionary<Identifier, object>> listItems;
 
-		private static readonly Identifier DEFAULT_ID = "base";
-
 		public void Setup()
 		{
 			sharedItems = new Dictionary<Type, Dictionary<Identifier, object>>();
@@ -29,11 +27,6 @@ namespace Ju
 
 		public void Start()
 		{
-		}
-
-		public void Set<T>(T obj)
-		{
-			Set(obj, DEFAULT_ID);
 		}
 
 		public void Set<T>(T obj, string id)
@@ -53,11 +46,6 @@ namespace Ju
 			sharedItems[type][id] = obj;
 		}
 
-		public T Get<T>() where T : class
-		{
-			return Get<T>(DEFAULT_ID);
-		}
-
 		public T Get<T>(string id) where T : class
 		{
 			var type = typeof(T);
@@ -72,11 +60,6 @@ namespace Ju
 			}
 
 			return instance;
-		}
-
-		public void Unset<T>()
-		{
-			Unset<T>(DEFAULT_ID);
 		}
 
 		public void Unset<T>(string id)
@@ -109,11 +92,6 @@ namespace Ju
 			return types;
 		}
 
-		public void ListAdd<T>(T obj)
-		{
-			ListAdd(obj, DEFAULT_ID);
-		}
-
 		public void ListAdd<T>(T obj, string id)
 		{
 			var type = obj.GetType();
@@ -140,11 +118,6 @@ namespace Ju
 			OnListAdd(type, obj);
 		}
 
-		public List<T> ListGet<T>()
-		{
-			return ListGet<T>(DEFAULT_ID);
-		}
-
 		public List<T> ListGet<T>(string id)
 		{
 			var type = typeof(T);
@@ -159,11 +132,6 @@ namespace Ju
 			}
 
 			return list;
-		}
-
-		public void ListRemove<T>(T obj)
-		{
-			ListRemove(obj, DEFAULT_ID);
 		}
 
 		public void ListRemove<T>(T obj, string id)

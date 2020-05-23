@@ -23,11 +23,8 @@ namespace Ju
 
 	public interface IPromise : IRejectable
 	{
-		IPromise Then(Action onResolved);
 		IPromise Then(Action onResolved, Action<Exception> onRejected);
-		IPromise Then(Func<IPromise> onResolved);
 		IPromise Then(Func<IPromise> onResolved, Action<Exception> onRejected);
-		IPromise<T> Then<T>(Func<IPromise<T>> onResolved);
 		IPromise<T> Then<T>(Func<IPromise<T>> onResolved, Func<Exception, IPromise<T>> onRejected);
 		IPromise ThenAll(Func<IEnumerable<IPromise>> chain);
 		IPromise ThenSequence(Func<IEnumerable<Func<IPromise>>> chain);
@@ -36,8 +33,6 @@ namespace Ju
 		IPromise ContinueWith(Func<IPromise> onComplete);
 		IPromise Finally(Action onComplete);
 		void Done();
-		void Done(Action onResolved);
-		void Done(Action onResolved, Action<Exception> onRejected);
 		void Resolve();
 	}
 
@@ -49,11 +44,8 @@ namespace Ju
 
 	public interface IPromise<T> : IRejectable
 	{
-		IPromise<T> Then(Action<T> onResolved);
 		IPromise<T> Then(Action<T> onResolved, Action<Exception> onRejected);
-		IPromise Then(Func<T, IPromise> onResolved);
 		IPromise Then(Func<T, IPromise> onResolved, Action<Exception> onRejected);
-		IPromise<U> Then<U>(Func<T, IPromise<U>> onResolved);
 		IPromise<U> Then<U>(Func<T, IPromise<U>> onResolved, Func<Exception, IPromise<U>> onRejected);
 		IPromise ThenAll(Func<T, IEnumerable<IPromise>> chain);
 		IPromise ThenSequence(Func<T, IEnumerable<Func<IPromise>>> chain);
@@ -62,8 +54,6 @@ namespace Ju
 		IPromise ContinueWith(Func<IPromise> onComplete);
 		IPromise<T> Finally(Action onComplete);
 		void Done();
-		void Done(Action<T> onResolved);
-		void Done(Action<T> onResolved, Action<Exception> onRejected);
 		void Resolve(T value);
 	}
 

@@ -30,11 +30,6 @@ namespace Ju
 			}
 		}
 
-		public IPromise<T> Then(Action<T> onResolved)
-		{
-			return Then(onResolved, null);
-		}
-
 		public IPromise<T> Then(Action<T> onResolved, Action<Exception> onRejected)
 		{
 			if (onResolved != null)
@@ -55,11 +50,6 @@ namespace Ju
 			}
 
 			return this;
-		}
-
-		public IPromise Then(Func<T, IPromise> onResolved)
-		{
-			return Then(onResolved, null);
 		}
 
 		public IPromise Then(Func<T, IPromise> onResolved, Action<Exception> onRejected)
@@ -105,11 +95,6 @@ namespace Ju
 			rejectActions.Add(new RejectAction { action = rejectAction, rejectable = resultPromise });
 
 			return resultPromise;
-		}
-
-		public IPromise<U> Then<U>(Func<T, IPromise<U>> onResolved)
-		{
-			return Then(onResolved, null);
 		}
 
 		public IPromise<U> Then<U>(Func<T, IPromise<U>> onResolved, Func<Exception, IPromise<U>> onRejected)
@@ -160,17 +145,17 @@ namespace Ju
 
 		public IPromise ThenAll(Func<T, IEnumerable<IPromise>> chain)
 		{
-			return Then(_ => Promise.All(chain(resolveValue)));
+			return Then(_ => Promise.All(chain(resolveValue)), null);
 		}
 
 		public IPromise ThenSequence(Func<T, IEnumerable<Func<IPromise>>> chain)
 		{
-			return Then(_ => Promise.Sequence(chain(resolveValue)));
+			return Then(_ => Promise.Sequence(chain(resolveValue)), null);
 		}
 
 		public IPromise ThenRace(Func<T, IEnumerable<IPromise>> chain)
 		{
-			return Then(_ => Promise.Race(chain(resolveValue)));
+			return Then(_ => Promise.Race(chain(resolveValue)), null);
 		}
 
 		public IPromise Catch(Action<Exception> onRejected)
@@ -211,7 +196,7 @@ namespace Ju
 		{
 			var resultPromise = new Promise();
 
-			Then(_ => resultPromise.Resolve());
+			Then(_ => resultPromise.Resolve(), null);
 			Catch(_ => resultPromise.Resolve());
 
 			return resultPromise.Then(onComplete);
@@ -238,18 +223,6 @@ namespace Ju
 			{
 				Catch(e => Promise.NotifyUnhandledException(e));
 			}
-		}
-
-		public void Done(Action<T> onResolved)
-		{
-			Then(onResolved, null);
-			Done();
-		}
-
-		public void Done(Action<T> onResolved, Action<Exception> onRejected)
-		{
-			Then(onResolved, onRejected);
-			Done();
 		}
 
 		public void Resolve(T value)

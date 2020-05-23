@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Ju
 {
-	public static class CoroutineServiceExtensions
+	public static class ICoroutineServiceUnityExtensions
 	{
 		public static Coroutine StartCoroutine(this ICoroutineService service, Behaviour behaviour, IEnumerator routine, bool alwaysActive = true)
 		{

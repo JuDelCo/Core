@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Ju
 {
-	public static class UnityEventBusServiceExtensions
+	public static class IEventBusServiceUnityExtensions
 	{
 		public static void Subscribe<T>(this IEventBusService eventService, Behaviour behaviour, Action<T> action, bool alwaysActive = false)
 		{

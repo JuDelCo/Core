@@ -3,25 +3,6 @@ namespace Ju
 {
 	public delegate void LogServiceEvent(string message, string timeStamp, params object[] args);
 	public delegate void LogGeneralServiceEvent(string message, string timeStamp, LogLevel logLevel, params object[] args);
-	public delegate void LogMessageEvent(string message, params object[] args);
-
-	public interface ILoggableService
-	{
-		event LogMessageEvent OnLogDebug;
-		event LogMessageEvent OnLogInfo;
-		event LogMessageEvent OnLogNotice;
-		event LogMessageEvent OnLogWarning;
-		event LogMessageEvent OnLogError;
-	}
-
-	public enum LogLevel
-	{
-		Debug = 0,
-		Info = 1,
-		Notice = 2,
-		Warning = 3,
-		Error = 4
-	}
 
 	public interface ILogService : IService
 	{

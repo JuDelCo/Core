@@ -29,11 +29,6 @@ namespace Ju
 			}
 		}
 
-		public IPromise Then(Action onResolved)
-		{
-			return Then(onResolved, null);
-		}
-
 		public IPromise Then(Action onResolved, Action<Exception> onRejected)
 		{
 			if (onResolved != null)
@@ -54,11 +49,6 @@ namespace Ju
 			}
 
 			return this;
-		}
-
-		public IPromise Then(Func<IPromise> onResolved)
-		{
-			return Then(onResolved, null);
 		}
 
 		public IPromise Then(Func<IPromise> onResolved, Action<Exception> onRejected)
@@ -104,11 +94,6 @@ namespace Ju
 			rejectActions.Add(new RejectAction { action = rejectAction, rejectable = resultPromise });
 
 			return resultPromise;
-		}
-
-		public IPromise<T> Then<T>(Func<IPromise<T>> onResolved)
-		{
-			return Then(onResolved, null);
 		}
 
 		public IPromise<T> Then<T>(Func<IPromise<T>> onResolved, Func<Exception, IPromise<T>> onRejected)
@@ -159,17 +144,17 @@ namespace Ju
 
 		public IPromise ThenAll(Func<IEnumerable<IPromise>> chain)
 		{
-			return Then(() => Promise.All(chain()));
+			return Then(() => Promise.All(chain()), null);
 		}
 
 		public IPromise ThenSequence(Func<IEnumerable<Func<IPromise>>> chain)
 		{
-			return Then(() => Promise.Sequence(chain()));
+			return Then(() => Promise.Sequence(chain()), null);
 		}
 
 		public IPromise ThenRace(Func<IEnumerable<IPromise>> chain)
 		{
-			return Then(() => Promise.Race(chain()));
+			return Then(() => Promise.Race(chain()), null);
 		}
 
 		public IPromise Catch(Action<Exception> onRejected)
@@ -210,7 +195,7 @@ namespace Ju
 		{
 			var resultPromise = new Promise();
 
-			Then(() => resultPromise.Resolve());
+			Then(() => resultPromise.Resolve(), null);
 			Catch(_ => resultPromise.Resolve());
 
 			return resultPromise.Then(onComplete);
@@ -237,18 +222,6 @@ namespace Ju
 			{
 				Catch(e => Promise.NotifyUnhandledException(e));
 			}
-		}
-
-		public void Done(Action onResolved)
-		{
-			Then(onResolved, null);
-			Done();
-		}
-
-		public void Done(Action onResolved, Action<Exception> onRejected)
-		{
-			Then(onResolved, onRejected);
-			Done();
 		}
 
 		public void Resolve()

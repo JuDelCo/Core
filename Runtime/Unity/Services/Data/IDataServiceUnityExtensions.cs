@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Ju
 {
-	public static class UnityDataServiceExtensions
+	public static class IDataServiceUnityExtensions
 	{
 		public static T InstanceSO<T>(this IDataService dataService) where T : ScriptableObject
 		{
