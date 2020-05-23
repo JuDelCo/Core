@@ -8,9 +8,9 @@ namespace Ju
 {
 	public static class ICoroutineServiceUnityExtensions
 	{
-		public static Coroutine StartCoroutine(this ICoroutineService service, Behaviour behaviour, IEnumerator routine, bool alwaysActive = true)
+		public static Coroutine StartCoroutine(this ICoroutineService coroutineService, Behaviour behaviour, IEnumerator routine, bool alwaysActive = true)
 		{
-			return service.StartCoroutine(new BehaviourLinkHandler(behaviour, alwaysActive), routine);
+			return coroutineService.StartCoroutine(new BehaviourLinkHandler(behaviour, alwaysActive), routine);
 		}
 	}
 }

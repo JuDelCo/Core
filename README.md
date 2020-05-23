@@ -19,7 +19,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.15.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.16.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -67,15 +67,19 @@ Contents
 
 #### Util (Unity3D)
 
+- ```BehaviourLinkHandler```
+    * Allows to use Unity Behaviours as a LinkHandler.
 - ```MonoBehaviourActor```
-    * Handles methods for EventBus and Data services and for Observables.
+    * Subscribes itself automatically to the Data service.
 
 #### Extensions
 
-- ```IEnumerable```
-    * Map, Filter and Reduce alias methods using original LINQ methods.
 - ```MonoBehaviour```
     * MonoBehaviour extension methods for EventBus and getting common properties.
+- ```Observable```
+    * Allows to subscribe a Behaviour script easily to any Observable.
+- ```IEnumerable```
+    * Map, Filter and Reduce alias methods using original LINQ methods.
 - ```String```
     * Extension methods for creating hashes based on the string.
 

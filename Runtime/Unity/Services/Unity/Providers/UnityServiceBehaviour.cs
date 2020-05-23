@@ -8,31 +8,34 @@ namespace Ju
 	internal delegate void UnityServiceEvent();
 	internal delegate void UnityServiceFocusEvent(bool hasFocus);
 
-	public class UnityServiceBehaviour : MonoBehaviour
+	internal class InternalUnityServiceBehaviour
 	{
-		internal event UnityServiceEvent OnUpdateEvent = delegate { };
-		internal event UnityServiceEvent OnFixedUpdateEvent = delegate { };
-		internal event UnityServiceFocusEvent OnApplicationFocusEvent = delegate { };
-		internal event UnityServiceEvent OnApplicationQuitEvent = delegate { };
-
-		private void Update()
+		public class UnityServiceBehaviour : MonoBehaviour
 		{
-			OnUpdateEvent();
-		}
+			internal event UnityServiceEvent OnUpdateEvent = delegate { };
+			internal event UnityServiceEvent OnFixedUpdateEvent = delegate { };
+			internal event UnityServiceFocusEvent OnApplicationFocusEvent = delegate { };
+			internal event UnityServiceEvent OnApplicationQuitEvent = delegate { };
 
-		private void FixedUpdate()
-		{
-			OnFixedUpdateEvent();
-		}
+			private void Update()
+			{
+				OnUpdateEvent();
+			}
 
-		private void OnApplicationFocus(bool hasFocus)
-		{
-			OnApplicationFocusEvent(hasFocus);
-		}
+			private void FixedUpdate()
+			{
+				OnFixedUpdateEvent();
+			}
 
-		private void OnApplicationQuit()
-		{
-			OnApplicationQuitEvent();
+			private void OnApplicationFocus(bool hasFocus)
+			{
+				OnApplicationFocusEvent(hasFocus);
+			}
+
+			private void OnApplicationQuit()
+			{
+				OnApplicationQuitEvent();
+			}
 		}
 	}
 }
