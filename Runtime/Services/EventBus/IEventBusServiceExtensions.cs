@@ -8,5 +8,10 @@ namespace Ju
 		{
 			eventService.Subscribe(new KeepLinkHandler(), action);
 		}
+
+		public static void Subscribe<T>(this IEventBusService eventService, State state, Action<T> action)
+		{
+			eventService.Subscribe(new StateLinkHandler(state), action);
+		}
 	}
 }

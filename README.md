@@ -19,7 +19,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.16.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.17.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -64,6 +64,10 @@ Contents
     * Generic type that handles action subscribers to value changes of any type.
 - ```ObjectPool```
     * Simple generic object pool using a stack internally.
+- ```FSM```
+    * Finite state machine based on conditions.
+- ```SimpleFSM```
+    * Simple finite state machine (works only with function references).
 
 #### Util (Unity3D)
 

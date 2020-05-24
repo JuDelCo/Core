@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Ju
 {
-	public static class IBehaviourExtensions
+	public static class BehaviourExtensions
 	{
 		public static void EventSubscribe<T>(this Behaviour behaviour, Action<T> action, bool alwaysActive = false)
 		{
@@ -17,6 +17,21 @@ namespace Ju
 		public static Coroutine CoroutineStart(this Behaviour behaviour, IEnumerator routine, bool alwaysActive = true)
 		{
 			return Services.Get<ICoroutineService>().StartCoroutine(behaviour, routine, alwaysActive);
+		}
+
+		public static IPromise WaitUntil(this Behaviour behaviour, Func<bool> condition, bool alwaysActive = false)
+		{
+			return Services.Get<ITaskService>().WaitUntil(behaviour, condition, alwaysActive);
+		}
+
+		public static IPromise WaitWhile(this Behaviour behaviour, Func<bool> condition, bool alwaysActive = false)
+		{
+			return Services.Get<ITaskService>().WaitWhile(behaviour, condition, alwaysActive);
+		}
+
+		public static IPromise WaitForSeconds(this Behaviour behaviour, float delay, bool alwaysActive = false)
+		{
+			return Services.Get<ITaskService>().WaitForSeconds(behaviour, delay, alwaysActive);
 		}
 
 		public static Vector3 GetPosition(this Behaviour behaviour)
