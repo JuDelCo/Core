@@ -15,7 +15,6 @@ namespace Ju
 			internal event UnityServiceEvent OnUpdateEvent = delegate { };
 			internal event UnityServiceEvent OnFixedUpdateEvent = delegate { };
 			internal event UnityServiceFocusEvent OnApplicationFocusEvent = delegate { };
-			internal event UnityServiceEvent OnApplicationQuitEvent = delegate { };
 
 			private void Update()
 			{
@@ -30,11 +29,6 @@ namespace Ju
 			private void OnApplicationFocus(bool hasFocus)
 			{
 				OnApplicationFocusEvent(hasFocus);
-			}
-
-			private void OnApplicationQuit()
-			{
-				OnApplicationQuitEvent();
 			}
 		}
 	}

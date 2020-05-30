@@ -4,7 +4,7 @@ namespace Ju
 {
 	public abstract class State
 	{
-		protected FSM fsm = null;
+		protected IFiniteStateMachine fsm = null;
 		protected Func<bool> extraCondition = null;
 
 		public virtual bool Condition()
@@ -28,7 +28,7 @@ namespace Ju
 		{
 		}
 
-		internal void InternalSetFSM(FSM fsm)
+		internal void InternalSetFSM(IFiniteStateMachine fsm)
 		{
 			this.fsm = fsm;
 		}

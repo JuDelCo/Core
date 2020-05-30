@@ -33,7 +33,7 @@ namespace Ju
 
 		public void Start()
 		{
-			Services.Get<IEventBusService>().Subscribe<LoopUpdateEvent>(this, e => Tick());
+			Services.Get<IEventBusService>().Subscribe<LoopUpdateEvent>(new KeepLinkHandler(), _ => Tick());
 		}
 
 		private void Tick()

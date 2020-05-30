@@ -5,16 +5,6 @@ using UnityEngine.SceneManagement;
 
 namespace Ju
 {
-	public struct LoopFixedUpdateEvent
-	{
-		public float fixedDeltaTime;
-
-		public LoopFixedUpdateEvent(float fixedDeltaTime)
-		{
-			this.fixedDeltaTime = fixedDeltaTime;
-		}
-	}
-
 	public struct UnitySceneLoadedEvent
 	{
 		public int sceneIndex;

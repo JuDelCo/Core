@@ -19,7 +19,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.17.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.18.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -68,6 +68,14 @@ Contents
     * Finite state machine based on conditions.
 - ```SimpleFSM```
     * Simple finite state machine (works only with function references).
+- ```Clock```
+    * Simple class to measuring time using deltas from loop events.
+- ```ClockPrecise```
+    * Simple class to measuring time using precise DateTime info.
+- ```Timer```
+    * Counts time downwards and allows to run code when reaches zero.
+- ```FrameTimer```
+    * Counts frames downwards and allows to run code when reaches zero.
 
 #### Util (Unity3D)
 
@@ -210,6 +218,8 @@ During the lifecycle of your app you need to fire loop update events so the Coro
 
 ```csharp
 Core.Fire(new LoopUpdateEvent(deltaTime));
+// and...
+Core.Fire(new LoopFixedUpdateEvent(fixedDeltaTime));
 ```
 
 Before the program finalizes, you should dispose the services using:

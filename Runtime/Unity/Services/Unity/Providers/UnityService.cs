@@ -1,6 +1,7 @@
 
 #if UNITY_2018_3_OR_NEWER
 
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +12,7 @@ namespace Ju
 	public class UnityService : IUnityService
 	{
 		public event UnityServiceQuitRequestedEvent OnApplicationWantsToQuit;
+		public event UnityServiceQuitEvent OnApplicationQuit;
 
 		public event LogMessageEvent OnLogDebug = delegate { };
 		public event LogMessageEvent OnLogInfo = delegate { };
@@ -21,11 +23,22 @@ namespace Ju
 		private IEventBusService eventService;
 		private UnityServiceBehaviour monoBehaviour;
 		private bool behaviourInitialized = false;
+		private bool quitting = false;
 
 		public void Setup()
 		{
 			SceneManager.sceneLoaded += OnUnitySceneLoaded;
 			Application.wantsToQuit += OnUnityApplicationWantsToQuit;
+
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.playModeStateChanged += state =>
+			{
+				if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode && !quitting)
+				{
+					UnityEditor.EditorApplication.isPlaying = !OnUnityApplicationWantsToQuit();
+				}
+			};
+#endif
 
 			SceneManager.sceneLoaded += (scene, loadSceneMode) =>
 			{
@@ -42,7 +55,6 @@ namespace Ju
 				monoBehaviour.OnUpdateEvent += OnUnityUpdate;
 				monoBehaviour.OnFixedUpdateEvent += OnUnityFixedUpdate;
 				monoBehaviour.OnApplicationFocusEvent += OnUnityApplicationFocus;
-				monoBehaviour.OnApplicationQuitEvent += OnUnityApplicationQuit;
 
 				behaviourInitialized = true;
 			};
@@ -95,16 +107,34 @@ namespace Ju
 
 		private bool OnUnityApplicationWantsToQuit()
 		{
-			if (OnApplicationWantsToQuit != null)
+			var result = true;
+
+			if (!quitting)
 			{
-				return OnApplicationWantsToQuit();
+				if (OnApplicationWantsToQuit != null)
+				{
+					result = OnApplicationWantsToQuit();
+				}
+
+				if (result)
+				{
+					result = false;
+					StartApplicationQuitRoutine();
+				}
 			}
 
-			return true;
+			return result;
 		}
 
-		private void OnUnityApplicationQuit()
+		private void StartApplicationQuitRoutine()
 		{
+			quitting = true;
+
+			if (OnApplicationQuit != null)
+			{
+				OnApplicationQuit();
+			}
+
 			ForceUnloadAllGameObjects();
 			monoBehaviour.StartCoroutine(DelayedDisposeServices());
 		}
@@ -125,8 +155,20 @@ namespace Ju
 		private IEnumerator DelayedDisposeServices()
 		{
 			yield return null;
-			Services.Dispose();
+
 			GameObject.Destroy(monoBehaviour);
+			Resources.UnloadUnusedAssets();
+
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, false);
+			GC.WaitForPendingFinalizers();
+
+			Services.Dispose();
+
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPlaying = false;
+#else
+			Application.Quit();
+#endif
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace Ju
 
 		public void Start()
 		{
-			Services.Get<IEventBusService>().Subscribe<LoopUpdateEvent>(this, e => Tick(e.deltaTime));
+			Services.Get<IEventBusService>().Subscribe<LoopUpdateEvent>(new KeepLinkHandler(), e => Tick(e.deltaTime));
 		}
 
 		public void Tick(float deltaTime)

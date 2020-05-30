@@ -4,12 +4,8 @@ using Identifier = System.String;
 
 namespace Ju
 {
-	public delegate void CoreApplicationQuitEvent();
-
 	public class Services
 	{
-		public static event CoreApplicationQuitEvent OnApplicationQuit;
-
 		private static readonly Identifier DEFAULT_ID = "base";
 		private static Services instance;
 
@@ -158,12 +154,6 @@ namespace Ju
 
 		public static void Dispose()
 		{
-			if (OnApplicationQuit != null)
-			{
-				OnApplicationQuit();
-				OnApplicationQuit = null;
-			}
-
 			if (instance != null)
 			{
 				instance.servicesRegistered.Clear();
