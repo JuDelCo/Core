@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Identifier = System.String;
 
-namespace Ju
+namespace Ju.Services
 {
 	public class Container : IDisposable
 	{
@@ -37,6 +37,31 @@ namespace Ju
 			{
 				return classConstructor();
 			});
+		}
+
+		public void Unload<T>(Identifier id)
+		{
+			var type = typeof(T);
+
+			if (services.ContainsKey(type))
+			{
+				if (services[type].ContainsKey(id))
+				{
+					var service = services[type][id];
+
+					if (service is IServiceUnload)
+					{
+						((IServiceUnload)service).Unload();
+					}
+
+					services[type].Remove(id);
+
+					if (services[type].Count == 0)
+					{
+						services.Remove(type);
+					}
+				}
+			}
 		}
 
 		private object Get(Type type, Identifier id)

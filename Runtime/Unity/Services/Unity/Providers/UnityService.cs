@@ -5,9 +5,9 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Ju.InternalUnityServiceBehaviour;
+using static Ju.Services.InternalUnityServiceBehaviour;
 
-namespace Ju
+namespace Ju.Services
 {
 	public class UnityService : IUnityService
 	{
@@ -82,17 +82,17 @@ namespace Ju
 
 		public void Start()
 		{
-			eventService = Services.Get<IEventBusService>();
+			eventService = ServiceContainer.Get<IEventBusService>();
 		}
 
 		private void OnUnityUpdate()
 		{
-			eventService.Fire(new LoopUpdateEvent(Time.deltaTime));
+			eventService.Fire(new LoopUpdateEvent(UnityEngine.Time.deltaTime));
 		}
 
 		private void OnUnityFixedUpdate()
 		{
-			eventService.Fire(new LoopFixedUpdateEvent(Time.fixedDeltaTime));
+			eventService.Fire(new LoopFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 		}
 
 		private void OnUnitySceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
@@ -162,7 +162,7 @@ namespace Ju
 			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, false);
 			GC.WaitForPendingFinalizers();
 
-			Services.Dispose();
+			ServiceContainer.Dispose();
 
 #if UNITY_EDITOR
 			UnityEditor.EditorApplication.isPlaying = false;

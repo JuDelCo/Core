@@ -1,8 +1,9 @@
 using System.Collections;
+using Ju.Handlers;
 
-namespace Ju
+namespace Ju.Services
 {
-	public interface ICoroutineService : IService, ILoggableService
+	public interface ICoroutineService : IServiceLoad, ILoggableService
 	{
 		Coroutine StartCoroutine(ILinkHandler handle, IEnumerator routine);
 	}

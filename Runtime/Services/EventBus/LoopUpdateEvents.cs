@@ -1,5 +1,5 @@
 
-namespace Ju
+namespace Ju.Services
 {
 	public struct LoopUpdateEvent
 	{

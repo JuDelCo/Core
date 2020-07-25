@@ -3,7 +3,7 @@
 
 using UnityEngine.SceneManagement;
 
-namespace Ju
+namespace Ju.Services
 {
 	public struct UnitySceneLoadedEvent
 	{

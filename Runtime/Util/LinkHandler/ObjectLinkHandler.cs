@@ -1,6 +1,6 @@
 using System;
 
-namespace Ju
+namespace Ju.Handlers
 {
 	public struct ObjectLinkHandler<T> : ILinkHandler
 	{

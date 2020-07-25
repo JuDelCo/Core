@@ -1,7 +1,7 @@
-Core
+JuCore
 =====================
 
-Core is a service locator, object factory and a collection of basic services to ease the development of C# applications or games.
+JuCore is a service locator, object factory and a collection of basic services to ease the development of C# applications or games.
 
 Any feedback is welcome !
 
@@ -9,8 +9,8 @@ Any feedback is welcome !
 See also
 =====================
 
-- [Core Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics and IK
-- [Core ECS](https://github.com/JuDelCo/CoreECS) - Deterministic lightweight ECS framework
+- [JuCore Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics and IK
+- [JuCore ECS](https://github.com/JuDelCo/CoreECS) - Deterministic lightweight ECS framework
 
 
 Install
@@ -19,7 +19,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.18.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.19.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -76,6 +76,8 @@ Contents
     * Counts time downwards and allows to run code when reaches zero.
 - ```FrameTimer```
     * Counts frames downwards and allows to run code when reaches zero.
+- ```Color & Color32```
+    * Generic color classes and helper util methods.
 
 #### Util (Unity3D)
 
@@ -103,7 +105,7 @@ It's recomended to create a static class anywhere in your project to register al
 
 ```csharp
 using UnityEngine;
-using Ju;
+using Ju.Services;
 
 public static class Bootstrap
 {
@@ -112,15 +114,15 @@ public static class Bootstrap
 	{
 		// Core services
 
-		Services.RegisterService<IEventBusService, EventBusService>();
-		Services.RegisterService<ITaskService, TaskService>();
-		Services.RegisterService<ICoroutineService, CoroutineService>();
-		Services.RegisterService<IDataService, DataService>();
+		ServiceContainer.RegisterService<IEventBusService, EventBusService>();
+		ServiceContainer.RegisterService<ITaskService, TaskService>();
+		ServiceContainer.RegisterService<ICoroutineService, CoroutineService>();
+		ServiceContainer.RegisterService<IDataService, DataService>();
 
 		// Unity related services
 
-		Services.RegisterService<ILogUnityService, LogUnityService>();
-		Services.RegisterService<IUnityService, UnityService>();
+		ServiceContainer.RegisterService<ILogUnityService, LogUnityService>();
+		ServiceContainer.RegisterService<IUnityService, UnityService>();
 
 		// Register your services here
 	}
@@ -136,19 +138,20 @@ Documentation (Generic)
 You can also create a static class where you name each service you use frequently as syntactic sugar:
 
 ```csharp
-using Ju;
+using Ju.Services;
 
 public static class Core
 {
-	public static T Get<T>() => Services.Get<T>();
-	public static T Get<T>(string id) => Services.Get<T>(id);
-	public static void Fire<T>(T msg) => Services.Get<IEventBusService>().Fire(msg);
-	public static ILogService Log => Services.Get<ILogService>();
-	public static IEventBusService Event => Services.Get<IEventBusService>();
-	public static ITaskService Task => Services.Get<ITaskService>();
-	public static ICoroutineService Coroutine => Services.Get<ICoroutineService>();
-	public static IDataService Data => Services.Get<IDataService>();
-	//public static IUnityService Unity => Services.Get<IUnityService>();
+	public static T Get<T>() => ServiceContainer.Get<T>();
+	public static T Get<T>(string id) => ServiceContainer.Get<T>(id);
+	public static void Fire<T>() where T : struct => ServiceContainer.Get<IEventBusService>().Fire<T>();
+	public static void Fire<T>(T msg) => ServiceContainer.Get<IEventBusService>().Fire(msg);
+	public static ILogService Log => ServiceContainer.Get<ILogService>();
+	public static IEventBusService Event => ServiceContainer.Get<IEventBusService>();
+	public static ITaskService Task => ServiceContainer.Get<ITaskService>();
+	public static ICoroutineService Coroutine => ServiceContainer.Get<ICoroutineService>();
+	public static IDataService Data => ServiceContainer.Get<IDataService>();
+	//public static IUnityService Unity => ServiceContainer.Get<IUnityService>();
 
 	// ... add more shorthands as you need
 }
@@ -176,7 +179,7 @@ Create your service classes and make sure they inherit from ```IService``` inter
 ```csharp
 using Ju;
 
-public class CustomService : IService
+public class CustomService : IServiceLoad // You can use IService or IServiceUnload too
 {
 	public void Setup()
 	{
@@ -198,10 +201,13 @@ Then, at some point in the entry point of your program, register your services u
 
 ```csharp
 // Register a lazy service, it will initialize when used the first time only.
-Services.RegisterLazyService<CustomService>();
+ServiceContainer.RegisterLazyService<CustomService>();
 
 // Register service and initialize them right away.
-Services.RegisterService<CustomService>();
+ServiceContainer.RegisterService<CustomService>();
+
+// Unload a service.
+ServiceContainer.UnloadService<CustomService>();
 ```
 
 **NOTE**: If you are using Unity3D, use the tip in the Unity3D documentation above.
@@ -211,7 +217,7 @@ You can also register a object factory using:
 ```csharp
 // A new object of type CustomClass will be created in each call.
 // You can pass any function or lambda to build your new object.
-Services.RegisterFactory<CustomClass>(() => new CustomClass());
+ServiceContainer.RegisterFactory<CustomClass>(() => new CustomClass());
 ```
 
 During the lifecycle of your app you need to fire loop update events so the Coroutine and Task services work as intended:
@@ -226,7 +232,7 @@ Before the program finalizes, you should dispose the services using:
 
 ```csharp
 // Dispose all services, also the event "OnApplicationQuit" will fire.
-Services.Dispose();
+ServiceContainer.Dispose();
 ```
 
 

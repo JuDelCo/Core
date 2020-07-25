@@ -1,8 +1,10 @@
 using System;
+using Ju.Handlers;
+using Ju.Promises;
 
-namespace Ju
+namespace Ju.Services
 {
-	public interface ITaskService : IService, ILoggableService
+	public interface ITaskService : IServiceLoad, ILoggableService
 	{
 		void RunOnMainThread(Action action, float delay = 0f);
 

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Ju.Extensions;
 
-namespace Ju
+namespace Ju.Promises
 {
 	public delegate void PromiseUnhandledExceptionEvent(Exception e);
 
@@ -49,7 +49,7 @@ namespace Ju
 
 		public static IPromise All(params IPromise[] promises)
 		{
-			return All(promises.AsEnumerable());
+			return All(promises.ToEnumerable());
 		}
 
 		public static IPromise All(IEnumerable<IPromise> promises)
@@ -64,9 +64,9 @@ namespace Ju
 
 			var resultPromise = new Promise();
 
-			foreach (var promise in promiseList)
+			for (int i = 0, count = promiseList.Count; i < count; ++i)
 			{
-				promise.Then(() =>
+				promiseList[i].Then(() =>
 				{
 					if (--counter <= 0 && resultPromise.CurrentState == PromiseState.Pending)
 					{
@@ -87,7 +87,7 @@ namespace Ju
 
 		public static IPromise Sequence(params Func<IPromise>[] functions)
 		{
-			return Sequence(functions.AsEnumerable());
+			return Sequence(functions.ToEnumerable());
 		}
 
 		public static IPromise Sequence(IEnumerable<Func<IPromise>> functions)
@@ -107,7 +107,7 @@ namespace Ju
 
 		public static IPromise Race(params IPromise[] promises)
 		{
-			return Race(promises.AsEnumerable());
+			return Race(promises.ToEnumerable());
 		}
 
 		public static IPromise Race(IEnumerable<IPromise> promises)
@@ -121,9 +121,9 @@ namespace Ju
 
 			var resultPromise = new Promise();
 
-			foreach (var promise in promiseList)
+			for (int i = 0, count = promiseList.Count; i < count; ++i)
 			{
-				promise.Then(() =>
+				promiseList[i].Then(() =>
 				{
 					if (resultPromise.CurrentState == PromiseState.Pending)
 					{
@@ -144,7 +144,7 @@ namespace Ju
 
 		public static IPromise<T> Race<T>(params IPromise<T>[] promises)
 		{
-			return Race(promises.AsEnumerable());
+			return Race(promises.ToEnumerable());
 		}
 
 		public static IPromise<T> Race<T>(IEnumerable<IPromise<T>> promises)
@@ -158,9 +158,9 @@ namespace Ju
 
 			var resultPromise = new Promise<T>();
 
-			foreach (var promise in promiseList)
+			for (int i = 0, count = promiseList.Count; i < count; ++i)
 			{
-				promise.Then(value =>
+				promiseList[i].Then(value =>
 				{
 					if (resultPromise.CurrentState == PromiseState.Pending)
 					{

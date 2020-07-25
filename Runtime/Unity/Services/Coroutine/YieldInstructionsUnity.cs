@@ -1,31 +1,29 @@
 
 #if UNITY_2018_3_OR_NEWER
 
-using UnityEngine;
-
-namespace Ju
+namespace Ju.Services
 {
-	public class WaitForSeconds : YieldInstruction
+	public class TaskWaitForSeconds : YieldInstruction
 	{
-		public override bool KeepWaiting { get { return Time.time < timestamp; } }
+		public override bool KeepWaiting { get { return UnityEngine.Time.time < timestamp; } }
 
 		private float timestamp;
 
-		public WaitForSeconds(float seconds)
+		public TaskWaitForSeconds(float seconds)
 		{
-			timestamp = Time.time + seconds;
+			timestamp = UnityEngine.Time.time + seconds;
 		}
 	}
 
-	public class WaitForSecondsRealtime : YieldInstruction
+	public class TaskWaitForSecondsRealtime : YieldInstruction
 	{
-		public override bool KeepWaiting { get { return Time.unscaledTime < timestamp; } }
+		public override bool KeepWaiting { get { return UnityEngine.Time.unscaledTime < timestamp; } }
 
 		private float timestamp;
 
-		public WaitForSecondsRealtime(float seconds)
+		public TaskWaitForSecondsRealtime(float seconds)
 		{
-			timestamp = Time.unscaledTime + seconds;
+			timestamp = UnityEngine.Time.unscaledTime + seconds;
 		}
 	}
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Ju
+namespace Ju.Services
 {
 	public abstract class YieldInstruction : IEnumerator
 	{
@@ -46,25 +46,25 @@ namespace Ju
 		}
 	}
 
-	public class WaitUntil : YieldInstruction
+	public class TaskWaitUntil : YieldInstruction
 	{
 		public override bool KeepWaiting { get { return !condition(); } }
 
 		private Func<bool> condition;
 
-		public WaitUntil(Func<bool> condition)
+		public TaskWaitUntil(Func<bool> condition)
 		{
 			this.condition = condition;
 		}
 	}
 
-	public class WaitWhile : YieldInstruction
+	public class TaskWaitWhile : YieldInstruction
 	{
 		public override bool KeepWaiting { get { return condition(); } }
 
 		private Func<bool> condition;
 
-		public WaitWhile(Func<bool> condition)
+		public TaskWaitWhile(Func<bool> condition)
 		{
 			this.condition = condition;
 		}

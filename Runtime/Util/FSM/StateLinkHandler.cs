@@ -1,6 +1,7 @@
 using System;
+using Ju.Handlers;
 
-namespace Ju
+namespace Ju.FSM
 {
 	public struct StateLinkHandler : ILinkHandler
 	{

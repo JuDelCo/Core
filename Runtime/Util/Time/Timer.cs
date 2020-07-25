@@ -1,13 +1,14 @@
 using System;
-using Ju.TimeUnit;
+using Ju.Handlers;
+using Ju.Services;
 
-namespace Ju
+namespace Ju.Time
 {
-	public class Timer : IDisposable
+	public class Timer : ITimer, IDisposable
 	{
 		private DisposableLinkHandler linkHandler;
-		private Time elapsed;
-		private Time duration;
+		private Span elapsed;
+		private Span duration;
 		private Func<bool> updateCondition;
 		private Action onCompleted;
 
@@ -15,7 +16,7 @@ namespace Ju
 		{
 			linkHandler = new DisposableLinkHandler(true);
 
-			var eventBusService = Services.Get<IEventBusService>();
+			var eventBusService = ServiceContainer.Get<IEventBusService>();
 
 			if (updateMode == TimeUpdateMode.Update)
 			{
@@ -30,7 +31,7 @@ namespace Ju
 		private Timer(float seconds, TimeUpdateMode updateMode = TimeUpdateMode.Update)
 		{
 			SubscribeEvent(updateMode);
-			this.duration = Time.Seconds(seconds);
+			this.duration = Span.Seconds(seconds);
 		}
 
 		public Timer(float seconds, Action onCompleted, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(seconds, updateMode)
@@ -51,7 +52,7 @@ namespace Ju
 
 		public void Reset()
 		{
-			elapsed = Time.zero;
+			elapsed = Span.zero;
 		}
 
 		public void Stop()
@@ -59,17 +60,17 @@ namespace Ju
 			elapsed = duration;
 		}
 
-		public Time GetDuration()
+		public Span GetDuration()
 		{
 			return duration;
 		}
 
-		public Time GetElapsedTime()
+		public Span GetElapsedTime()
 		{
 			return elapsed;
 		}
 
-		public Time GetTimeLeft()
+		public Span GetTimeLeft()
 		{
 			return duration - elapsed;
 		}
@@ -86,7 +87,7 @@ namespace Ju
 
 			var completed = elapsed >= duration;
 
-			elapsed += Time.Seconds(deltaTime);
+			elapsed += Span.Seconds(deltaTime);
 
 			if (!completed && elapsed >= duration)
 			{

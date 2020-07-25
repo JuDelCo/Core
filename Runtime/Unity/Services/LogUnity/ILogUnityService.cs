@@ -1,9 +1,9 @@
 
 #if UNITY_2018_3_OR_NEWER
 
-namespace Ju
+namespace Ju.Services
 {
-	public interface ILogUnityService : IService
+	public interface ILogUnityService : IServiceLoad
 	{
 	}
 }

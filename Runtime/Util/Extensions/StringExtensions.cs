@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Ju
+namespace Ju.Extensions
 {
 	public static class StringExtensions
 	{
@@ -16,7 +16,7 @@ namespace Ju
 				int hash1 = (5381 << 16) + 5381;
 				int hash2 = hash1;
 
-				for (int i = 0; i < self.Length; i += 2)
+				for (int i = 0, length = self.Length; i < length; i += 2)
 				{
 					hash1 = ((hash1 << 5) + hash1) ^ self[i];
 

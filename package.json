@@ -1,14 +1,27 @@
 {
   "name": "com.judelco.core",
-  "displayName": "JuDelCo Core",
-  "description": "Service locator, object factory and basic services to ease the development of C# applications",
-  "version": "1.18.0",
+  "displayName": "JuCore",
+  "description": "Service locator (IoC Container), object factory, util classes and basic services to ease the development of C# applications",
+  "version": "1.19.0",
   "unity": "2018.3",
   "dependencies": {},
   "type": "library",
   "license": "MIT",
   "keywords": [
-    "core"
+    "core",
+    "jucore",
+    "service",
+    "factory",
+    "event",
+    "log",
+    "promise",
+    "timer",
+    "task",
+    "pool",
+    "fsm",
+    "time",
+    "color",
+    "util"
   ],
   "author": {
     "name": "JuDelCo",

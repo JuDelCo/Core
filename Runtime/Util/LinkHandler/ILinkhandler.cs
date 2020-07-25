@@ -1,5 +1,5 @@
 
-namespace Ju
+namespace Ju.Handlers
 {
 	public interface ILinkHandler
 	{

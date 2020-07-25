@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ju
+namespace Ju.Promises
 {
 	public partial class Promise : IPromise
 	{
@@ -233,7 +233,7 @@ namespace Ju
 
 			CurrentState = PromiseState.Resolved;
 
-			for (int i = 0; i < resolveActions.Count; ++i)
+			for (int i = 0, count = resolveActions.Count; i < count; ++i)
 			{
 				try
 				{
@@ -259,7 +259,7 @@ namespace Ju
 			rejectException = e;
 			CurrentState = PromiseState.Rejected;
 
-			for (int i = 0; i < rejectActions.Count; ++i)
+			for (int i = 0, count = rejectActions.Count; i < count; ++i)
 			{
 				try
 				{

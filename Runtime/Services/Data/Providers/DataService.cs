@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Identifier = System.String;
 
-namespace Ju
+namespace Ju.Services
 {
 	public class DataService : IDataService
 	{
@@ -80,7 +80,7 @@ namespace Ju
 			}
 		}
 
-		public List<Type> GetTypes()
+		public IEnumerable<Type> GetTypes()
 		{
 			var types = new List<Type>();
 
@@ -89,7 +89,7 @@ namespace Ju
 				types.Add(key);
 			}
 
-			return types;
+			return (IEnumerable<Type>)types;
 		}
 
 		public void ListAdd<T>(T obj, string id)
@@ -118,7 +118,7 @@ namespace Ju
 			OnListAdd(type, obj);
 		}
 
-		public List<T> ListGet<T>(string id)
+		public IEnumerable<T> ListGet<T>(string id)
 		{
 			var type = typeof(T);
 			List<T> list = null;
@@ -131,7 +131,7 @@ namespace Ju
 				}
 			}
 
-			return list;
+			return (IEnumerable<T>)list;
 		}
 
 		public void ListRemove<T>(T obj, string id)
@@ -161,7 +161,7 @@ namespace Ju
 			}
 		}
 
-		public List<Type> ListGetTypes()
+		public IEnumerable<Type> ListGetTypes()
 		{
 			var types = new List<Type>();
 
@@ -170,7 +170,7 @@ namespace Ju
 				types.Add(key);
 			}
 
-			return types;
+			return (IEnumerable<Type>)types;
 		}
 	}
 }

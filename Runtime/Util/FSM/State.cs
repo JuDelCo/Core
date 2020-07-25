@@ -1,6 +1,6 @@
 using System;
 
-namespace Ju
+namespace Ju.FSM
 {
 	public abstract class State
 	{

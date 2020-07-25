@@ -1,6 +1,7 @@
 using System;
+using Ju.Services;
 
-namespace Ju
+namespace Ju.Handlers
 {
 	public class DisposableLinkHandler : ILinkHandler, IDisposable
 	{
@@ -34,7 +35,7 @@ namespace Ju
 
 				if (!disposing && showUndisposedWarning)
 				{
-					Services.Get<ILogService>().Error("A linkhandler did not dispose correctly and was cleaned up by the GC.");
+					ServiceContainer.Get<ILogService>().Error("A linkhandler did not dispose correctly and was cleaned up by the GC.");
 				}
 			}
 		}

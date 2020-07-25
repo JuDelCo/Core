@@ -4,7 +4,7 @@
 using System;
 using UnityEngine;
 
-namespace Ju
+namespace Ju.Handlers
 {
 	public struct BehaviourLinkHandler : ILinkHandler
 	{

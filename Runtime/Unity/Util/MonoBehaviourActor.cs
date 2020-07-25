@@ -1,20 +1,21 @@
 ﻿
 #if UNITY_2018_3_OR_NEWER
 
+using Ju.Services;
 using UnityEngine;
 
-namespace Ju
+namespace Ju.Unity
 {
 	public abstract class MonoBehaviourActor : MonoBehaviour
 	{
 		protected virtual void OnEnable()
 		{
-			Services.Get<IDataService>().ListAdd(this);
+			ServiceContainer.Get<IDataService>().ListAdd(this);
 		}
 
 		protected virtual void OnDisable()
 		{
-			Services.Get<IDataService>().ListRemove(this);
+			ServiceContainer.Get<IDataService>().ListRemove(this);
 		}
 	}
 }

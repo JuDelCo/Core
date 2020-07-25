@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using Identifier = System.String;
 
-namespace Ju
+namespace Ju.Services
 {
-	public class Services
+	public class ServiceContainer
 	{
 		private static readonly Identifier DEFAULT_ID = "base";
-		private static Services instance;
+		private static ServiceContainer instance;
 
 		private Dictionary<Type, Dictionary<Identifier, Type>> servicesRegistered = new Dictionary<Type, Dictionary<Identifier, Type>>();
 		private Dictionary<Type, Dictionary<Identifier, Type>> servicesLoaded = new Dictionary<Type, Dictionary<Identifier, Type>>();
@@ -77,6 +77,39 @@ namespace Ju
 			services.servicesRegistered[baseType].Add(id, serviceType);
 		}
 
+		public static void UnloadService<T>() where T : IService, new()
+		{
+			UnloadService<T>(DEFAULT_ID);
+		}
+
+		public static void UnloadService<T>(string id) where T : IService, new()
+		{
+			var services = InternalInstance();
+			var baseType = typeof(T);
+
+			if (services.servicesRegistered.ContainsKey(baseType))
+			{
+				services.servicesRegistered[baseType].Remove(id);
+
+				if (services.servicesRegistered[baseType].Count == 0)
+				{
+					services.servicesRegistered.Remove(baseType);
+				}
+			}
+
+			if (services.servicesLoaded.ContainsKey(baseType))
+			{
+				services.servicesLoaded[baseType].Remove(id);
+
+				if (services.servicesLoaded[baseType].Count == 0)
+				{
+					services.servicesLoaded.Remove(baseType);
+				}
+			}
+
+			services.container.Unload<T>(id);
+		}
+
 		public static T Get<T>()
 		{
 			return Get<T>(DEFAULT_ID);
@@ -111,8 +144,11 @@ namespace Ju
 					Get<ILogService>().SubscribeLoggable((ILoggableService)service);
 				}
 
-				service.Setup();
-				service.Start();
+				if (service is IServiceLoad)
+				{
+					((IServiceLoad)service).Setup();
+					((IServiceLoad)service).Start();
+				}
 			}
 			else
 			{
@@ -122,11 +158,11 @@ namespace Ju
 			return (T)service;
 		}
 
-		private static Services InternalInstance()
+		private static ServiceContainer InternalInstance()
 		{
 			if (instance == null)
 			{
-				instance = (new Services());
+				instance = (new ServiceContainer());
 				RegisterService<ILogService, LogService>();
 			}
 

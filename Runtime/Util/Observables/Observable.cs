@@ -1,5 +1,5 @@
 
-namespace Ju
+namespace Ju.Observables
 {
 	public static class Observable
 	{

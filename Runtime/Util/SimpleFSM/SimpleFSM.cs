@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ju
+namespace Ju.FSM
 {
 	public class SimpleFSM
 	{
@@ -20,8 +20,10 @@ namespace Ju
 				currentState.action();
 			}
 
-			foreach (var state in states)
+			for (int i = 0, count = states.Count; i < count; ++i)
 			{
+				var state = states[i];
+
 				if (state.condition == null || state.condition())
 				{
 					if (currentState != state)

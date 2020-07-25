@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Ju.Handlers;
 
-namespace Ju
+namespace Ju.Observables
 {
 	internal class ObservableHandleActionPair<T>
 	{

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Ju.Handlers;
+using Ju.Promises;
 
-namespace Ju
+namespace Ju.Services
 {
 	internal class TaskPromise
 	{
@@ -38,7 +40,7 @@ namespace Ju
 
 		public void Start()
 		{
-			Services.Get<IEventBusService>().Subscribe<LoopUpdateEvent>(new KeepLinkHandler(), e => Tick(e.deltaTime));
+			this.EventSubscribe<LoopUpdateEvent>(e => Tick(e.deltaTime));
 		}
 
 		public void Tick(float deltaTime)
@@ -87,7 +89,7 @@ namespace Ju
 						}
 						catch (Exception e)
 						{
-							OnLogError("Uncaught Exception: {0}", e.Message);
+							OnLogError("Uncaught task exception", e);
 						}
 					}
 				}

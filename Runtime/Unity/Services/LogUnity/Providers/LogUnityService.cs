@@ -1,9 +1,10 @@
 
 #if UNITY_2018_3_OR_NEWER
 
+using System;
 using UnityEngine;
 
-namespace Ju
+namespace Ju.Services
 {
 	public class LogUnityService : ILogUnityService
 	{
@@ -11,7 +12,7 @@ namespace Ju
 		{
 			// IMPORTANT: Other services should be accessed always on Start(), not here in Setup().
 			// This is a special case because ILogService is always available and we want catch all the log messages from the start.
-			var logService = Services.Get<ILogService>();
+			var logService = ServiceContainer.Get<ILogService>();
 			logService.SetLogLevel(LogLevel.Debug);
 
 			logService.OnDebugMessage += OnDebugMessage;
@@ -48,6 +49,11 @@ namespace Ju
 		private void OnErrorMessage(string message, string timeStamp, params object[] args)
 		{
 			UnityEngine.Debug.LogError((Application.isEditor ? "" : timeStamp + " ") + (args.Length > 0 ? string.Format(message, args) : message));
+
+			if (args.Length > 0 && args[args.Length - 1] is Exception)
+			{
+				UnityEngine.Debug.LogException((Exception)args[args.Length - 1]);
+			}
 		}
 	}
 }

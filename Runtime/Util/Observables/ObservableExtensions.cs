@@ -1,22 +1,18 @@
 using System;
+using Ju.FSM;
+using Ju.Handlers;
+using Ju.Observables;
+using Ju.Services;
 
-namespace Ju
+public static class ObservableExtensions
 {
-	public static class ObservableExtensions
+	public static void Subscribe<T>(this Observable<T> observable, IService service, Action<T> action)
 	{
-		public static void Subscribe<T>(this Observable<T> observable, IService service, Action<T> action)
-		{
-			observable.Subscribe(new KeepLinkHandler(), action);
-		}
+		observable.Subscribe(new KeepLinkHandler(), action);
+	}
 
-		public static void Subscribe<T>(this Observable<T> observable, State state, Action<T> action)
-		{
-			observable.Subscribe(new StateLinkHandler(state), action);
-		}
-
-		public static Observable<T> ToObservable<T>(this T value)
-		{
-			return new Observable<T>(value);
-		}
+	public static void Subscribe<T>(this Observable<T> observable, State state, Action<T> action)
+	{
+		observable.Subscribe(new StateLinkHandler(state), action);
 	}
 }

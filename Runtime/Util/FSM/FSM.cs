@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ju
+namespace Ju.FSM
 {
 	public interface IFiniteStateMachine
 	{
@@ -72,8 +72,10 @@ namespace Ju
 				CurrentState.OnTick();
 			}
 
-			foreach (var state in states)
+			for (int i = 0, count = states.Count; i < count; ++i)
 			{
+				var state = states[i];
+
 				if (state.IsAllow())
 				{
 					SetState(state);

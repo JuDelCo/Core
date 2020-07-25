@@ -1,6 +1,6 @@
 using System;
 
-namespace Ju
+namespace Ju.FSM
 {
 	internal class SimpleState
 	{

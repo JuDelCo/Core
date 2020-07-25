@@ -1,19 +1,20 @@
 using System;
-using Ju.TimeUnit;
+using Ju.Handlers;
+using Ju.Services;
 
-namespace Ju
+namespace Ju.Time
 {
-	public class Clock : IDisposable
+	public class Clock : IClock, IDisposable
 	{
 		private DisposableLinkHandler linkHandler;
-		private Time elapsed;
+		private Span elapsed;
 		private Func<bool> updateCondition;
 
 		private void SubscribeEvent(TimeUpdateMode updateMode)
 		{
 			linkHandler = new DisposableLinkHandler(false);
 
-			var eventBusService = Services.Get<IEventBusService>();
+			var eventBusService = ServiceContainer.Get<IEventBusService>();
 
 			if (updateMode == TimeUpdateMode.Update)
 			{
@@ -32,7 +33,7 @@ namespace Ju
 
 		public Clock(float elapsedSeconds, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(updateMode)
 		{
-			elapsed = Time.Seconds(elapsedSeconds);
+			elapsed = Span.Seconds(elapsedSeconds);
 		}
 
 		public Clock(Func<bool> updateCondition, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(updateMode)
@@ -51,16 +52,16 @@ namespace Ju
 			GC.SuppressFinalize(this);
 		}
 
-		public Time Reset()
+		public Span Reset()
 		{
-			var timeElapsed = elapsed;
+			var elapsedTime = elapsed;
 
-			elapsed = Time.zero;
+			elapsed = Span.zero;
 
-			return timeElapsed;
+			return elapsedTime;
 		}
 
-		public Time GetElapsedTime()
+		public Span GetElapsedTime()
 		{
 			return elapsed;
 		}
@@ -75,7 +76,7 @@ namespace Ju
 				}
 			}
 
-			elapsed += Time.Seconds(deltaTime);
+			elapsed += Span.Seconds(deltaTime);
 		}
 	}
 }

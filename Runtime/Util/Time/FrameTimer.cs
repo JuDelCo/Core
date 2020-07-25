@@ -1,8 +1,10 @@
 using System;
+using Ju.Handlers;
+using Ju.Services;
 
-namespace Ju
+namespace Ju.Time
 {
-	public class FrameTimer : IDisposable
+	public class FrameTimer : IFrameTimer, IDisposable
 	{
 		private DisposableLinkHandler linkHandler;
 		private int elapsed;
@@ -14,7 +16,7 @@ namespace Ju
 		{
 			linkHandler = new DisposableLinkHandler(true);
 
-			var eventBusService = Services.Get<IEventBusService>();
+			var eventBusService = ServiceContainer.Get<IEventBusService>();
 
 			if (updateMode == TimeUpdateMode.Update)
 			{

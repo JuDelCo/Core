@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Ju.Handlers;
 
-namespace Ju
+namespace Ju.Services
 {
 	internal class CoroutineHandlePair
 	{
@@ -33,7 +34,7 @@ namespace Ju
 
 		public void Start()
 		{
-			Services.Get<IEventBusService>().Subscribe<LoopUpdateEvent>(new KeepLinkHandler(), _ => Tick());
+			this.EventSubscribe<LoopUpdateEvent>(_ => Tick());
 		}
 
 		private void Tick()
@@ -42,7 +43,7 @@ namespace Ju
 			{
 				if (coroutines.Count > 0)
 				{
-					for (int i = 0; i < coroutines.Count; ++i)
+					for (int i = 0, count = coroutines.Count; i < count; ++i)
 					{
 						coroutinesRunner.Add(coroutines[i]);
 					}
@@ -83,14 +84,14 @@ namespace Ju
 						}
 						catch (Exception e)
 						{
-							OnLogError("Uncaught Exception: {0}", e.Message);
+							OnLogError("Uncaught coroutine exception", e);
 						}
 					}
 				}
 
 				if (coroutinesRunner.Count > 0)
 				{
-					for (int i = 0; i < coroutinesRunner.Count; ++i)
+					for (int i = 0, count = coroutinesRunner.Count; i < count; ++i)
 					{
 						coroutines.Add(coroutinesRunner[i]);
 					}

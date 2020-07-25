@@ -1,5 +1,5 @@
 
-namespace Ju
+namespace Ju.Time
 {
 	public enum TimeUpdateMode
 	{

@@ -1,10 +1,9 @@
-using Ju.TimeUnit;
 
-namespace Ju
+namespace Ju.Time
 {
-	public class ClockPrecise
+	public class ClockPrecise : IClock
 	{
-		private Time startTime;
+		private Span startTime;
 
 		public ClockPrecise()
 		{
@@ -13,21 +12,21 @@ namespace Ju
 
 		public ClockPrecise(float elapsedSeconds)
 		{
-			startTime = Time.Seconds(elapsedSeconds);
+			startTime = Span.Seconds(elapsedSeconds);
 		}
 
-		public Time Reset()
+		public Span Reset()
 		{
-			var timeElapsed = GetTimeElapsed();
+			var elapsed = GetElapsedTime();
 
-			startTime = Time.Now();
+			startTime = Span.Now();
 
-			return timeElapsed;
+			return elapsed;
 		}
 
-		public Time GetTimeElapsed()
+		public Span GetElapsedTime()
 		{
-			return Time.Now() - startTime;
+			return Span.Now() - startTime;
 		}
 	}
 }

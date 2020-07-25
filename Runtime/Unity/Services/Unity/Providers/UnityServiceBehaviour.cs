@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-namespace Ju
+namespace Ju.Services
 {
 	internal delegate void UnityServiceEvent();
 	internal delegate void UnityServiceFocusEvent(bool hasFocus);

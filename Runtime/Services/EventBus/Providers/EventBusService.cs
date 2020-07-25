@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ju.Handlers;
 using EventAction = System.Object;
 using EventType = System.Type;
 
-namespace Ju
+namespace Ju.Services
 {
 	internal class EventHandleActionPair
 	{
@@ -26,7 +27,10 @@ namespace Ju
 		public event LogMessageEvent OnLogError = delegate { };
 
 		private Dictionary<EventType, List<EventHandleActionPair>> actions = null;
+
 		private uint callStackCounter = 0;
+		private Type firstEventType = null;
+		private const int MAX_EVENT_STACK_LIMIT = 999;
 
 		public virtual void Setup()
 		{
@@ -55,6 +59,11 @@ namespace Ju
 			actions[type].Add(new EventHandleActionPair(handle, action));
 		}
 
+		public void Fire<T>() where T : struct
+		{
+			Fire(default(T));
+		}
+
 		public void Fire<T>(T data)
 		{
 			var type = typeof(T);
@@ -66,11 +75,21 @@ namespace Ju
 
 			var actionList = actions[type];
 
+			if (callStackCounter == 0)
+			{
+				firstEventType = typeof(T);
+			}
+			else if (callStackCounter > MAX_EVENT_STACK_LIMIT)
+			{
+				OnLogError("Max event stack reached, ignoring event of type {0}", firstEventType.Name);
+				return;
+			}
+
 			for (int i = actionList.Count - 1; i >= 0; --i)
 			{
-				if (callStackCounter > 0)
+				if (callStackCounter > 0 && firstEventType == typeof(T))
 				{
-					OnLogWarning("An event action has fired another event. This can lead to stackoverflow issues.");
+					OnLogWarning("An event action of type {0} has fired another event of the same type. This can lead to stackoverflow issues.", firstEventType.Name);
 				}
 
 				var handle = actionList[i].handle;
@@ -103,7 +122,7 @@ namespace Ju
 					}
 					catch (Exception e)
 					{
-						OnLogError("Exception running action for {0} event: {1}\n{2}", typeof(T).ToString(), e.Message, e.StackTrace);
+						OnLogError("Uncaught event exception (Type: {0})", typeof(T).ToString(), e);
 					}
 				}
 

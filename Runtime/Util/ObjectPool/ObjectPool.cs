@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ju
+namespace Ju.Util
 {
 	public class ObjectPool<T> where T : new()
 	{

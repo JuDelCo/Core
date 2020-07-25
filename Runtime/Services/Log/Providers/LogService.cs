@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Ju
+namespace Ju.Services
 {
 	public class LogService : ILogService
 	{

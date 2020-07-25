@@ -1,5 +1,5 @@
 
-namespace Ju
+namespace Ju.Services
 {
 	public delegate void LogMessageEvent(string message, params object[] args);
 
