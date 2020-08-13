@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Ju;
 using Ju.FSM;
 using Ju.Promises;
 using Ju.Services;
@@ -11,6 +10,21 @@ public static class StateUtilitiesExtensions
 	public static void EventSubscribe<T>(this State state, Action<T> action)
 	{
 		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action);
+	}
+
+	public static void EventSubscribe<T>(this State state, Action action)
+	{
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), (T _) => action());
+	}
+
+	public static void EventSubscribe<T>(this State state, Action<T> action, Func<T, bool> filter)
+	{
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter);
+	}
+
+	public static void EventSubscribe<T>(this State state, Action action, Func<T, bool> filter)
+	{
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter);
 	}
 
 	public static Coroutine CoroutineStart(this State state, IEnumerator routine)

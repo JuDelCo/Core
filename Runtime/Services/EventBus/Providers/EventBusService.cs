@@ -20,6 +20,8 @@ namespace Ju.Services
 
 	public class EventBusService : IEventBusService
 	{
+		public event EventBusServiceFiredEvent OnEventFired = delegate { };
+
 		public event LogMessageEvent OnLogDebug = delegate { };
 		public event LogMessageEvent OnLogInfo = delegate { };
 		public event LogMessageEvent OnLogNotice = delegate { };
@@ -70,6 +72,7 @@ namespace Ju.Services
 
 			if (!actions.ContainsKey(type))
 			{
+				OnEventFired(type, data, 0);
 				return;
 			}
 
@@ -84,6 +87,8 @@ namespace Ju.Services
 				OnLogError("Max event stack reached, ignoring event of type {0}", firstEventType.Name);
 				return;
 			}
+
+			OnEventFired(type, data, actionList.Count);
 
 			for (int i = actionList.Count - 1; i >= 0; --i)
 			{

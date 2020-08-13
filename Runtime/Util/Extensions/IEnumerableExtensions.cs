@@ -23,18 +23,24 @@ namespace Ju.Extensions
 
 		public static IEnumerable<TSource> Concatenate<TSource>(this IEnumerable<TSource> self, params IEnumerable<TSource>[] others)
 		{
-			for (int i = 0, count = System.Linq.Enumerable.Count(self); i < count; ++i)
+			using (var enumerator = self.GetEnumerator())
 			{
-				yield return self.ElementAt(i);
+				while (enumerator.MoveNext())
+				{
+					yield return enumerator.Current;
+				}
 			}
 
 			for (int i = 0, othersCount = others.Length; i < othersCount; ++i)
 			{
 				var ienumerable = others[i];
 
-				for (int j = 0, count = System.Linq.Enumerable.Count(ienumerable); j < count; ++j)
+				using (var enumerator = ienumerable.GetEnumerator())
 				{
-					yield return ienumerable.ElementAt(j);
+					while (enumerator.MoveNext())
+					{
+						yield return enumerator.Current;
+					}
 				}
 			}
 		}
@@ -54,24 +60,128 @@ namespace Ju.Extensions
 			return self.Where(predicate);
 		}
 
-		public static List<TSource> FilterList<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
+		public static TSource Find<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
 		{
-			return System.Linq.Enumerable.ToList(self.Where(predicate));
+			return self.First(predicate);
+		}
+
+		public static TSource Find<TSource>(this IEnumerable<TSource> self, TSource defaultValue, Func<TSource, bool> predicate)
+		{
+			var result = defaultValue;
+
+			using (var enumerator = self.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					if (predicate(enumerator.Current))
+					{
+						result = enumerator.Current;
+						break;
+					}
+				}
+			}
+
+			return result;
+		}
+
+		public static TSource FindUnique<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
+		{
+			return self.Single(predicate);
+		}
+
+		public static TSource FindUnique<TSource>(this IEnumerable<TSource> self, TSource defaultValue, Func<TSource, bool> predicate)
+		{
+			var result = defaultValue;
+			var found = false;
+
+			using (var enumerator = self.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					if (predicate(enumerator.Current))
+					{
+						if (found)
+						{
+							throw new InvalidOperationException("Found two elements that match the predicate");
+						}
+
+						result = enumerator.Current;
+						found = true;
+					}
+				}
+			}
+
+			return result;
+		}
+
+		public static IEnumerable<TResult> Flatten<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, IEnumerable<TResult>> selector)
+		{
+			using (var enumerator = self.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					using (var internalEnumerator = selector(enumerator.Current).GetEnumerator())
+					{
+						while (internalEnumerator.MoveNext())
+						{
+							yield return internalEnumerator.Current;
+						}
+					}
+				}
+			}
 		}
 
 		public static void ForEach<TSource>(this IEnumerable<TSource> self, Action<TSource> action)
 		{
-			for (int i = 0, count = System.Linq.Enumerable.Count(self); i < count; ++i)
+			using (var enumerator = self.GetEnumerator())
 			{
-				action(self.ElementAt(i));
+				while (enumerator.MoveNext())
+				{
+					action(enumerator.Current);
+				}
+			}
+		}
+
+		public static void ForEach<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> action)
+		{
+			using (var enumerator = self.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					if (!action(enumerator.Current))
+					{
+						break;
+					}
+				}
 			}
 		}
 
 		public static void ForEachReverse<TSource>(this IEnumerable<TSource> self, Action<TSource> action)
 		{
-			for (int i = (System.Linq.Enumerable.Count(self) - 1); i >= 0; --i)
+			var reversed = self.Reverse();
+
+			using (var enumerator = reversed.GetEnumerator())
 			{
-				action(self.ElementAt(i));
+				while (enumerator.MoveNext())
+				{
+					action(enumerator.Current);
+				}
+			}
+		}
+
+		public static void ForEachReverse<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> action)
+		{
+			var reversed = self.Reverse();
+
+			using (var enumerator = reversed.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					if (!action(enumerator.Current))
+					{
+						break;
+					}
+				}
 			}
 		}
 
@@ -82,12 +192,18 @@ namespace Ju.Extensions
 
 		public static IEnumerable<TResult> Map<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, TResult> selector)
 		{
-			return self.Select(selector);
+			using (var enumerator = self.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					yield return selector(enumerator.Current);
+				}
+			}
 		}
 
-		public static List<TResult> MapList<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, TResult> selector)
+		public static IEnumerable<TSource> OrderBy<TSource, TKey>(this IEnumerable<TSource> self, Func<TSource, TKey> keySelector)
 		{
-			return System.Linq.Enumerable.ToList(self.Select(selector));
+			return System.Linq.Enumerable.OrderBy(self, keySelector);
 		}
 
 		public static TSource Reduce<TSource>(this IEnumerable<TSource> self, Func<TSource, TSource, TSource> function)
@@ -98,6 +214,16 @@ namespace Ju.Extensions
 		public static TResult Reduce<TSource, TResult>(this IEnumerable<TSource> self, TResult startValue, Func<TResult, TSource, TResult> function)
 		{
 			return self.Aggregate<TSource, TResult>(startValue, function);
+		}
+
+		public static IEnumerable<TSource> Reverse<TSource>(this IEnumerable<TSource> self)
+		{
+			return System.Linq.Enumerable.Reverse(self);
+		}
+
+		public static bool Some<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
+		{
+			return self.Any(predicate);
 		}
 
 		public static TSource[] ToArray<TSource>(this IEnumerable<TSource> self)

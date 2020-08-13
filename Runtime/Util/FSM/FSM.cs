@@ -18,7 +18,8 @@ namespace Ju.FSM
 		public float StateTimer { get; private set; }
 
 		private List<State> states = new List<State>();
-		private Dictionary<string, State> idStates = new Dictionary<string, State>();
+		private Dictionary<int, State> idStates = new Dictionary<int, State>();
+		private Dictionary<string, int> ids = new Dictionary<string, int>();
 
 		protected virtual void SetupState(State state)
 		{
@@ -31,18 +32,35 @@ namespace Ju.FSM
 			SetupState(state);
 		}
 
-		public void AddState(string stateId, State state)
+		public void AddState(int stateId, State state)
 		{
 			AddState(state);
 			idStates.Add(stateId, state);
 		}
 
-		public void SetState(string stateId)
+		public void AddState(string stateName, State state)
+		{
+			var stateId = GetStateId(stateName);
+
+			if (stateId == -1)
+			{
+				stateId = idStates.Count;
+			}
+
+			AddState(stateId, state);
+		}
+
+		public void SetState(int stateId)
 		{
 			if (idStates.ContainsKey(stateId))
 			{
 				SetState(idStates[stateId]);
 			}
+		}
+
+		public void SetState(string stateName)
+		{
+			SetState(GetStateId(stateName));
 		}
 
 		private void SetState(State state)
@@ -60,6 +78,16 @@ namespace Ju.FSM
 				CurrentState = state;
 				CurrentState.OnEnter();
 			}
+		}
+
+		public int GetStateId(string stateName)
+		{
+			if (ids.ContainsKey(stateName))
+			{
+				return ids[stateName];
+			}
+
+			return -1;
 		}
 
 		public void Tick(float deltaTime)

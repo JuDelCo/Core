@@ -130,6 +130,10 @@ namespace Ju.Services
 		{
 			quitting = true;
 
+			monoBehaviour.OnUpdateEvent -= OnUnityUpdate;
+			monoBehaviour.OnFixedUpdateEvent -= OnUnityFixedUpdate;
+			monoBehaviour.OnApplicationFocusEvent -= OnUnityApplicationFocus;
+
 			if (OnApplicationQuit != null)
 			{
 				OnApplicationQuit();

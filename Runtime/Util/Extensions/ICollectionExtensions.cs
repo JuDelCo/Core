@@ -8,11 +8,16 @@ namespace Ju.Extensions
 	{
 		public static void RemoveIf<TSource>(this ICollection<TSource> self, Func<TSource, bool> condition)
 		{
-			for (int i = (System.Linq.Enumerable.Count(self) - 1); i >= 0; --i)
+			var reversed = self.Reverse();
+
+			using (var enumerator = reversed.GetEnumerator())
 			{
-				if (condition(self.ElementAt(i)))
+				while (enumerator.MoveNext())
 				{
-					self.Remove(self.ElementAt(i));
+					if (condition(enumerator.Current))
+					{
+						self.Remove(enumerator.Current);
+					}
 				}
 			}
 		}

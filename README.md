@@ -19,7 +19,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.19.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.20.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
