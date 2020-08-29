@@ -6,8 +6,8 @@ namespace Ju.Services
 {
 	public class Container : IDisposable
 	{
-		private Dictionary<Type, Dictionary<Identifier, IService>> services = null;
-		private Dictionary<Type, Dictionary<Identifier, Func<object>>> classFactories = null;
+		private readonly Dictionary<Type, Dictionary<Identifier, IService>> services = null;
+		private readonly Dictionary<Type, Dictionary<Identifier, Func<object>>> classFactories = null;
 
 		public Container()
 		{
@@ -49,9 +49,9 @@ namespace Ju.Services
 				{
 					var service = services[type][id];
 
-					if (service is IServiceUnload)
+					if (service is IServiceUnload unload)
 					{
-						((IServiceUnload)service).Unload();
+						unload.Unload();
 					}
 
 					services[type].Remove(id);

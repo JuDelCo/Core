@@ -96,12 +96,12 @@ namespace Ju.Services
 		{
 			var type = obj.GetType();
 
-			IList list = null;
-
 			if (!listItems.ContainsKey(type))
 			{
 				listItems.Add(type, new Dictionary<Identifier, object>());
 			}
+
+			IList list;
 
 			if (!listItems[type].ContainsKey(id))
 			{

@@ -1,6 +1,6 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Ju.Extensions
 {
@@ -16,9 +16,9 @@ namespace Ju.Extensions
 			return System.Linq.Enumerable.Any(self, predicate);
 		}
 
-		public static IEnumerable<TResult> Cast<TSource, TResult>(this IEnumerable<TSource> self)
+		public static IEnumerable<TResult> Cast<TResult>(this IEnumerable self)
 		{
-			return self.Cast<TResult>();
+			return System.Linq.Enumerable.Cast<TResult>(self);
 		}
 
 		public static IEnumerable<TSource> Concatenate<TSource>(this IEnumerable<TSource> self, params IEnumerable<TSource>[] others)
@@ -55,14 +55,19 @@ namespace Ju.Extensions
 			return System.Linq.Enumerable.Count(self);
 		}
 
+		public static TSource ElementAt<TSource>(this IEnumerable<TSource> self, int index)
+		{
+			return System.Linq.Enumerable.ElementAt(self, index);
+		}
+
 		public static IEnumerable<TSource> Filter<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
 		{
-			return self.Where(predicate);
+			return System.Linq.Enumerable.Where(self, predicate);
 		}
 
 		public static TSource Find<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
 		{
-			return self.First(predicate);
+			return System.Linq.Enumerable.First(self, predicate);
 		}
 
 		public static TSource Find<TSource>(this IEnumerable<TSource> self, TSource defaultValue, Func<TSource, bool> predicate)
@@ -86,7 +91,7 @@ namespace Ju.Extensions
 
 		public static TSource FindUnique<TSource>(this IEnumerable<TSource> self, Func<TSource, bool> predicate)
 		{
-			return self.Single(predicate);
+			return System.Linq.Enumerable.Single(self, predicate);
 		}
 
 		public static TSource FindUnique<TSource>(this IEnumerable<TSource> self, TSource defaultValue, Func<TSource, bool> predicate)
@@ -112,6 +117,11 @@ namespace Ju.Extensions
 			}
 
 			return result;
+		}
+
+		public static TSource First<TSource>(this IEnumerable<TSource> self)
+		{
+			return System.Linq.Enumerable.First(self);
 		}
 
 		public static IEnumerable<TResult> Flatten<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, IEnumerable<TResult>> selector)
@@ -187,7 +197,12 @@ namespace Ju.Extensions
 
 		public static bool IsNullOrEmpty<TSource>(this IEnumerable<TSource> self)
 		{
-			return self == null || !self.Any();
+			return self == null || !System.Linq.Enumerable.Any(self);
+		}
+
+		public static TSource Last<TSource>(this IEnumerable<TSource> self)
+		{
+			return System.Linq.Enumerable.Last(self);
 		}
 
 		public static IEnumerable<TResult> Map<TSource, TResult>(this IEnumerable<TSource> self, Func<TSource, TResult> selector)
@@ -208,12 +223,12 @@ namespace Ju.Extensions
 
 		public static TSource Reduce<TSource>(this IEnumerable<TSource> self, Func<TSource, TSource, TSource> function)
 		{
-			return self.Aggregate(function);
+			return System.Linq.Enumerable.Aggregate(self, function);
 		}
 
 		public static TResult Reduce<TSource, TResult>(this IEnumerable<TSource> self, TResult startValue, Func<TResult, TSource, TResult> function)
 		{
-			return self.Aggregate<TSource, TResult>(startValue, function);
+			return System.Linq.Enumerable.Aggregate(self, startValue, function);
 		}
 
 		public static IEnumerable<TSource> Reverse<TSource>(this IEnumerable<TSource> self)

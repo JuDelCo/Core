@@ -9,9 +9,9 @@ namespace Ju.Services
 		private static readonly Identifier DEFAULT_ID = "base";
 		private static ServiceContainer instance;
 
-		private Dictionary<Type, Dictionary<Identifier, Type>> servicesRegistered = new Dictionary<Type, Dictionary<Identifier, Type>>();
-		private Dictionary<Type, Dictionary<Identifier, Type>> servicesLoaded = new Dictionary<Type, Dictionary<Identifier, Type>>();
-		private Container container = new Container();
+		private readonly Dictionary<Type, Dictionary<Identifier, Type>> servicesRegistered = new Dictionary<Type, Dictionary<Identifier, Type>>();
+		private readonly Dictionary<Type, Dictionary<Identifier, Type>> servicesLoaded = new Dictionary<Type, Dictionary<Identifier, Type>>();
+		private readonly Container container = new Container();
 
 		public static void RegisterFactory<T>(Func<T> classConstructor)
 		{
@@ -119,7 +119,7 @@ namespace Ju.Services
 		{
 			var services = InternalInstance();
 			var baseType = typeof(T);
-			IService service = null;
+			IService service;
 
 			if (services.servicesLoaded.ContainsKey(baseType) && services.servicesLoaded[baseType].ContainsKey(id))
 			{
@@ -144,10 +144,10 @@ namespace Ju.Services
 					Get<ILogService>().SubscribeLoggable((ILoggableService)service);
 				}
 
-				if (service is IServiceLoad)
+				if (service is IServiceLoad serviceLoad)
 				{
-					((IServiceLoad)service).Setup();
-					((IServiceLoad)service).Start();
+					serviceLoad.Setup();
+					serviceLoad.Start();
 				}
 			}
 			else

@@ -24,7 +24,7 @@ namespace Ju.Observables
 			set => SetValue(value);
 		}
 
-		private List<ObservableHandleActionPair<T>> actions = null;
+		private readonly List<ObservableHandleActionPair<T>> actions = null;
 		private T value;
 		private uint callStackCounter = 0;
 

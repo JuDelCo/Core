@@ -50,9 +50,9 @@ namespace Ju.Services
 		{
 			UnityEngine.Debug.LogError((Application.isEditor ? "" : timeStamp + " ") + (args.Length > 0 ? string.Format(message, args) : message));
 
-			if (args.Length > 0 && args[args.Length - 1] is Exception)
+			if (args.Length > 0 && args[args.Length - 1] is Exception exception)
 			{
-				UnityEngine.Debug.LogException((Exception)args[args.Length - 1]);
+				UnityEngine.Debug.LogException(exception);
 			}
 		}
 	}

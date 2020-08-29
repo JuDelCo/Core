@@ -5,7 +5,7 @@ namespace Ju.Handlers
 {
 	public class DisposableLinkHandler : ILinkHandler, IDisposable
 	{
-		private bool showUndisposedWarning;
+		private readonly bool showUndisposedWarning;
 		private bool disposed;
 
 		public bool IsActive => !disposed;

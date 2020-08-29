@@ -1,8 +1,48 @@
-; Used by the 'EditorConfig' VS plugin
-; See http://editorconfig.org
 
-; Use tabs preference set to 4 spaces per tab.
+; ---------------------------
+; 2020 Juan Delgado (JuDelCo)
+; ---------------------------
+
+; Basic text editor config
+; Reference: http://editorconfig.org
 [*.cs]
 indent_style = tab
 indent_size = 4
-charset = utf-8-bom
+charset = utf-8
+
+; -----------------------------------------------------------------------------
+; Important:
+;
+; 	1) Create a new file in
+;		%UnityEditor_Folder%/Editor/Data/Resources/PackageManager/.editorconfig
+;
+; 	2) Add this to the file to prevent Unity built-in packages to be analyzed:
+;
+;		[**.cs]
+;		generated_code = true
+;
+;	3) You will need to repeat that for each Unity installation.
+;
+; -----------------------------------------------------------------------------
+
+; Code analysis - Ignore rules (Unity3D project)
+[**PackageCache/**.cs]
+generated_code = true
+[Assets/Plugins/**.cs]
+generated_code = true
+
+; Code analysis - Config rules
+; Reference: https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-language-conventions
+; Reference: https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-formatting-conventions
+[*.cs]
+csharp_prefer_simple_default_expression = false:none
+csharp_prefer_simple_using_statement = false:none
+csharp_style_prefer_switch_expression = false:none
+csharp_style_conditional_delegate_call = false:none
+dotnet_code_quality_unused_parameters = non_public:none
+dotnet_style_object_initializer = false:silent
+dotnet_style_collection_initializer = false:silent
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:none

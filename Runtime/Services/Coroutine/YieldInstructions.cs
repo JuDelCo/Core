@@ -25,7 +25,7 @@ namespace Ju.Services
 
 		public override object Current { get { return routine.Current; } }
 
-		private IEnumerator routine;
+		private readonly IEnumerator routine;
 		private bool finished;
 
 		public Coroutine(IEnumerator routine)
@@ -50,7 +50,7 @@ namespace Ju.Services
 	{
 		public override bool KeepWaiting { get { return !condition(); } }
 
-		private Func<bool> condition;
+		private readonly Func<bool> condition;
 
 		public TaskWaitUntil(Func<bool> condition)
 		{
@@ -62,7 +62,7 @@ namespace Ju.Services
 	{
 		public override bool KeepWaiting { get { return condition(); } }
 
-		private Func<bool> condition;
+		private readonly Func<bool> condition;
 
 		public TaskWaitWhile(Func<bool> condition)
 		{

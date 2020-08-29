@@ -24,6 +24,8 @@ namespace Ju.ColorUtil
 			aValue = Clamp(a);
 		}
 
+#pragma warning disable IDE1006
+
 		public byte r
 		{
 			get { return rValue; }
@@ -47,6 +49,8 @@ namespace Ju.ColorUtil
 			get { return aValue; }
 			set { aValue = Clamp(value); }
 		}
+
+#pragma warning restore IDE1006
 
 		public static Color32 operator +(Color32 a, Color32 b)
 		{
@@ -131,7 +135,7 @@ namespace Ju.ColorUtil
 
 		public override bool Equals(object obj)
 		{
-			return (obj is Color32 && (this == (Color32)obj));
+			return (obj is Color32 color && (this == color));
 		}
 
 		public static bool operator ==(Color32 a, Color32 b)

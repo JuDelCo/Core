@@ -26,8 +26,8 @@ namespace Ju.Services
 		public event LogMessageEvent OnLogWarning = delegate { };
 		public event LogMessageEvent OnLogError = delegate { };
 
-		private List<CoroutineHandlePair> coroutines = new List<CoroutineHandlePair>();
-		private List<CoroutineHandlePair> coroutinesRunner = new List<CoroutineHandlePair>();
+		private readonly List<CoroutineHandlePair> coroutines = new List<CoroutineHandlePair>();
+		private readonly List<CoroutineHandlePair> coroutinesRunner = new List<CoroutineHandlePair>();
 
 		public void Setup()
 		{
@@ -106,9 +106,9 @@ namespace Ju.Services
 		{
 			var isFinished = false;
 
-			if (routine.Current is Coroutine)
+			if (routine.Current is Coroutine coroutine)
 			{
-				if (!((Coroutine)routine.Current).KeepWaiting)
+				if (!coroutine.KeepWaiting)
 				{
 					if (!routine.MoveNext())
 					{
@@ -116,9 +116,9 @@ namespace Ju.Services
 					}
 				}
 			}
-			else if (routine.Current is YieldInstruction)
+			else if (routine.Current is YieldInstruction yieldInstruction)
 			{
-				if (!((YieldInstruction)routine.Current).MoveNext())
+				if (!yieldInstruction.MoveNext())
 				{
 					if (!routine.MoveNext())
 					{

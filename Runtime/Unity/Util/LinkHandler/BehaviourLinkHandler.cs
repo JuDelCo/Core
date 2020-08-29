@@ -8,8 +8,8 @@ namespace Ju.Handlers
 {
 	public struct BehaviourLinkHandler : ILinkHandler
 	{
-		private WeakReference behaviourRef;
-		private bool alwaysActive;
+		private readonly WeakReference behaviourRef;
+		private readonly bool alwaysActive;
 
 		public BehaviourLinkHandler(Behaviour behaviour, bool alwaysActive = false)
 		{

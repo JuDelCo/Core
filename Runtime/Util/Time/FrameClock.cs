@@ -8,7 +8,7 @@ namespace Ju.Time
 	{
 		private DisposableLinkHandler linkHandler;
 		private int elapsed;
-		private Func<bool> updateCondition;
+		private readonly Func<bool> updateCondition;
 
 		private void SubscribeEvent(TimeUpdateMode updateMode)
 		{

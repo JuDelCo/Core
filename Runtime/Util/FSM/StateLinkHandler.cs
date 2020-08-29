@@ -5,7 +5,7 @@ namespace Ju.FSM
 {
 	public struct StateLinkHandler : ILinkHandler
 	{
-		private WeakReference stateRef;
+		private readonly WeakReference stateRef;
 
 		public StateLinkHandler(State state)
 		{

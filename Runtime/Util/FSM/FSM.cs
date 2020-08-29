@@ -17,9 +17,9 @@ namespace Ju.FSM
 		public int StateFrameCounter { get; private set; }
 		public float StateTimer { get; private set; }
 
-		private List<State> states = new List<State>();
-		private Dictionary<int, State> idStates = new Dictionary<int, State>();
-		private Dictionary<string, int> ids = new Dictionary<string, int>();
+		private readonly List<State> states = new List<State>();
+		private readonly Dictionary<int, State> idStates = new Dictionary<int, State>();
+		private readonly Dictionary<string, int> ids = new Dictionary<string, int>();
 
 		protected virtual void SetupState(State state)
 		{

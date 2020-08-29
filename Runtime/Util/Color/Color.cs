@@ -24,6 +24,8 @@ namespace Ju.ColorUtil
 			aValue = Clamp01(a);
 		}
 
+#pragma warning disable IDE1006
+
 		public float r
 		{
 			get { return rValue; }
@@ -47,6 +49,8 @@ namespace Ju.ColorUtil
 			get { return aValue; }
 			set { aValue = Clamp01(value); }
 		}
+
+#pragma warning restore IDE1006
 
 		public static Color operator +(Color a, Color b)
 		{
@@ -123,7 +127,7 @@ namespace Ju.ColorUtil
 
 		public override bool Equals(object obj)
 		{
-			return (obj is Color && (this == (Color)obj));
+			return (obj is Color color && (this == color));
 		}
 
 		public static bool operator ==(Color a, Color b)

@@ -4,7 +4,7 @@ namespace Ju.Handlers
 {
 	public struct ObjectLinkHandler<T> : ILinkHandler
 	{
-		private WeakReference objectRef;
+		private readonly WeakReference objectRef;
 
 		public ObjectLinkHandler(T obj)
 		{

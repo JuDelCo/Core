@@ -4,7 +4,7 @@ namespace Ju.Time
 {
 	public struct Span
 	{
-		private Microseconds value;
+		private readonly Microseconds value;
 
 		public static Span zero = new Span(0);
 
@@ -33,6 +33,8 @@ namespace Ju.Time
 			value = microseconds;
 		}
 
+#pragma warning disable IDE1006
+
 		public float seconds
 		{
 			get { return value / 1000000f; }
@@ -47,6 +49,8 @@ namespace Ju.Time
 		{
 			get { return value; }
 		}
+
+#pragma warning restore IDE1006
 
 		public static Span operator +(Span a, Span b)
 		{
@@ -125,7 +129,7 @@ namespace Ju.Time
 
 		public override bool Equals(object obj)
 		{
-			return (obj is Span && (this == (Span)obj));
+			return (obj is Span span && (this == span));
 		}
 
 		public static bool operator ==(Span a, Span b)

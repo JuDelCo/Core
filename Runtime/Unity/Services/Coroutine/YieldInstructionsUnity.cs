@@ -7,7 +7,7 @@ namespace Ju.Services
 	{
 		public override bool KeepWaiting { get { return UnityEngine.Time.time < timestamp; } }
 
-		private float timestamp;
+		private readonly float timestamp;
 
 		public TaskWaitForSeconds(float seconds)
 		{
@@ -19,7 +19,7 @@ namespace Ju.Services
 	{
 		public override bool KeepWaiting { get { return UnityEngine.Time.unscaledTime < timestamp; } }
 
-		private float timestamp;
+		private readonly float timestamp;
 
 		public TaskWaitForSecondsRealtime(float seconds)
 		{

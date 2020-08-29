@@ -32,8 +32,8 @@ namespace Ju.Services
 		public event LogMessageEvent OnLogWarning = delegate { };
 		public event LogMessageEvent OnLogError = delegate { };
 
-		private List<TaskPromise> actions = new List<TaskPromise>();
-		private List<TaskPromise> actionsRunner = new List<TaskPromise>();
+		private readonly List<TaskPromise> actions = new List<TaskPromise>();
+		private readonly List<TaskPromise> actionsRunner = new List<TaskPromise>();
 
 		public void Setup()
 		{
@@ -135,10 +135,10 @@ namespace Ju.Services
 		{
 			var timer = 0f;
 
-			TaskUpdateEvent eventHandler = (float dt) =>
+			void eventHandler(float dt)
 			{
 				timer += dt;
-			};
+			}
 
 			OnTick += eventHandler;
 

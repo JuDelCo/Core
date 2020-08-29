@@ -42,7 +42,7 @@ public static class IDataServiceUnityExtensions
 
 	public static T GetSO<T>(this IDataService dataService, string id, bool autoCreate = true) where T : ScriptableObject
 	{
-		T instance = null;
+		T instance;
 
 		if (id == null)
 		{

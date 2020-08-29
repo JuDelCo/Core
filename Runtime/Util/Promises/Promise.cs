@@ -7,10 +7,10 @@ namespace Ju.Promises
 	{
 		public PromiseState CurrentState { get; private set; }
 
-		private List<ResolveAction> resolveActions = new List<ResolveAction>();
+		private readonly List<ResolveAction> resolveActions = new List<ResolveAction>();
 
 		private Exception rejectException;
-		private List<RejectAction> rejectActions = new List<RejectAction>();
+		private readonly List<RejectAction> rejectActions = new List<RejectAction>();
 
 		public Promise()
 		{
@@ -66,12 +66,12 @@ namespace Ju.Promises
 
 			if (onResolved != null)
 			{
-				Action resolveAction = () =>
+				void resolveAction()
 				{
 					var promise = onResolved();
 					promise.Then(resultPromise.Resolve);
 					promise.Catch(resultPromise.Reject);
-				};
+				}
 
 				resolveActions.Add(new ResolveAction { action = resolveAction, rejectable = resultPromise });
 			}
@@ -111,12 +111,12 @@ namespace Ju.Promises
 
 			if (onResolved != null)
 			{
-				Action resolveAction = () =>
+				void resolveAction()
 				{
 					var promise = onResolved();
 					promise.Then(resultPromise.Resolve);
 					promise.Catch(resultPromise.Reject);
-				};
+				}
 
 				resolveActions.Add(new ResolveAction { action = resolveAction, rejectable = resultPromise });
 			}
@@ -173,18 +173,18 @@ namespace Ju.Promises
 				return resultPromise;
 			}
 
-			Action resolveAction = () =>
+			void resolveAction()
 			{
 				resultPromise.Resolve();
-			};
+			}
 
 			resolveActions.Add(new ResolveAction { action = resolveAction, rejectable = resultPromise });
 
-			Action<Exception> rejectAction = (e) =>
+			void rejectAction(Exception e)
 			{
 				onRejected(e);
 				resultPromise.Resolve();
-			};
+			}
 
 			rejectActions.Add(new RejectAction { action = rejectAction, rejectable = resultPromise });
 

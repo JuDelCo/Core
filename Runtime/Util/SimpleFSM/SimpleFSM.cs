@@ -5,7 +5,7 @@ namespace Ju.FSM
 {
 	public class SimpleFSM
 	{
-		private List<SimpleState> states = new List<SimpleState>();
+		private readonly List<SimpleState> states = new List<SimpleState>();
 		private SimpleState currentState = null;
 
 		public void AddState(Func<bool> condition, Action action)
