@@ -4,42 +4,28 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class Timer : ITimer, IDisposable
+	public class Timer<T> : ITimer, IDisposable where T : ILoopTimeEvent
 	{
-		private DisposableLinkHandler linkHandler;
+		private readonly DisposableLinkHandler linkHandler;
 		private Span elapsed;
 		private readonly Span duration;
 		private readonly Func<bool> updateCondition;
 		private readonly Action onCompleted;
 
-		private void SubscribeEvent(TimeUpdateMode updateMode)
+		private Timer(float seconds)
 		{
-			linkHandler = new DisposableLinkHandler(true);
+			linkHandler = new DisposableLinkHandler(false);
+			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, e => Update(e.DeltaTime));
 
-			var eventBusService = ServiceContainer.Get<IEventBusService>();
-
-			if (updateMode == TimeUpdateMode.Update)
-			{
-				eventBusService.Subscribe<LoopUpdateEvent>(linkHandler, e => Update(e.deltaTime));
-			}
-			else
-			{
-				eventBusService.Subscribe<LoopFixedUpdateEvent>(linkHandler, e => Update(e.fixedDeltaTime));
-			}
-		}
-
-		private Timer(float seconds, TimeUpdateMode updateMode = TimeUpdateMode.Update)
-		{
-			SubscribeEvent(updateMode);
 			this.duration = Span.Seconds(seconds);
 		}
 
-		public Timer(float seconds, Action onCompleted, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(seconds, updateMode)
+		public Timer(float seconds, Action onCompleted) : this(seconds)
 		{
 			this.onCompleted = onCompleted;
 		}
 
-		public Timer(float seconds, Action onCompleted, Func<bool> updateCondition, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(seconds, onCompleted, updateMode)
+		public Timer(float seconds, Action onCompleted, Func<bool> updateCondition) : this(seconds, onCompleted)
 		{
 			this.updateCondition = updateCondition;
 		}

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Ju.Extensions;
 using Ju.Input;
 using Ju.Services.Extensions;
+using Ju.Time;
 
 namespace Ju.Services
 {
@@ -41,7 +42,7 @@ namespace Ju.Services
 		{
 			Initialize();
 
-			this.EventSubscribe<LoopUpdateEvent>(_ =>
+			this.EventSubscribe<LoopPreUpdateEvent>(_ =>
 			{
 				UpdateActions();
 				Update();

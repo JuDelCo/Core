@@ -1,11 +1,14 @@
 
-#if UNITY_2018_3_OR_NEWER
+#if UNITY_2019_3_OR_NEWER
 
 using System;
 using System.Collections;
+using Ju.Services.Extensions;
+using Ju.Time;
 using UnityEngine;
+using UnityEngine.LowLevel;
+using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
-using static Ju.Services.InternalUnityServiceBehaviour;
 
 namespace Ju.Services
 {
@@ -21,44 +24,15 @@ namespace Ju.Services
 		public event LogMessageEvent OnLogError = delegate { };
 
 		private IEventBusService eventService;
-		private UnityServiceBehaviour monoBehaviour;
-		private bool behaviourInitialized = false;
+		private bool appHasFocus = true;
 		private bool quitting = false;
+
+		private struct UnityServiceLoopUpdateHook { };
+		private struct UnityServiceLoopPostUpdateHook { };
+		private struct UnityServiceLoopFixedUpdateHook { };
 
 		public void Setup()
 		{
-			SceneManager.sceneLoaded += OnUnitySceneLoaded;
-			Application.wantsToQuit += OnUnityApplicationWantsToQuit;
-
-#if UNITY_EDITOR
-			UnityEditor.EditorApplication.playModeStateChanged += state =>
-			{
-				if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode && !quitting)
-				{
-					UnityEditor.EditorApplication.isPlaying = !OnUnityApplicationWantsToQuit();
-				}
-			};
-#endif
-
-			SceneManager.sceneLoaded += (scene, loadSceneMode) =>
-			{
-				if (behaviourInitialized)
-				{
-					return;
-				}
-
-				var gameObject = new GameObject("UnityService");
-				gameObject.hideFlags = HideFlags.HideInHierarchy;
-				UnityEngine.Object.DontDestroyOnLoad(gameObject);
-
-				monoBehaviour = gameObject.AddComponent<UnityServiceBehaviour>();
-				monoBehaviour.OnUpdateEvent += OnUnityUpdate;
-				monoBehaviour.OnFixedUpdateEvent += OnUnityFixedUpdate;
-				monoBehaviour.OnApplicationFocusEvent += OnUnityApplicationFocus;
-
-				behaviourInitialized = true;
-			};
-
 			if (Application.genuineCheckAvailable)
 			{
 				if (!Application.genuine)
@@ -78,6 +52,114 @@ namespace Ju.Services
 				OnLogWarning("Low memory detected");
 				Resources.UnloadUnusedAssets();
 			};
+
+			SubscribeApplicationStateEvents();
+			SubscribeLoopEvents();
+		}
+
+		private void SubscribeApplicationStateEvents()
+		{
+			Application.wantsToQuit += OnUnityApplicationWantsToQuit;
+
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.playModeStateChanged += state =>
+			{
+				if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode && !quitting)
+				{
+					UnityEditor.EditorApplication.isPlaying = !OnUnityApplicationWantsToQuit();
+				}
+			};
+#endif
+
+			SceneManager.sceneLoaded += OnUnitySceneLoaded;
+		}
+
+		private void SubscribeLoopEvents()
+		{
+			var loop = PlayerLoop.GetCurrentPlayerLoop();
+
+			for (int mainSystemIndex = 0, mainSystemsCount = loop.subSystemList.Length; mainSystemIndex < mainSystemsCount; ++mainSystemIndex)
+			{
+				if (loop.subSystemList[mainSystemIndex].type == typeof(Update))
+				{
+					var subSystem = loop.subSystemList[mainSystemIndex];
+
+					for (int index = 0, count = subSystem.subSystemList.Length; index < count; ++index)
+					{
+						if (subSystem.subSystemList[index].type == typeof(Update.ScriptRunBehaviourUpdate))
+						{
+							loop.subSystemList[mainSystemIndex] = InsertLoopSubSystem(OnUnityUpdate, typeof(UnityServiceLoopUpdateHook), subSystem, index);
+							break;
+						}
+					}
+				}
+				else if (loop.subSystemList[mainSystemIndex].type == typeof(PreLateUpdate))
+				{
+					var subSystem = loop.subSystemList[mainSystemIndex];
+
+					for (int index = 0, count = subSystem.subSystemList.Length; index < count; ++index)
+					{
+						if (subSystem.subSystemList[index].type == typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate))
+						{
+							loop.subSystemList[mainSystemIndex] = InsertLoopSubSystem(OnUnityPostLateUpdate, typeof(UnityServiceLoopPostUpdateHook), subSystem, index);
+							break;
+						}
+					}
+				}
+				else if (loop.subSystemList[mainSystemIndex].type == typeof(FixedUpdate))
+				{
+					var subSystem = loop.subSystemList[mainSystemIndex];
+
+					for (int index = 0, count = subSystem.subSystemList.Length; index < count; ++index)
+					{
+						if (subSystem.subSystemList[index].type == typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate))
+						{
+							loop.subSystemList[mainSystemIndex] = InsertLoopSubSystem(OnUnityFixedUpdate, typeof(UnityServiceLoopFixedUpdateHook), subSystem, index);
+							break;
+						}
+					}
+				}
+			}
+
+			PlayerLoop.SetPlayerLoop(loop);
+		}
+
+		private PlayerLoopSystem InsertLoopSubSystem(PlayerLoopSystem.UpdateFunction managedCallback, Type subSystemType, PlayerLoopSystem target, int index)
+		{
+			var loopUpdateSubSystem = new PlayerLoopSystem()
+			{
+				type = subSystemType,
+				updateDelegate = managedCallback
+			};
+
+			var newSubSystems = new PlayerLoopSystem[target.subSystemList.Length + 1];
+			var nativeLoopCondition = IntPtr.Zero;
+
+			for (int i = 0, newSubSystemCount = newSubSystems.Length; i < newSubSystemCount; ++i)
+			{
+				if (i < index)
+				{
+					newSubSystems[i] = target.subSystemList[i];
+
+					if ((i + 1) == index)
+					{
+						nativeLoopCondition = target.subSystemList[i].loopConditionFunction;
+					}
+				}
+				else if (i == index)
+				{
+					loopUpdateSubSystem.loopConditionFunction = nativeLoopCondition;
+					newSubSystems[i] = loopUpdateSubSystem;
+				}
+				else
+				{
+					newSubSystems[i] = target.subSystemList[i - 1];
+				}
+			}
+
+			target.subSystemList = newSubSystems;
+
+			return target;
 		}
 
 		public void Start()
@@ -87,12 +169,29 @@ namespace Ju.Services
 
 		private void OnUnityUpdate()
 		{
+			eventService.Fire(new LoopPreUpdateEvent(UnityEngine.Time.deltaTime));
 			eventService.Fire(new LoopUpdateEvent(UnityEngine.Time.deltaTime));
+		}
+
+		private void OnUnityPostLateUpdate()
+		{
+			eventService.Fire(new LoopPostUpdateEvent(UnityEngine.Time.deltaTime));
 		}
 
 		private void OnUnityFixedUpdate()
 		{
 			eventService.Fire(new LoopFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+
+			if (Application.isFocused && !appHasFocus)
+			{
+				appHasFocus = true;
+				OnUnityApplicationFocus(true);
+			}
+			else if (!Application.isFocused && appHasFocus)
+			{
+				appHasFocus = false;
+				OnUnityApplicationFocus(false);
+			}
 		}
 
 		private void OnUnitySceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
@@ -130,37 +229,25 @@ namespace Ju.Services
 		{
 			quitting = true;
 
-			monoBehaviour.OnUpdateEvent -= OnUnityUpdate;
-			monoBehaviour.OnFixedUpdateEvent -= OnUnityFixedUpdate;
-			monoBehaviour.OnApplicationFocusEvent -= OnUnityApplicationFocus;
-
 			if (OnApplicationQuit != null)
 			{
 				OnApplicationQuit();
 			}
 
-			ForceUnloadAllGameObjects();
-			monoBehaviour.StartCoroutine(DelayedDisposeServices());
-		}
-
-		private void ForceUnloadAllGameObjects()
-		{
-			var cachedGameObject = monoBehaviour.gameObject;
-
 			foreach (var obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
 			{
-				if (obj != cachedGameObject)
-				{
-					GameObject.Destroy(obj);
-				}
+				UnityEngine.Object.Destroy(obj);
 			}
+
+			this.CoroutineStart(DelayedDisposeServices());
 		}
 
 		private IEnumerator DelayedDisposeServices()
 		{
 			yield return null;
 
-			GameObject.Destroy(monoBehaviour);
+			PlayerLoop.SetPlayerLoop(PlayerLoop.GetDefaultPlayerLoop());
+
 			Resources.UnloadUnusedAssets();
 
 			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, false);

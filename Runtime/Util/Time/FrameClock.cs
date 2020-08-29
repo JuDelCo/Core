@@ -4,44 +4,29 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class FrameClock : IFrameClock, IDisposable
+	public class FrameClock<T> : IFrameClock, IDisposable where T : ILoopEvent
 	{
-		private DisposableLinkHandler linkHandler;
+		private readonly DisposableLinkHandler linkHandler;
 		private int elapsed;
 		private readonly Func<bool> updateCondition;
 
-		private void SubscribeEvent(TimeUpdateMode updateMode)
+		public FrameClock()
 		{
 			linkHandler = new DisposableLinkHandler(false);
-
-			var eventBusService = ServiceContainer.Get<IEventBusService>();
-
-			if (updateMode == TimeUpdateMode.Update)
-			{
-				eventBusService.Subscribe<LoopUpdateEvent>(linkHandler, e => Tick());
-			}
-			else
-			{
-				eventBusService.Subscribe<LoopFixedUpdateEvent>(linkHandler, e => Tick());
-			}
+			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, _ => Tick());
 		}
 
-		public FrameClock(TimeUpdateMode updateMode = TimeUpdateMode.Update)
-		{
-			SubscribeEvent(updateMode);
-		}
-
-		public FrameClock(int elapsedFrames, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(updateMode)
+		public FrameClock(int elapsedFrames) : this()
 		{
 			elapsed = elapsedFrames;
 		}
 
-		public FrameClock(Func<bool> updateCondition, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(updateMode)
+		public FrameClock(Func<bool> updateCondition) : this()
 		{
 			this.updateCondition = updateCondition;
 		}
 
-		public FrameClock(int elapsedFrames, Func<bool> updateCondition, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(elapsedFrames, updateMode)
+		public FrameClock(int elapsedFrames, Func<bool> updateCondition) : this(elapsedFrames)
 		{
 			this.updateCondition = updateCondition;
 		}

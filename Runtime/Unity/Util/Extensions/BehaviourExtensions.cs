@@ -1,5 +1,5 @@
 
-#if UNITY_2018_3_OR_NEWER
+#if UNITY_2019_3_OR_NEWER
 
 using System;
 using System.Collections;
@@ -84,28 +84,28 @@ namespace Ju.Extensions
 			return ServiceContainer.Get<ITaskService>().WaitForSeconds(new BehaviourLinkHandler(behaviour, alwaysActive), delay);
 		}
 
-		public static Clock NewClock(this Behaviour behaviour, TimeUpdateMode updateMode = TimeUpdateMode.Update, bool alwaysActive = false)
+		public static Clock<T> NewClock<T>(this Behaviour behaviour, bool alwaysActive = false) where T : ILoopTimeEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
-			return new Clock(() => linkHandler.IsActive, updateMode);
+			return new Clock<T>(() => linkHandler.IsActive);
 		}
 
-		public static Clock NewClock(this Behaviour behaviour, float elapsedSeconds, TimeUpdateMode updateMode = TimeUpdateMode.Update, bool alwaysActive = false)
+		public static Clock<T> NewClock<T>(this Behaviour behaviour, float elapsedSeconds, bool alwaysActive = false) where T : ILoopTimeEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
-			return new Clock(elapsedSeconds, () => linkHandler.IsActive, updateMode);
+			return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 		}
 
-		public static Timer NewTimer(this Behaviour behaviour, float seconds, Action onCompleted, TimeUpdateMode updateMode = TimeUpdateMode.Update, bool alwaysActive = false)
+		public static Timer<T> NewTimer<T>(this Behaviour behaviour, float seconds, Action onCompleted, bool alwaysActive = false) where T : ILoopTimeEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
-			return new Timer(seconds, onCompleted, () => linkHandler.IsActive, updateMode);
+			return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);
 		}
 
-		public static FrameTimer NewFrameTimer(this Behaviour behaviour, int frames, Action onCompleted, TimeUpdateMode updateMode = TimeUpdateMode.Update, bool alwaysActive = false)
+		public static FrameTimer<T> NewFrameTimer<T>(this Behaviour behaviour, int frames, Action onCompleted, bool alwaysActive = false) where T : ILoopEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
-			return new FrameTimer(frames, onCompleted, () => linkHandler.IsActive, updateMode);
+			return new FrameTimer<T>(frames, onCompleted, () => linkHandler.IsActive);
 		}
 	}
 }

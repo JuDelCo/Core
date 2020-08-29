@@ -19,7 +19,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.21.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.22.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -74,6 +74,8 @@ Contents
     * Simple class to measuring time using precise DateTime info.
 - ```Timer```
     * Counts time downwards and allows to run code when reaches zero.
+- ```FrameClock```
+    * Simple class to measuring time using deltas from fixed loop events.
 - ```FrameTimer```
     * Counts frames downwards and allows to run code when reaches zero.
 - ```Color & Color32```
@@ -83,8 +85,6 @@ Contents
 
 - ```BehaviourLinkHandler```
     * Allows to use Unity Behaviours as a LinkHandler.
-- ```MonoBehaviourActor```
-    * Subscribes itself automatically to the Data service.
 
 #### Extensions
 

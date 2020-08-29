@@ -4,44 +4,29 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class Clock : IClock, IDisposable
+	public class Clock<T> : IClock, IDisposable where T : ILoopTimeEvent
 	{
-		private DisposableLinkHandler linkHandler;
+		private readonly DisposableLinkHandler linkHandler;
 		private Span elapsed;
 		private readonly Func<bool> updateCondition;
 
-		private void SubscribeEvent(TimeUpdateMode updateMode)
+		public Clock()
 		{
 			linkHandler = new DisposableLinkHandler(false);
-
-			var eventBusService = ServiceContainer.Get<IEventBusService>();
-
-			if (updateMode == TimeUpdateMode.Update)
-			{
-				eventBusService.Subscribe<LoopUpdateEvent>(linkHandler, e => Update(e.deltaTime));
-			}
-			else
-			{
-				eventBusService.Subscribe<LoopFixedUpdateEvent>(linkHandler, e => Update(e.fixedDeltaTime));
-			}
+			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, e => Update(e.DeltaTime));
 		}
 
-		public Clock(TimeUpdateMode updateMode = TimeUpdateMode.Update)
-		{
-			SubscribeEvent(updateMode);
-		}
-
-		public Clock(float elapsedSeconds, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(updateMode)
+		public Clock(float elapsedSeconds) : this()
 		{
 			elapsed = Span.Seconds(elapsedSeconds);
 		}
 
-		public Clock(Func<bool> updateCondition, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(updateMode)
+		public Clock(Func<bool> updateCondition) : this()
 		{
 			this.updateCondition = updateCondition;
 		}
 
-		public Clock(float elapsedSeconds, Func<bool> updateCondition, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(elapsedSeconds, updateMode)
+		public Clock(float elapsedSeconds, Func<bool> updateCondition) : this(elapsedSeconds)
 		{
 			this.updateCondition = updateCondition;
 		}

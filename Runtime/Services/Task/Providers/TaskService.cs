@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Ju.Handlers;
 using Ju.Promises;
 using Ju.Services.Extensions;
+using Ju.Time;
 
 namespace Ju.Services
 {
@@ -41,7 +42,7 @@ namespace Ju.Services
 
 		public void Start()
 		{
-			this.EventSubscribe<LoopUpdateEvent>(e => Tick(e.deltaTime));
+			this.EventSubscribe<LoopUpdateEvent>(e => Tick(e.DeltaTime));
 		}
 
 		public void Tick(float deltaTime)

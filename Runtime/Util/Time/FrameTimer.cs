@@ -4,42 +4,28 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class FrameTimer : IFrameTimer, IDisposable
+	public class FrameTimer<T> : IFrameTimer, IDisposable where T : ILoopEvent
 	{
-		private DisposableLinkHandler linkHandler;
+		private readonly DisposableLinkHandler linkHandler;
 		private int elapsed;
 		private readonly int duration;
 		private readonly Func<bool> updateCondition;
 		private readonly Action onCompleted;
 
-		private void SubscribeEvent(TimeUpdateMode updateMode)
+		private FrameTimer(int frames)
 		{
-			linkHandler = new DisposableLinkHandler(true);
+			linkHandler = new DisposableLinkHandler(false);
+			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, _ => Tick());
 
-			var eventBusService = ServiceContainer.Get<IEventBusService>();
-
-			if (updateMode == TimeUpdateMode.Update)
-			{
-				eventBusService.Subscribe<LoopUpdateEvent>(linkHandler, _ => Tick());
-			}
-			else
-			{
-				eventBusService.Subscribe<LoopFixedUpdateEvent>(linkHandler, _ => Tick());
-			}
-		}
-
-		private FrameTimer(int frames, TimeUpdateMode updateMode = TimeUpdateMode.Update)
-		{
-			SubscribeEvent(updateMode);
 			this.duration = frames;
 		}
 
-		public FrameTimer(int frames, Action onCompleted, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(frames, updateMode)
+		public FrameTimer(int frames, Action onCompleted) : this(frames)
 		{
 			this.onCompleted = onCompleted;
 		}
 
-		public FrameTimer(int frames, Action onCompleted, Func<bool> updateCondition, TimeUpdateMode updateMode = TimeUpdateMode.Update) : this(frames, onCompleted, updateMode)
+		public FrameTimer(int frames, Action onCompleted, Func<bool> updateCondition) : this(frames, onCompleted)
 		{
 			this.updateCondition = updateCondition;
 		}
