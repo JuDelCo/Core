@@ -19,7 +19,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.20.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.21.0",
 ```
 
 otherwise, use this package as it is in native C# applications, it will work just fine.
@@ -122,6 +122,7 @@ public static class Bootstrap
 		// Unity related services
 
 		ServiceContainer.RegisterService<ILogUnityService, LogUnityService>();
+		ServiceContainer.RegisterService<IInputService, InputUnityService>();
 		ServiceContainer.RegisterService<IUnityService, UnityService>();
 
 		// Register your services here
@@ -152,6 +153,7 @@ public static class Core
 	public static ICoroutineService Coroutine => ServiceContainer.Get<ICoroutineService>();
 	public static IDataService Data => ServiceContainer.Get<IDataService>();
 	//public static IUnityService Unity => ServiceContainer.Get<IUnityService>();
+	//public static IInputService Input => ServiceContainer.Get<IInputService>();
 
 	// ... add more shorthands as you need
 }

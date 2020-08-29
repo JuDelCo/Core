@@ -2,7 +2,7 @@
   "name": "com.judelco.core",
   "displayName": "JuCore",
   "description": "Service locator (IoC Container), object factory, util classes and basic services to ease the development of C# applications",
-  "version": "1.20.0",
+  "version": "1.21.0",
   "unity": "2018.3",
   "dependencies": {},
   "type": "library",
