@@ -36,11 +36,12 @@ Contents
 - [Coroutine](https://github.com/JuDelCo/Core/wiki/API.Service.Coroutine)
 - [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
 - [Input](https://github.com/JuDelCo/Core/wiki/API.Service.Input)
+- [Extensions](https://github.com/JuDelCo/Core/wiki/API.Service.Extensions)
 
 #### Util
 
-- [Promise](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
-- [Observable](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
+- [Promises](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
+- [Observables](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
 - [ObjectPool](https://github.com/JuDelCo/Core/wiki/API.Util.ObjectPool)
 - [Finite State Machine](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
 	- FSM
@@ -55,13 +56,11 @@ Contents
 	- Timer
 	- FrameClock
 	- FrameTimer
-
-#### [Extensions](https://github.com/JuDelCo/Core/wiki/API.Util.Extensions)
-
-- IEnumerable
-- ICollection
-- String
-- Bool
+- [Extensions](https://github.com/JuDelCo/Core/wiki/API.Util.Extensions)
+	- IEnumerable
+	- ICollection
+	- String
+	- Bool
 
 #### Unity3D
 
