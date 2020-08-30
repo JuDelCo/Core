@@ -41,27 +41,7 @@ namespace Ju.Services
 
 		public void Unload<T>(Identifier id)
 		{
-			var type = typeof(T);
-
-			if (services.ContainsKey(type))
-			{
-				if (services[type].ContainsKey(id))
-				{
-					var service = services[type][id];
-
-					if (service is IServiceUnload unload)
-					{
-						unload.Unload();
-					}
-
-					services[type].Remove(id);
-
-					if (services[type].Count == 0)
-					{
-						services.Remove(type);
-					}
-				}
-			}
+			Unload(typeof(T), id);
 		}
 
 		private object Get(Type type, Identifier id)
@@ -130,6 +110,29 @@ namespace Ju.Services
 			}
 
 			return duplicated;
+		}
+
+		private void Unload(Type type, Identifier id)
+		{
+			if (services.ContainsKey(type))
+			{
+				if (services[type].ContainsKey(id))
+				{
+					var service = services[type][id];
+
+					if (service is IServiceUnload unload)
+					{
+						unload.Unload();
+					}
+
+					services[type].Remove(id);
+
+					if (services[type].Count == 0)
+					{
+						services.Remove(type);
+					}
+				}
+			}
 		}
 	}
 }

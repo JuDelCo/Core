@@ -13,229 +13,68 @@ See also
 - [JuCore ECS](https://github.com/JuDelCo/CoreECS) - Deterministic lightweight ECS framework
 
 
-Install
+Documentation
 =====================
 
-If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
+Go to the Wiki to learn how to **install** and **use** this framework. The API is documented there too.
 
-```
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.22.0",
-```
-
-otherwise, use this package as it is in native C# applications, it will work just fine.
+https://github.com/JuDelCo/Core/wiki
 
 
 Contents
 =====================
 
+#### Core
+- [Service Container](https://github.com/JuDelCo/Core/wiki/Usage.Service-Container)
+- [Service Interfaces](https://github.com/JuDelCo/Core/wiki/Usage.Services)
+
 #### Services
 
-- ```Log```
-    * Handles all logging across all services and your code.
-    * **Note**: This service is internally automatically registered for you.
-- ```EventBus```
-    * Useful event bus to communicate your objects in a decoupled way.
-- ```Data```
-    * Useful service to store a reference of all data in the application.
-    * Handles individual multiple data types in lists and unique data types in shared mode.
-- ```Coroutine```
-    * Handles your coroutines state in plain C#, no MonoBehaviours used.
-- ```Task```
-    * Allows you to run tasks that need to be updated over time.
-	* Exposes several helper functions that returns promises.
-
-#### Services (Unity3D)
-
-- ```LogUnity```
-    * Redirects all logs to Unity console (critical in Unity environments).
-- ```Unity```
-    * Exposes several Unity engine events and ticks Coroutine and Task services.
-- ```Data (Unity Extensions)```
-    * Add some helper methods to handle ScriptableObjects in DataService.
-- ```Coroutine (Unity Extensions)```
-    * Add some helper methods to use the Coroutine service within Behaviours.
-	* Add new types of Yield instructions based on Unity Time class.
+- [Log](https://github.com/JuDelCo/Core/wiki/API.Service.Log)
+- [EventBus](https://github.com/JuDelCo/Core/wiki/API.Service.EventBus)
+- [Data](https://github.com/JuDelCo/Core/wiki/API.Service.Data)
+- [Coroutine](https://github.com/JuDelCo/Core/wiki/API.Service.Coroutine)
+- [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
+- [Input](https://github.com/JuDelCo/Core/wiki/API.Service.Input)
 
 #### Util
 
-- ```Promise```
-    * Promise class to defer actions until after a previous condition is resolved.
-- ```Observable```
-    * Generic type that handles action subscribers to value changes of any type.
-- ```ObjectPool```
-    * Simple generic object pool using a stack internally.
-- ```FSM```
-    * Finite state machine based on conditions.
-- ```SimpleFSM```
-    * Simple finite state machine (works only with function references).
-- ```Clock```
-    * Simple class to measuring time using deltas from loop events.
-- ```ClockPrecise```
-    * Simple class to measuring time using precise DateTime info.
-- ```Timer```
-    * Counts time downwards and allows to run code when reaches zero.
-- ```FrameClock```
-    * Simple class to measuring time using deltas from fixed loop events.
-- ```FrameTimer```
-    * Counts frames downwards and allows to run code when reaches zero.
-- ```Color & Color32```
-    * Generic color classes and helper util methods.
+- [Promise](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
+- [Observable](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
+- [ObjectPool](https://github.com/JuDelCo/Core/wiki/API.Util.ObjectPool)
+- [Finite State Machine](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
+	- FSM
+	- SimpleFSM
+- [Color](https://github.com/JuDelCo/Core/wiki/API.Util.Color)
+	- Color
+	- Color32
+- [Time](https://github.com/JuDelCo/Core/wiki/API.Util.Time)
+	- Span
+	- Clock
+	- ClockPrecise
+	- Timer
+	- FrameClock
+	- FrameTimer
 
-#### Util (Unity3D)
+#### [Extensions](https://github.com/JuDelCo/Core/wiki/API.Util.Extensions)
 
-- ```BehaviourLinkHandler```
-    * Allows to use Unity Behaviours as a LinkHandler.
+- IEnumerable
+- ICollection
+- String
+- Bool
 
-#### Extensions
+#### Unity3D
 
-- ```MonoBehaviour```
-    * MonoBehaviour extension methods for EventBus and getting common properties.
-- ```Observable```
-    * Allows to subscribe a Behaviour script easily to any Observable.
-- ```IEnumerable```
-    * Map, Filter and Reduce alias methods using original LINQ methods.
-- ```String```
-    * Extension methods for creating hashes based on the string.
-
-
-Documentation (Unity3D)
-=====================
-
-It's recomended to create a static class anywhere in your project to register all your services automatically.
-
-```csharp
-using UnityEngine;
-using Ju.Services;
-
-public static class Bootstrap
-{
-	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-	private static void Init()
-	{
-		// Core services
-
-		ServiceContainer.RegisterService<IEventBusService, EventBusService>();
-		ServiceContainer.RegisterService<ITaskService, TaskService>();
-		ServiceContainer.RegisterService<ICoroutineService, CoroutineService>();
-		ServiceContainer.RegisterService<IDataService, DataService>();
-
-		// Unity related services
-
-		ServiceContainer.RegisterService<ILogUnityService, LogUnityService>();
-		ServiceContainer.RegisterService<IInputService, InputUnityService>();
-		ServiceContainer.RegisterService<IUnityService, UnityService>();
-
-		// Register your services here
-	}
-}
-```
-
-You can name the class and the method to whatever you want.
-
-
-Documentation (Generic)
-=====================
-
-You can also create a static class where you name each service you use frequently as syntactic sugar:
-
-```csharp
-using Ju.Services;
-
-public static class Core
-{
-	public static T Get<T>() => ServiceContainer.Get<T>();
-	public static T Get<T>(string id) => ServiceContainer.Get<T>(id);
-	public static void Fire<T>() where T : struct => ServiceContainer.Get<IEventBusService>().Fire<T>();
-	public static void Fire<T>(T msg) => ServiceContainer.Get<IEventBusService>().Fire(msg);
-	public static ILogService Log => ServiceContainer.Get<ILogService>();
-	public static IEventBusService Event => ServiceContainer.Get<IEventBusService>();
-	public static ITaskService Task => ServiceContainer.Get<ITaskService>();
-	public static ICoroutineService Coroutine => ServiceContainer.Get<ICoroutineService>();
-	public static IDataService Data => ServiceContainer.Get<IDataService>();
-	//public static IUnityService Unity => ServiceContainer.Get<IUnityService>();
-	//public static IInputService Input => ServiceContainer.Get<IInputService>();
-
-	// ... add more shorthands as you need
-}
-
-// Now you can use the static class Core to access your services or custom shorthand methods !
-```
-
-... and since ```Log``` service usage is very common, you can even use a wrapper to write less code when logging:
-
-```csharp
-public static class Log
-{
-	public static void Debug(string msg, params object[] args) => Core.Log.Debug(msg, args);
-	public static void Info(string msg, params object[] args) => Core.Log.Info(msg, args);
-	public static void Notice(string msg, params object[] args) => Core.Log.Notice(msg, args);
-	public static void Warning(string msg, params object[] args) => Core.Log.Warning(msg, args);
-	public static void Error(string msg, params object[] args) => Core.Log.Error(msg, args);
-}
-
-// Now you can use Log.Debug("test") anywhere in your code !
-```
-
-Create your service classes and make sure they inherit from ```IService``` interface.
-
-```csharp
-using Ju;
-
-public class CustomService : IServiceLoad // You can use IService or IServiceUnload too
-{
-	public void Setup()
-	{
-		// Here you can resolve the service dependencies.
-	}
-
-	public void Start()
-	{
-		// Here you can initialize your service.
-	}
-
-	public void CustomMethod()
-	{
-	}
-}
-```
-
-Then, at some point in the entry point of your program, register your services using:
-
-```csharp
-// Register a lazy service, it will initialize when used the first time only.
-ServiceContainer.RegisterLazyService<CustomService>();
-
-// Register service and initialize them right away.
-ServiceContainer.RegisterService<CustomService>();
-
-// Unload a service.
-ServiceContainer.UnloadService<CustomService>();
-```
-
-**NOTE**: If you are using Unity3D, use the tip in the Unity3D documentation above.
-
-You can also register a object factory using:
-
-```csharp
-// A new object of type CustomClass will be created in each call.
-// You can pass any function or lambda to build your new object.
-ServiceContainer.RegisterFactory<CustomClass>(() => new CustomClass());
-```
-
-During the lifecycle of your app you need to fire loop update events so the Coroutine and Task services work as intended:
-
-```csharp
-Core.Fire(new LoopUpdateEvent(deltaTime));
-// and...
-Core.Fire(new LoopFixedUpdateEvent(fixedDeltaTime));
-```
-
-Before the program finalizes, you should dispose the services using:
-
-```csharp
-// Dispose all services, also the event "OnApplicationQuit" will fire.
-ServiceContainer.Dispose();
-```
+- [Services](https://github.com/JuDelCo/Core/wiki/API.Unity.Services)
+	- InputUnity
+	- LogUnity
+	- Unity
+	- Service Extensions
+- [Extensions](https://github.com/JuDelCo/Core/wiki/API.Unity.Util-Extensions)
+	- Behaviour
+	- Color
+	- Color32
+	- Observable
 
 
 The MIT License (MIT)

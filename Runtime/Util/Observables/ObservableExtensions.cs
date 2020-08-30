@@ -8,7 +8,7 @@ public static class ObservableExtensions
 {
 	public static void Subscribe<T>(this Observable<T> observable, IService service, Action<T> action)
 	{
-		observable.Subscribe(new KeepLinkHandler(), action);
+		observable.Subscribe(new ObjectLinkHandler<IService>(service), action);
 	}
 
 	public static void Subscribe<T>(this Observable<T> observable, State state, Action<T> action)
