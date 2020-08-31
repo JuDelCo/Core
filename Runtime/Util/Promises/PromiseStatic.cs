@@ -15,7 +15,7 @@ namespace Ju.Promises
 			OnUnhandledException(e);
 		}
 
-		public static Promise Resolved()
+		public static IPromise Resolved()
 		{
 			var promise = new Promise();
 			promise.Resolve();
@@ -23,7 +23,7 @@ namespace Ju.Promises
 			return promise;
 		}
 
-		public static Promise Rejected(Exception e)
+		public static IPromise Rejected(Exception e)
 		{
 			var promise = new Promise();
 			promise.Reject(e);
@@ -31,7 +31,7 @@ namespace Ju.Promises
 			return promise;
 		}
 
-		public static Promise<T> Resolved<T>(T value)
+		public static IPromise<T> Resolved<T>(T value)
 		{
 			var promise = new Promise<T>();
 			promise.Resolve(value);
@@ -39,7 +39,7 @@ namespace Ju.Promises
 			return promise;
 		}
 
-		public static Promise<T> Rejected<T>(Exception e)
+		public static IPromise<T> Rejected<T>(Exception e)
 		{
 			var promise = new Promise<T>();
 			promise.Reject(e);

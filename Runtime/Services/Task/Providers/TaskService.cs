@@ -45,7 +45,7 @@ namespace Ju.Services
 			this.EventSubscribe<LoopUpdateEvent>(e => Tick(e.DeltaTime));
 		}
 
-		public void Tick(float deltaTime)
+		private void Tick(float deltaTime)
 		{
 			TickActions();
 			OnTick(deltaTime);

@@ -12,7 +12,7 @@ namespace Ju.Time
 		private readonly Func<bool> updateCondition;
 		private readonly Action onCompleted;
 
-		private FrameTimer(int frames)
+		public FrameTimer(int frames)
 		{
 			linkHandler = new DisposableLinkHandler(false);
 			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, _ => Tick());

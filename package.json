@@ -3,7 +3,7 @@
   "displayName": "JuCore",
   "description": "Service locator (IoC Container), object factory, util classes and basic services to ease the development of C# applications",
   "documentationUrl": "https://github.com/JuDelCo/Core/wiki",
-  "version": "1.23.1",
+  "version": "1.24.0",
   "unity": "2019.3",
   "dependencies": {},
   "type": "library",
@@ -26,7 +26,7 @@
   ],
   "author": {
     "name": "JuDelCo",
-    "url": "https://github.com/JuDelCo"
+    "url": "https://twitter.com/JuDelCo"
   },
   "repository": {
     "type": "git",

@@ -12,7 +12,7 @@ namespace Ju.Time
 		private readonly Func<bool> updateCondition;
 		private readonly Action onCompleted;
 
-		private Timer(float seconds)
+		public Timer(float seconds)
 		{
 			linkHandler = new DisposableLinkHandler(false);
 			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, e => Update(e.DeltaTime));

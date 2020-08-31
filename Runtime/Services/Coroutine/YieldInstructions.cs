@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Ju.Time;
 
 namespace Ju.Services
 {
@@ -67,6 +68,30 @@ namespace Ju.Services
 		public TaskWaitWhile(Func<bool> condition)
 		{
 			this.condition = condition;
+		}
+	}
+
+	public class TaskWaitForSeconds<T> : YieldInstruction where T : ILoopTimeEvent
+	{
+		public override bool KeepWaiting { get { return timer.GetTimeLeft().seconds > 0f; } }
+
+		private readonly ITimer timer;
+
+		public TaskWaitForSeconds(float seconds)
+		{
+			timer = new Timer<T>(seconds);
+		}
+	}
+
+	public class TaskWaitForFrames<T> : YieldInstruction where T : ILoopEvent
+	{
+		public override bool KeepWaiting { get { return timer.GetFramesLeft() > 0; } }
+
+		private readonly IFrameTimer timer;
+
+		public TaskWaitForFrames(int frameCount)
+		{
+			timer = new FrameTimer<T>(frameCount);
 		}
 	}
 }
