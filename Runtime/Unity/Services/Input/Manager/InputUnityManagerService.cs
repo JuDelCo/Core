@@ -15,7 +15,6 @@ namespace Ju.Services
 		private readonly float UPDATE_INTERVAL = 2f;
 
 		private Vector2Int mousePosition;
-		private Vector2Int mousePositionPrevious;
 
 		public override void Initialize()
 		{
@@ -58,8 +57,6 @@ namespace Ju.Services
 
 		private void UpdateMousePosition()
 		{
-			mousePositionPrevious = mousePosition;
-
 			var position = UnityEngine.Input.mousePosition;
 			mousePosition = new Vector2Int((int)position.x, (int)position.y);
 		}
@@ -100,17 +97,40 @@ namespace Ju.Services
 			mouseY = mousePosition.y;
 		}
 
-		public override void GetMousePositionDelta(out int mouseX, out int mouseY)
+		public override void GetMousePositionDelta(out float mouseX, out float mouseY)
 		{
-			var mouseDelta = mousePosition - mousePositionPrevious;
-
-			mouseX = mouseDelta.x;
-			mouseY = mouseDelta.y;
+			mouseX = UnityEngine.Input.GetAxis("Mouse X");
+			mouseY = UnityEngine.Input.GetAxis("Mouse Y");
 		}
 
 		public override float GetMouseWheelDelta()
 		{
 			return UnityEngine.Input.mouseScrollDelta.y;
+		}
+
+		public override MouseLockMode GetMouseCurrentLockMode()
+		{
+			var result = MouseLockMode.None;
+
+			switch (UnityEngine.Cursor.lockState)
+			{
+				case UnityEngine.CursorLockMode.None:
+					result = MouseLockMode.None;
+					break;
+				case UnityEngine.CursorLockMode.Confined:
+					result = MouseLockMode.Confined;
+					break;
+				case UnityEngine.CursorLockMode.Locked:
+					result = MouseLockMode.Locked;
+					break;
+			}
+
+			return result;
+		}
+
+		public override bool GetMouseVisibleStatus()
+		{
+			return UnityEngine.Cursor.visible;
 		}
 
 		public override void SetMouseLockMode(MouseLockMode mouseLockMode)
@@ -463,7 +483,7 @@ namespace Ju.Services
 				//
 				// Important: Set sensibility to 1 and gravity to 0
 
-				var axisName = "Axis" + axisIndex + "_" + gamepadIndex;
+				var axisName = $"Axis{axisIndex}_{gamepadIndex}";
 
 				try
 				{

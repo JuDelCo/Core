@@ -10,14 +10,14 @@ namespace Ju.Services
 		event DataServiceListEvent OnListAdd;
 		event DataServiceListEvent OnListRemove;
 
-		void Set<T>(T obj, string id);
+		void Set<T>(T obj, string id, bool overwrite = true);
 		T Get<T>(string id) where T : class;
 		void Unset<T>(string id);
 
 		IEnumerable<Type> GetTypes();
 
 		void ListAdd<T>(T obj, string id);
-		IEnumerable<T> ListGet<T>(string id);
+		List<T> ListGet<T>(string id);
 		void ListRemove<T>(T obj, string id);
 
 		IEnumerable<Type> ListGetTypes();

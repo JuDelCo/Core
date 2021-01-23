@@ -48,10 +48,10 @@ namespace Ju.ColorUtil
 
 		public Color32(float r, float g, float b, float a)
 		{
-			rValue = Clamp((byte)(r / 255f));
-			gValue = Clamp((byte)(g / 255f));
-			bValue = Clamp((byte)(b / 255f));
-			aValue = Clamp((byte)(a / 255f));
+			rValue = Clamp((byte)(r * 255f));
+			gValue = Clamp((byte)(g * 255f));
+			bValue = Clamp((byte)(b * 255f));
+			aValue = Clamp((byte)(a * 255f));
 		}
 
 		public static Color32 FromHSV(float hue, float saturation, float value, float alpha)
@@ -101,7 +101,7 @@ namespace Ju.ColorUtil
 
 		public static implicit operator Color32(Color color)
 		{
-			return new Color32(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
+			return new Color32((byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255), (byte)(color.a * 255));
 		}
 
 		public static implicit operator Color(Color32 color)

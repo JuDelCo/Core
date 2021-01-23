@@ -23,6 +23,19 @@ namespace Ju.Services
 
 		public IInputAction AddAction(string actionId)
 		{
+			IInputAction result = GetAction(actionId);
+
+			if (result == null)
+			{
+				result = new InputAction(this, actionId);
+				actions.Add(result);
+			}
+
+			return result;
+		}
+
+		public IInputAction GetAction(string actionId)
+		{
 			IInputAction result = null;
 
 			foreach (var action in actions)
@@ -32,12 +45,6 @@ namespace Ju.Services
 					result = action;
 					break;
 				}
-			}
-
-			if (result == null)
-			{
-				result = new InputAction(this, actionId);
-				actions.Add(result);
 			}
 
 			return result;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ju.Input;
+using Ju.Extensions;
 
 namespace Ju.Services
 {
@@ -12,18 +13,22 @@ namespace Ju.Services
 
 		public string Id { get; }
 		public IInputPlayer Player { get; private set; }
-		public bool Enabled { get; private set; }
-		public IEnumerable<MouseButton> MouseButtonBindings => mouseButtons;
-		public IEnumerable<KeyboardKey> KeyboardKeyBindings => keyboardKeys;
-		public IEnumerable<GamepadButton> GamepadButtonBindings => gamepadButtons;
+		public bool Enabled { get; set; }
+		public IEnumerable<MouseButton> MouseButtonBindings => mouseButtons.Concatenate(mouseButtonsNegative);
+		public IEnumerable<KeyboardKey> KeyboardKeyBindings => keyboardKeys.Concatenate(keyboardKeysNegative);
+		public IEnumerable<GamepadButton> GamepadButtonBindings => gamepadButtons.Concatenate(gamepadButtonsNegative);
 		public IEnumerable<GamepadAxis> GamepadAxisBindings => gamepadAxis;
 
 		private readonly List<MouseButton> mouseButtons;
+		private readonly List<MouseButton> mouseButtonsNegative;
 		private readonly List<KeyboardKey> keyboardKeys;
+		private readonly List<KeyboardKey> keyboardKeysNegative;
 		private readonly List<GamepadButton> gamepadButtons;
+		private readonly List<GamepadButton> gamepadButtonsNegative;
 		private readonly List<GamepadAxis> gamepadAxis;
 
 		private bool pressed;
+		private float pressedDuration;
 		private bool previousPressed;
 		private float axisValue;
 		private float axisRawValueX;
@@ -37,50 +42,62 @@ namespace Ju.Services
 			Enabled = true;
 
 			mouseButtons = new List<MouseButton>();
+			mouseButtonsNegative = new List<MouseButton>();
 			keyboardKeys = new List<KeyboardKey>();
+			keyboardKeysNegative = new List<KeyboardKey>();
 			gamepadButtons = new List<GamepadButton>();
+			gamepadButtonsNegative = new List<GamepadButton>();
 			gamepadAxis = new List<GamepadAxis>();
 
 			ResetBindings();
 		}
 
-		public void SetEnabled(bool enabled)
-		{
-			Enabled = enabled;
-		}
-
 		public void ResetBindings()
 		{
 			mouseButtons.Clear();
+			mouseButtonsNegative.Clear();
 			keyboardKeys.Clear();
+			keyboardKeysNegative.Clear();
 			gamepadButtons.Clear();
+			gamepadButtonsNegative.Clear();
 			gamepadAxis.Clear();
 
 			pressed = false;
+			pressedDuration = 0f;
 			previousPressed = false;
 			axisValue = 0f;
 			axisRawValueX = 0f;
 			axisRawValueY = 0f;
 		}
 
-		public void Update()
+		public void Update(float deltaTime)
 		{
 			ResetInternal();
 
 			if (Enabled)
 			{
-				pressed = GetButtonPressedInternal();
+				var buttonAxis = GetButtonPressedInternal();
+				pressed = (buttonAxis != 0);
 				axisValue = GetAxisValueInternal();
 				GetAxisRawValueInternal(out axisRawValueX, out axisRawValueY);
 
 				if (pressed && axisValue == 0f)
 				{
-					axisValue = 1f;
+					axisValue = buttonAxis;
 				}
 
 				if (!pressed && (axisValue != 0f || axisRawValueX != 0f || axisRawValueY != 0f))
 				{
 					pressed = true;
+				}
+
+				if (pressed && previousPressed)
+				{
+					pressedDuration += deltaTime;
+				}
+				else
+				{
+					pressedDuration = 0f;
 				}
 			}
 
@@ -110,11 +127,14 @@ namespace Ju.Services
 			pressed = false;
 		}
 
-		private bool GetButtonPressedInternal()
+		private float GetButtonPressedInternal()
 		{
-			var result = false;
+			var positive = 0f;
+			var negative = 0f;
 
-			foreach (var controller in Player.Controllers)
+			var controllers = (List<IController>)Player.Controllers;
+
+			foreach (var controller in controllers)
 			{
 				if (controller is IMouseController mouse)
 				{
@@ -122,7 +142,7 @@ namespace Ju.Services
 					{
 						if (mouse.IsButtonHeld(button))
 						{
-							result = true;
+							positive = 1f;
 							break;
 						}
 					}
@@ -133,7 +153,7 @@ namespace Ju.Services
 					{
 						if (keyboard.IsKeyHeld(key))
 						{
-							result = true;
+							positive = 1f;
 							break;
 						}
 					}
@@ -144,19 +164,61 @@ namespace Ju.Services
 					{
 						if (gamepad.IsButtonHeld(button))
 						{
-							result = true;
+							positive = 1f;
 							break;
 						}
 					}
 				}
 
-				if (result)
+				if (positive == 1f)
 				{
 					break;
 				}
 			}
 
-			return result;
+			foreach (var controller in controllers)
+			{
+				if (controller is IMouseController mouse)
+				{
+					foreach (var button in mouseButtonsNegative)
+					{
+						if (mouse.IsButtonHeld(button))
+						{
+							negative = -1f;
+							break;
+						}
+					}
+				}
+				else if (controller is IKeyboardController keyboard)
+				{
+					foreach (var key in keyboardKeysNegative)
+					{
+						if (keyboard.IsKeyHeld(key))
+						{
+							negative = -1f;
+							break;
+						}
+					}
+				}
+				else if (controller is IGamepadController gamepad)
+				{
+					foreach (var button in gamepadButtonsNegative)
+					{
+						if (gamepad.IsButtonHeld(button))
+						{
+							negative = -1f;
+							break;
+						}
+					}
+				}
+
+				if (negative == -1f)
+				{
+					break;
+				}
+			}
+
+			return positive + negative;
 		}
 
 		private float GetAxisValueInternal()
@@ -165,7 +227,9 @@ namespace Ju.Services
 
 			if (Enabled)
 			{
-				foreach (var controller in Player.Controllers)
+				var controllers = (List<IController>)Player.Controllers;
+
+				foreach (var controller in controllers)
 				{
 					if (controller is IGamepadController gamepad)
 					{
@@ -198,7 +262,9 @@ namespace Ju.Services
 
 			if (Enabled)
 			{
-				foreach (var controller in Player.Controllers)
+				var controllers = (List<IController>)Player.Controllers;
+
+				foreach (var controller in controllers)
 				{
 					if (controller is IGamepadController gamepad)
 					{
@@ -231,43 +297,88 @@ namespace Ju.Services
 			}
 		}
 
-		public void AddBinding(MouseButton button)
+		public IInputAction AddBinding(MouseButton button)
 		{
 			if (!mouseButtons.Contains(button))
 			{
 				mouseButtons.Add(button);
 			}
+
+			return this;
 		}
 
-		public void AddBinding(KeyboardKey key)
+		public IInputAction AddBinding(MouseButton positiveButton, MouseButton negativeButton)
+		{
+			AddBinding(positiveButton);
+
+			if (!mouseButtonsNegative.Contains(negativeButton))
+			{
+				mouseButtonsNegative.Add(negativeButton);
+			}
+
+			return this;
+		}
+
+		public IInputAction AddBinding(KeyboardKey key)
 		{
 			if (!keyboardKeys.Contains(key))
 			{
 				keyboardKeys.Add(key);
 			}
+
+			return this;
 		}
 
-		public void AddBinding(GamepadButton button)
+		public IInputAction AddBinding(KeyboardKey positiveKey, KeyboardKey negativeKey)
+		{
+			AddBinding(positiveKey);
+
+			if (!keyboardKeysNegative.Contains(negativeKey))
+			{
+				keyboardKeysNegative.Add(negativeKey);
+			}
+
+			return this;
+		}
+
+		public IInputAction AddBinding(GamepadButton button)
 		{
 			if (!gamepadButtons.Contains(button))
 			{
 				gamepadButtons.Add(button);
 			}
+
+			return this;
+		}
+
+		public IInputAction AddBinding(GamepadButton positiveButton, GamepadButton negativeButton)
+		{
+			AddBinding(positiveButton);
+
+			if (!gamepadButtonsNegative.Contains(negativeButton))
+			{
+				gamepadButtonsNegative.Add(negativeButton);
+			}
+
+			return this;
 		}
 
 		public void RemoveBinding(MouseButton button)
 		{
 			mouseButtons.Remove(button);
+			mouseButtonsNegative.Remove(button);
 		}
 
 		public void RemoveBinding(KeyboardKey key)
 		{
 			keyboardKeys.Remove(key);
+			keyboardKeysNegative.Remove(key);
 		}
 
 		public void RemoveBinding(GamepadButton button)
 		{
 			gamepadButtons.Remove(button);
+			gamepadButtonsNegative.Remove(button);
 		}
 
 		public bool IsPressed()
@@ -277,7 +388,12 @@ namespace Ju.Services
 
 		public bool IsHeld()
 		{
-			return pressed && previousPressed;
+			return pressed;
+		}
+
+		public float HeldDuration()
+		{
+			return pressedDuration;
 		}
 
 		public bool IsReleased()
@@ -285,12 +401,14 @@ namespace Ju.Services
 			return !pressed && previousPressed;
 		}
 
-		public void AddBinding(GamepadAxis axis)
+		public IInputAction AddBinding(GamepadAxis axis)
 		{
 			if (!gamepadAxis.Contains(axis))
 			{
 				gamepadAxis.Add(axis);
 			}
+
+			return this;
 		}
 
 		public void RemoveBinding(GamepadAxis axis)

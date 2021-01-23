@@ -27,14 +27,20 @@ namespace Ju.FSM
 
 		public void AddState(State state)
 		{
-			states.Add(state);
-			state.InternalSetFSM(this);
-			SetupState(state);
+			AddState(idStates.Count, state);
 		}
 
 		public void AddState(int stateId, State state)
 		{
-			AddState(state);
+			states.Add(state);
+			state.InternalSetFSM(this);
+			SetupState(state);
+
+			if (idStates.ContainsKey(stateId))
+			{
+				idStates.Remove(stateId);
+			}
+
 			idStates.Add(stateId, state);
 		}
 
@@ -45,6 +51,7 @@ namespace Ju.FSM
 			if (stateId == -1)
 			{
 				stateId = idStates.Count;
+				ids.Add(stateName, stateId);
 			}
 
 			AddState(stateId, state);

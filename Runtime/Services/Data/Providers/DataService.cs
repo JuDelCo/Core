@@ -29,7 +29,7 @@ namespace Ju.Services
 		{
 		}
 
-		public void Set<T>(T obj, string id)
+		public void Set<T>(T obj, string id, bool overwrite)
 		{
 			var type = typeof(T);
 
@@ -38,12 +38,14 @@ namespace Ju.Services
 				sharedItems.Add(type, new Dictionary<Identifier, object>());
 			}
 
-			if (sharedItems[type].ContainsKey(id))
+			if (!overwrite && sharedItems[type].ContainsKey(id))
 			{
-				OnLogWarning("A shared object of type {0} was already stored");
+				OnLogWarning("A shared object of type {0} was already stored", type);
 			}
-
-			sharedItems[type][id] = obj;
+			else
+			{
+				sharedItems[type][id] = obj;
+			}
 		}
 
 		public T Get<T>(string id) where T : class
@@ -118,7 +120,7 @@ namespace Ju.Services
 			OnListAdd(type, obj);
 		}
 
-		public IEnumerable<T> ListGet<T>(string id)
+		public List<T> ListGet<T>(string id)
 		{
 			var type = typeof(T);
 			List<T> list = null;
@@ -131,7 +133,7 @@ namespace Ju.Services
 				}
 			}
 
-			return (IEnumerable<T>)list;
+			return list;
 		}
 
 		public void ListRemove<T>(T obj, string id)

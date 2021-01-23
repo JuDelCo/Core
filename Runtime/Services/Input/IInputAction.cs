@@ -12,26 +12,29 @@ namespace Ju.Input
 
 		string Id { get; }
 		IInputPlayer Player { get; }
-		bool Enabled { get; }
+		bool Enabled { get; set; }
 		IEnumerable<MouseButton> MouseButtonBindings { get; }
 		IEnumerable<KeyboardKey> KeyboardKeyBindings { get; }
 		IEnumerable<GamepadButton> GamepadButtonBindings { get; }
 		IEnumerable<GamepadAxis> GamepadAxisBindings { get; }
 
-		void SetEnabled(bool enabled);
 		void ResetBindings();
 
-		void AddBinding(MouseButton button);
-		void AddBinding(KeyboardKey key);
-		void AddBinding(GamepadButton button);
+		IInputAction AddBinding(MouseButton button);
+		IInputAction AddBinding(MouseButton positiveButton, MouseButton negativeButton);
+		IInputAction AddBinding(KeyboardKey key);
+		IInputAction AddBinding(KeyboardKey positiveKey, KeyboardKey negativeKey);
+		IInputAction AddBinding(GamepadButton button);
+		IInputAction AddBinding(GamepadButton positiveButton, GamepadButton negativeButton);
 		void RemoveBinding(MouseButton button);
 		void RemoveBinding(KeyboardKey key);
 		void RemoveBinding(GamepadButton button);
 		bool IsPressed();
 		bool IsHeld();
+		float HeldDuration();
 		bool IsReleased();
 
-		void AddBinding(GamepadAxis axis);
+		IInputAction AddBinding(GamepadAxis axis);
 		void RemoveBinding(GamepadAxis axis);
 		float GetAxisValue();
 		void GetAxisRawValue(out float axisX, out float axisY);

@@ -3,10 +3,8 @@ namespace Ju.Input
 {
 	public interface IGamepadController : IController
 	{
-		bool Enabled { get; }
-		float Deadzone { get; }
-
-		void SetDeadzone(float deadzone);
+		bool Enabled { get; set; }
+		float Deadzone { get; set; }
 
 		bool IsAnyButtonPressed();
 		bool IsButtonPressed(GamepadButton button);

@@ -3,6 +3,9 @@ namespace Ju.Input
 {
 	public interface IMouseController : IController
 	{
+		MouseLockMode LockMode { get; set; }
+		bool Visible { get; set; }
+
 		bool IsAnyButtonPressed();
 		bool IsButtonPressed(MouseButton button);
 		bool IsButtonHeld(MouseButton button);
@@ -10,11 +13,8 @@ namespace Ju.Input
 		MouseButton FirstPressedButton();
 
 		void GetPosition(out int mouseX, out int mouseY);
-		void GetPositionDelta(out int mouseX, out int mouseY);
+		void GetPositionDelta(out float mouseX, out float mouseY);
 
 		float GetWheelDelta();
-
-		void SetLockMode(MouseLockMode mode);
-		void SetCursorVisible(bool visible);
 	}
 }

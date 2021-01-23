@@ -6,9 +6,9 @@ public static class IDataServiceExtensions
 {
 	private static readonly Identifier DEFAULT_ID = "base";
 
-	public static void Set<T>(this IDataService dataService, T obj)
+	public static void Set<T>(this IDataService dataService, T obj, bool overwrite = true)
 	{
-		dataService.Set(obj, DEFAULT_ID);
+		dataService.Set(obj, DEFAULT_ID, overwrite);
 	}
 
 	public static T Get<T>(this IDataService dataService) where T : class
@@ -25,7 +25,7 @@ public static class IDataServiceExtensions
 		dataService.ListAdd(obj, DEFAULT_ID);
 	}
 
-	public static IEnumerable<T> ListGet<T>(this IDataService dataService)
+	public static List<T> ListGet<T>(this IDataService dataService)
 	{
 		return dataService.ListGet<T>(DEFAULT_ID);
 	}

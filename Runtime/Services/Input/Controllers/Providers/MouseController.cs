@@ -7,6 +7,8 @@ namespace Ju.Services
 	public class MouseController : IMouseController
 	{
 		public string Id => "mouse";
+		public MouseLockMode LockMode { get => input.GetMouseCurrentLockMode(); set => input.SetMouseLockMode(value); }
+		public bool Visible { get => input.GetMouseVisibleStatus(); set => input.SetMouseCursorVisible(value); }
 
 		private readonly IInputServiceRaw input;
 
@@ -75,7 +77,7 @@ namespace Ju.Services
 			input.GetMousePosition(out mouseX, out mouseY);
 		}
 
-		public void GetPositionDelta(out int mouseX, out int mouseY)
+		public void GetPositionDelta(out float mouseX, out float mouseY)
 		{
 			input.GetMousePositionDelta(out mouseX, out mouseY);
 		}
@@ -83,16 +85,6 @@ namespace Ju.Services
 		public float GetWheelDelta()
 		{
 			return input.GetMouseWheelDelta();
-		}
-
-		public void SetLockMode(MouseLockMode mouseLockMode)
-		{
-			input.SetMouseLockMode(mouseLockMode);
-		}
-
-		public void SetCursorVisible(bool visible)
-		{
-			input.SetMouseCursorVisible(visible);
 		}
 	}
 }

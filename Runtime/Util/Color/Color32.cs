@@ -150,7 +150,7 @@ namespace Ju.ColorUtil
 
 		public override string ToString()
 		{
-			return "[ " + r + " , " + g + " , " + b + " , " + a + " ]";
+			return $"[ {r} , {g} , {b} , {a} ]";
 		}
 
 		private static byte Clamp(byte value)

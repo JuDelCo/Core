@@ -36,7 +36,7 @@ namespace Ju.Services
 
 		public void Start()
 		{
-			this.EventSubscribe<LoopUpdateEvent>(_ => Tick());
+			this.EventSubscribe<LoopUpdateEvent>(Tick);
 		}
 
 		private void Tick()

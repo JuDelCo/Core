@@ -11,7 +11,7 @@ using UnityEngine.InputSystem.Controls;
 
 namespace Ju.Services
 {
-	public class InputUnityService : InputService
+	public class InputUnityService : InputService, IServiceUnload
 	{
 		private ClockPrecise interval;
 		private readonly float UPDATE_INTERVAL = 2f;
@@ -28,6 +28,11 @@ namespace Ju.Services
 			{
 				ConnectGamepad(GetUniqueGamepadId(gamepad));
 			}
+		}
+
+		public void Unload()
+		{
+			UnityEngine.InputSystem.Keyboard.current.onTextInput -= OnTextInput;
 		}
 
 		private void OnTextInput(char character)
@@ -65,7 +70,7 @@ namespace Ju.Services
 
 		private string GetUniqueGamepadId(UnityEngine.InputSystem.Gamepad gamepad)
 		{
-			return "ID" + gamepad.deviceId + "_" + gamepad.name;
+			return $"ID{gamepad.deviceId}_{gamepad.name}";
 		}
 
 		public override bool GetMousePressedRaw(MouseButton button)
@@ -158,17 +163,42 @@ namespace Ju.Services
 			mouseY = (int)mousePosition.y.ReadUnprocessedValue();
 		}
 
-		public override void GetMousePositionDelta(out int mouseX, out int mouseY)
+		public override void GetMousePositionDelta(out float mouseX, out float mouseY)
 		{
 			var mouseDelta = UnityEngine.InputSystem.Mouse.current.delta;
 
-			mouseX = (int)mouseDelta.x.ReadUnprocessedValue();
-			mouseY = (int)mouseDelta.y.ReadUnprocessedValue();
+			mouseX = mouseDelta.x.ReadUnprocessedValue();
+			mouseY = mouseDelta.y.ReadUnprocessedValue();
 		}
 
 		public override float GetMouseWheelDelta()
 		{
 			return UnityEngine.InputSystem.Mouse.current.scroll.y.ReadUnprocessedValue();
+		}
+
+		public override MouseLockMode GetMouseCurrentLockMode()
+		{
+			var result = MouseLockMode.None;
+
+			switch (UnityEngine.Cursor.lockState)
+			{
+				case UnityEngine.CursorLockMode.None:
+					result = MouseLockMode.None;
+					break;
+				case UnityEngine.CursorLockMode.Confined:
+					result = MouseLockMode.Confined;
+					break;
+				case UnityEngine.CursorLockMode.Locked:
+					result = MouseLockMode.Locked;
+					break;
+			}
+
+			return result;
+		}
+
+		public override bool GetMouseVisibleStatus()
+		{
+			return UnityEngine.Cursor.visible;
 		}
 
 		public override void SetMouseLockMode(MouseLockMode mouseLockMode)

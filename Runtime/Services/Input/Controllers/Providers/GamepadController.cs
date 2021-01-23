@@ -7,8 +7,8 @@ namespace Ju.Services
 	public class GamepadController : IGamepadController
 	{
 		public string Id { get; }
-		public bool Enabled { get; private set; }
-		public float Deadzone { get; private set; }
+		public bool Enabled { get; set; }
+		public float Deadzone { get; set; }
 
 		private readonly IInputServiceRaw input;
 
@@ -18,16 +18,6 @@ namespace Ju.Services
 			Enabled = true;
 			this.input = input;
 			Deadzone = 0.2f;
-		}
-
-		public void SetEnabled(bool enabled)
-		{
-			Enabled = enabled;
-		}
-
-		public void SetDeadzone(float deadzone)
-		{
-			Deadzone = deadzone;
 		}
 
 		public bool IsAnyButtonPressed()

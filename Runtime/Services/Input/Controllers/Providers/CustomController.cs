@@ -4,24 +4,24 @@ namespace Ju.Input
 	public abstract class CustomController : IGamepadController
 	{
 		public abstract string Id { get; }
-		public abstract bool Enabled { get; }
-		public abstract float Deadzone { get; }
+		public virtual bool Enabled { get => true; set { } }
+		public virtual float Deadzone { get => 0f; set { } }
 
-		public abstract void SetDeadzone(float deadzone);
+		public virtual void SetDeadzone(float deadzone) { }
 
-		public abstract bool IsAnyButtonPressed();
-		public abstract bool IsButtonPressed(GamepadButton button);
-		public abstract bool IsButtonPressed(GamepadButtonRaw button);
-		public abstract bool IsButtonHeld(GamepadButton button);
-		public abstract bool IsButtonHeld(GamepadButtonRaw button);
-		public abstract bool IsButtonReleased(GamepadButton button);
-		public abstract bool IsButtonReleased(GamepadButtonRaw button);
-		public abstract GamepadButton FirstPressedButton();
+		public virtual bool IsAnyButtonPressed() => false;
+		public virtual bool IsButtonPressed(GamepadButton button) => false;
+		public virtual bool IsButtonPressed(GamepadButtonRaw button) => false;
+		public virtual bool IsButtonHeld(GamepadButton button) => false;
+		public virtual bool IsButtonHeld(GamepadButtonRaw button) => false;
+		public virtual bool IsButtonReleased(GamepadButton button) => false;
+		public virtual bool IsButtonReleased(GamepadButtonRaw button) => false;
+		public virtual GamepadButton FirstPressedButton() => GamepadButton.None;
 
-		public abstract bool IsAnyAxisPressed();
-		public abstract float GetAxis(GamepadAxis axis);
-		public abstract float GetAxis(GamepadAxisRaw axis);
-		public abstract void GetAxisRaw(GamepadAxis axis, out float axisX, out float axisY);
-		public abstract GamepadAxis FirstPressedAxis();
+		public virtual bool IsAnyAxisPressed() => false;
+		public virtual float GetAxis(GamepadAxis axis) => 0f;
+		public virtual float GetAxis(GamepadAxisRaw axis) => 0f;
+		public virtual void GetAxisRaw(GamepadAxis axis, out float axisX, out float axisY) { axisX = 0f; axisY = 0f; }
+		public virtual GamepadAxis FirstPressedAxis() => GamepadAxis.None;
 	}
 }

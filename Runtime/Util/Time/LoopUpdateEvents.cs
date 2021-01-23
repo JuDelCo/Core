@@ -40,11 +40,51 @@ namespace Ju.Time
 		}
 	}
 
+	public struct LoopPreFixedUpdateEvent : ILoopTimeEvent
+	{
+		public float DeltaTime { get; private set; }
+
+		public LoopPreFixedUpdateEvent(float fixedDeltaTime)
+		{
+			DeltaTime = fixedDeltaTime;
+		}
+	}
+
 	public struct LoopFixedUpdateEvent : ILoopTimeEvent
 	{
 		public float DeltaTime { get; private set; }
 
 		public LoopFixedUpdateEvent(float fixedDeltaTime)
+		{
+			DeltaTime = fixedDeltaTime;
+		}
+	}
+
+	public struct LoopPreCollisionsUpdateEvent : ILoopTimeEvent
+	{
+		public float DeltaTime { get; private set; }
+
+		public LoopPreCollisionsUpdateEvent(float fixedDeltaTime)
+		{
+			DeltaTime = fixedDeltaTime;
+		}
+	}
+
+	public struct LoopPostCollisionsUpdateEvent : ILoopTimeEvent
+	{
+		public float DeltaTime { get; private set; }
+
+		public LoopPostCollisionsUpdateEvent(float fixedDeltaTime)
+		{
+			DeltaTime = fixedDeltaTime;
+		}
+	}
+
+	public struct LoopPostFixedUpdateEvent : ILoopTimeEvent
+	{
+		public float DeltaTime { get; private set; }
+
+		public LoopPostFixedUpdateEvent(float fixedDeltaTime)
 		{
 			DeltaTime = fixedDeltaTime;
 		}

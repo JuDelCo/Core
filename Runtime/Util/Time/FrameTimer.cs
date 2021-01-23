@@ -15,7 +15,7 @@ namespace Ju.Time
 		public FrameTimer(int frames)
 		{
 			linkHandler = new DisposableLinkHandler(false);
-			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, _ => Tick());
+			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, Tick);
 
 			this.duration = frames;
 		}

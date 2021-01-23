@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ju.Handlers;
+using ChannelId = System.Byte;
 using EventAction = System.Object;
 using EventType = System.Type;
 
@@ -20,7 +21,7 @@ namespace Ju.Services
 
 	public class EventBusService : IEventBusService
 	{
-		public event EventBusServiceFiredEvent OnEventFired = delegate { };
+		public event EventBusServiceFiredEvent OnEventFired;
 
 		public event LogMessageEvent OnLogDebug = delegate { };
 		public event LogMessageEvent OnLogInfo = delegate { };
@@ -28,22 +29,23 @@ namespace Ju.Services
 		public event LogMessageEvent OnLogWarning = delegate { };
 		public event LogMessageEvent OnLogError = delegate { };
 
-		private Dictionary<EventType, List<EventHandleActionPair>> actions = null;
+		private Dictionary<EventType, List<EventHandleActionPair>>[] actions = null;
 
 		private uint callStackCounter = 0;
-		private Type firstEventType = null;
+		private Stack<EventType> stackEventTypes = null;
 		private const int MAX_EVENT_STACK_LIMIT = 999;
 
 		public virtual void Setup()
 		{
-			actions = new Dictionary<EventType, List<EventHandleActionPair>>();
+			actions = new Dictionary<EventType, List<EventHandleActionPair>>[Byte.MaxValue];
+			stackEventTypes = new Stack<EventType>();
 		}
 
 		public void Start()
 		{
 		}
 
-		public void Subscribe<T>(ILinkHandler handle, Action<T> action)
+		public void Subscribe<T>(ChannelId channel, ILinkHandler handle, Action<T> action)
 		{
 			var type = typeof(T);
 
@@ -53,48 +55,55 @@ namespace Ju.Services
 				return;
 			}
 
-			if (!actions.ContainsKey(type))
+			if (actions[channel] == null)
 			{
-				actions.Add(type, new List<EventHandleActionPair>());
+				actions[channel] = new Dictionary<EventType, List<EventHandleActionPair>>();
 			}
 
-			actions[type].Add(new EventHandleActionPair(handle, action));
+			var channelActions = actions[channel];
+
+			if (!channelActions.ContainsKey(type))
+			{
+				channelActions.Add(type, new List<EventHandleActionPair>());
+			}
+
+			channelActions[type].Add(new EventHandleActionPair(handle, action));
 		}
 
-		public void Fire<T>() where T : struct
-		{
-			Fire(default(T));
-		}
-
-		public void Fire<T>(T data)
+		public void Fire<T>(ChannelId channel, T data)
 		{
 			var type = typeof(T);
 
-			if (!actions.ContainsKey(type))
+			var channelActions = actions[channel];
+
+			if (channelActions == null || !channelActions.ContainsKey(type))
 			{
-				OnEventFired(type, data, 0);
+				if (OnEventFired != null)
+				{
+					OnEventFired(channel, type, data, 0);
+				}
+
 				return;
 			}
 
-			var actionList = actions[type];
-
-			if (callStackCounter == 0)
+			if (callStackCounter > MAX_EVENT_STACK_LIMIT)
 			{
-				firstEventType = typeof(T);
-			}
-			else if (callStackCounter > MAX_EVENT_STACK_LIMIT)
-			{
-				OnLogError("Max event stack reached, ignoring event of type {0}", firstEventType.Name);
+				OnLogError("Max event stack reached, ignoring event of type {0}", type.Name);
 				return;
 			}
 
-			OnEventFired(type, data, actionList.Count);
+			var actionList = channelActions[type];
+
+			if (OnEventFired != null)
+			{
+				OnEventFired(channel, type, data, actionList.Count);
+			}
 
 			for (int i = actionList.Count - 1; i >= 0; --i)
 			{
-				if (callStackCounter > 0 && firstEventType == typeof(T))
+				if (stackEventTypes.Contains(type))
 				{
-					OnLogWarning("An event action of type {0} has fired another event of the same type. This can lead to stackoverflow issues.", firstEventType.Name);
+					OnLogWarning("An event action of type {0} has fired another event of the same type. This can lead to stackoverflow issues.", type.Name);
 				}
 
 				var handle = actionList[i].handle;
@@ -113,6 +122,7 @@ namespace Ju.Services
 
 				var action = (Action<T>)actionList[i].action;
 
+				stackEventTypes.Push(type);
 				callStackCounter++;
 
 				if (System.Diagnostics.Debugger.IsAttached)
@@ -127,11 +137,12 @@ namespace Ju.Services
 					}
 					catch (Exception e)
 					{
-						OnLogError("Uncaught event exception (Type: {0})", typeof(T).ToString(), e);
+						OnLogError("Uncaught event exception (Type: {0})", type.Name, e);
 					}
 				}
 
 				callStackCounter--;
+				stackEventTypes.Pop();
 			}
 		}
 	}

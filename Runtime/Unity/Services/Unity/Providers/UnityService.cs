@@ -30,6 +30,9 @@ namespace Ju.Services
 		private struct UnityServiceLoopUpdateHook { };
 		private struct UnityServiceLoopPostUpdateHook { };
 		private struct UnityServiceLoopFixedUpdateHook { };
+		private struct UnityServiceLoopPreCollisionsUpdateHook { };
+		private struct UnityServiceLoopPostCollisionsUpdateHook { };
+		private struct UnityServiceLoopPostFixedUpdateHook { };
 
 		public void Setup()
 		{
@@ -47,31 +50,30 @@ namespace Ju.Services
 				OnLogWarning("NET Debugger detected");
 			}
 
-			Application.lowMemory += () =>
-			{
-				OnLogWarning("Low memory detected");
-				Resources.UnloadUnusedAssets();
-			};
-
 			SubscribeApplicationStateEvents();
 			SubscribeLoopEvents();
 		}
 
 		private void SubscribeApplicationStateEvents()
 		{
+			Application.lowMemory += HandleLowMemoryWarning;
 			Application.wantsToQuit += OnUnityApplicationWantsToQuit;
+			SceneManager.sceneLoaded += OnUnitySceneLoaded;
 
 #if UNITY_EDITOR
-			UnityEditor.EditorApplication.playModeStateChanged += state =>
-			{
-				if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode && !quitting)
-				{
-					UnityEditor.EditorApplication.isPlaying = !OnUnityApplicationWantsToQuit();
-				}
-			};
+			UnityEditor.EditorApplication.playModeStateChanged += HandleEditorPlayModeStateChanged;
 #endif
+		}
 
-			SceneManager.sceneLoaded += OnUnitySceneLoaded;
+		private void UnsubscribeApplicationStateEvents()
+		{
+			Application.lowMemory -= HandleLowMemoryWarning;
+			Application.wantsToQuit -= OnUnityApplicationWantsToQuit;
+			SceneManager.sceneLoaded -= OnUnitySceneLoaded;
+
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.playModeStateChanged -= HandleEditorPlayModeStateChanged;
+#endif
 		}
 
 		private void SubscribeLoopEvents()
@@ -114,7 +116,20 @@ namespace Ju.Services
 					{
 						if (subSystem.subSystemList[index].type == typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate))
 						{
-							loop.subSystemList[mainSystemIndex] = InsertLoopSubSystem(OnUnityFixedUpdate, typeof(UnityServiceLoopFixedUpdateHook), subSystem, index);
+							var modifiedSubSystem = InsertLoopSubSystem(OnUnityFixedUpdate, typeof(UnityServiceLoopFixedUpdateHook), subSystem, index);
+							loop.subSystemList[mainSystemIndex] = InsertLoopSubSystem(OnUnityPreCollisionsUpdate, typeof(UnityServiceLoopPreCollisionsUpdateHook), modifiedSubSystem, index + 2);
+							break;
+						}
+					}
+
+					subSystem = loop.subSystemList[mainSystemIndex];
+
+					for (int index = 0, count = subSystem.subSystemList.Length; index < count; ++index)
+					{
+						if (subSystem.subSystemList[index].type == typeof(FixedUpdate.ScriptRunDelayedFixedFrameRate))
+						{
+							var modifiedSubSystem = InsertLoopSubSystem(OnUnityPostCollisionsUpdate, typeof(UnityServiceLoopPostCollisionsUpdateHook), subSystem, index + 1);
+							loop.subSystemList[mainSystemIndex] = InsertLoopSubSystem(OnUnityPostFixedUpdate, typeof(UnityServiceLoopPostFixedUpdateHook), modifiedSubSystem, index + 2);
 							break;
 						}
 					}
@@ -180,6 +195,7 @@ namespace Ju.Services
 
 		private void OnUnityFixedUpdate()
 		{
+			eventService.Fire(new LoopPreFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 			eventService.Fire(new LoopFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 
 			if (Application.isFocused && !appHasFocus)
@@ -194,6 +210,21 @@ namespace Ju.Services
 			}
 		}
 
+		private void OnUnityPreCollisionsUpdate()
+		{
+			eventService.Fire(new LoopPreCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+		}
+
+		private void OnUnityPostCollisionsUpdate()
+		{
+			eventService.Fire(new LoopPostCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+		}
+
+		private void OnUnityPostFixedUpdate()
+		{
+			eventService.Fire(new LoopPostFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+		}
+
 		private void OnUnitySceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
 		{
 			eventService.Fire(new UnitySceneLoadedEvent(scene.buildIndex, scene.name, loadSceneMode));
@@ -203,6 +234,23 @@ namespace Ju.Services
 		{
 			eventService.Fire(new UnityApplicationFocusEvent(hasFocus));
 		}
+
+		private void HandleLowMemoryWarning()
+		{
+			OnLogWarning("Low memory detected");
+
+			Resources.UnloadUnusedAssets();
+		}
+
+#if UNITY_EDITOR
+		private void HandleEditorPlayModeStateChanged(UnityEditor.PlayModeStateChange state)
+		{
+			if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode && !quitting)
+			{
+				UnityEditor.EditorApplication.isPlaying = !OnUnityApplicationWantsToQuit();
+			}
+		}
+#endif
 
 		private bool OnUnityApplicationWantsToQuit()
 		{
@@ -238,6 +286,8 @@ namespace Ju.Services
 			{
 				UnityEngine.Object.Destroy(obj);
 			}
+
+			UnsubscribeApplicationStateEvents();
 
 			this.CoroutineStart(DelayedDisposeServices());
 		}

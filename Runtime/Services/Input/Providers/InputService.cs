@@ -42,20 +42,22 @@ namespace Ju.Services
 		{
 			Initialize();
 
-			this.EventSubscribe<LoopPreUpdateEvent>(_ =>
+			this.EventSubscribe<LoopPreUpdateEvent>(e =>
 			{
-				UpdateActions();
+				UpdateActions(e.DeltaTime);
 				Update();
 			});
 		}
 
-		private void UpdateActions()
+		private void UpdateActions(float deltaTime)
 		{
 			foreach (var player in players)
 			{
-				foreach (InputAction action in player.Actions)
+				var actions = (List<IInputAction>)player.Actions;
+
+				foreach (InputAction action in actions)
 				{
-					action.Update();
+					action.Update(deltaTime);
 				}
 			}
 		}
@@ -80,7 +82,7 @@ namespace Ju.Services
 
 				if (!gamepad.Enabled)
 				{
-					gamepad.SetEnabled(true);
+					gamepad.Enabled = true;
 
 					OnGamepadConnected(gamepad);
 				}
@@ -93,7 +95,7 @@ namespace Ju.Services
 
 			if (gamepad.Enabled)
 			{
-				gamepad.SetEnabled(false);
+				gamepad.Enabled = false;
 
 				OnGamepadDisconnected(gamepad);
 			}

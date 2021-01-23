@@ -13,7 +13,7 @@ namespace Ju.Time
 		public FrameClock()
 		{
 			linkHandler = new DisposableLinkHandler(false);
-			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, _ => Tick());
+			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, Tick);
 		}
 
 		public FrameClock(int elapsedFrames) : this()

@@ -10,6 +10,7 @@ namespace Ju.Input
 		IEnumerable<IController> Controllers { get; }
 
 		IInputAction AddAction(string actionId);
+		IInputAction GetAction(string actionId);
 		void RemoveAction(IInputAction action);
 
 		void BindController(IController controller);

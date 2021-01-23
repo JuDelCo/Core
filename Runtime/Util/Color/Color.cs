@@ -142,7 +142,7 @@ namespace Ju.ColorUtil
 
 		public override string ToString()
 		{
-			return "[ " + r + " , " + g + " , " + b + " , " + a + " ]";
+			return $"[ {r} , {g} , {b} , {a} ]";
 		}
 
 		private static float Clamp01(float value)

@@ -11,8 +11,10 @@ namespace Ju.Services
 		public abstract bool GetMouseHeldRaw(MouseButton button);
 		public abstract bool GetMouseReleasedRaw(MouseButton button);
 		public abstract void GetMousePosition(out int mouseX, out int mouseY);
-		public abstract void GetMousePositionDelta(out int mouseX, out int mouseY);
+		public abstract void GetMousePositionDelta(out float mouseX, out float mouseY);
 		public abstract float GetMouseWheelDelta();
+		public abstract MouseLockMode GetMouseCurrentLockMode();
+		public abstract bool GetMouseVisibleStatus();
 		public abstract void SetMouseLockMode(MouseLockMode mouseLockMode);
 		public abstract void SetMouseCursorVisible(bool visible);
 

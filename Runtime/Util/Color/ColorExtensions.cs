@@ -145,7 +145,7 @@ namespace Ju.ColorUtil
 			float blue = color.b;
 			float max = Max(red, green, blue);
 
-			return max / 255f;
+			return max;
 		}
 
 		public static float BrightnessPerceived(this Color color)
