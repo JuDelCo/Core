@@ -13,6 +13,7 @@ namespace Ju.Services
 		private List<float> unscaledDeltaTimeHistory;
 
 		private const int SMOOTH_AVERAGE_COUNT = 10;
+		private float originalFixedDeltaTime;
 
 		public void Setup()
 		{
@@ -51,6 +52,8 @@ namespace Ju.Services
 			deltaTimeHistory.Add(DeltaTime);
 			unscaledDeltaTimeHistory.Add(UnscaledDeltaTime);
 
+			originalFixedDeltaTime = UnityEngine.Time.fixedDeltaTime;
+
 			this.EventSubscribe<LoopPreUpdateEvent>(PreUpdate);
 			this.EventSubscribe<LoopPreFixedUpdateEvent>(PreFixedUpdate);
 		}
@@ -60,6 +63,7 @@ namespace Ju.Services
 			TimeScale = timeScale;
 
 			UnityEngine.Time.timeScale = timeScale;
+			UnityEngine.Time.fixedDeltaTime = originalFixedDeltaTime * timeScale;
 		}
 
 		private void PreUpdate()
