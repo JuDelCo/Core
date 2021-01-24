@@ -27,28 +27,31 @@ Contents
 #### Core
 - [Service Container](https://github.com/JuDelCo/Core/wiki/Usage.Service-Container)
 - [Service Interfaces](https://github.com/JuDelCo/Core/wiki/Usage.Services)
+- [LoopUpdate Events](https://github.com/JuDelCo/Core/wiki/Usage.LoopUpdate-Events)
+- [LinkHandlers](https://github.com/JuDelCo/Core/wiki/Usage.LinkHandlers)
 
 #### Services
 
-- [Log](https://github.com/JuDelCo/Core/wiki/API.Service.Log)
-- [EventBus](https://github.com/JuDelCo/Core/wiki/API.Service.EventBus)
-- [Data](https://github.com/JuDelCo/Core/wiki/API.Service.Data)
 - [Coroutine](https://github.com/JuDelCo/Core/wiki/API.Service.Coroutine)
-- [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
+- [Data](https://github.com/JuDelCo/Core/wiki/API.Service.Data)
+- [EventBus](https://github.com/JuDelCo/Core/wiki/API.Service.EventBus)
 - [Input](https://github.com/JuDelCo/Core/wiki/API.Service.Input)
+- [Log](https://github.com/JuDelCo/Core/wiki/API.Service.Log)
+- [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
+- [Time](https://github.com/JuDelCo/Core/wiki/API.Service.Time)
 - [Extensions](https://github.com/JuDelCo/Core/wiki/API.Service.Extensions)
 
 #### Util
 
-- [Promises](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
-- [Observables](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
-- [ObjectPool](https://github.com/JuDelCo/Core/wiki/API.Util.ObjectPool)
-- [Finite State Machine](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
-	- FSM
-	- SimpleFSM
 - [Color](https://github.com/JuDelCo/Core/wiki/API.Util.Color)
 	- Color
 	- Color32
+- [Finite State Machine](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
+	- FSM
+	- SimpleFSM
+- [ObjectPool](https://github.com/JuDelCo/Core/wiki/API.Util.ObjectPool)
+- [Observables](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
+- [Promises](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
 - [Time](https://github.com/JuDelCo/Core/wiki/API.Util.Time)
 	- Span
 	- Clock
@@ -79,7 +82,7 @@ Contents
 The MIT License (MIT)
 =====================
 
-Copyright © 2016-2021 Juan Delgado (JuDelCo)
+Copyright © 2016-2021 Juan Delgado (@JuDelCo)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
