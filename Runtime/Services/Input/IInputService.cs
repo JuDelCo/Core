@@ -8,7 +8,7 @@ namespace Ju.Services
 {
 	public delegate void InputServiceGamepadStatusEvent(IGamepadController controller);
 
-	public interface IInputService : IServiceLoad, ILoggableService
+	public interface IInputService
 	{
 		event InputServiceGamepadStatusEvent OnGamepadConnected;
 		event InputServiceGamepadStatusEvent OnGamepadDisconnected;

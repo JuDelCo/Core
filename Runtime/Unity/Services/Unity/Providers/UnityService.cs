@@ -14,7 +14,7 @@ using UnityEngine.SceneManagement;
 
 namespace Ju.Services
 {
-	public class UnityService : IUnityService
+	public class UnityService : IUnityService, IServiceLoad, ILoggableService
 	{
 		public event UnityServiceQuitRequestedEvent OnApplicationWantsToQuit;
 		public event UnityServiceQuitEvent OnApplicationQuit;
@@ -36,7 +36,7 @@ namespace Ju.Services
 		private struct UnityServiceLoopPostCollisionsUpdateHook { };
 		private struct UnityServiceLoopPostFixedUpdateHook { };
 
-		public void Setup()
+		public void Load()
 		{
 			if (Application.genuineCheckAvailable)
 			{

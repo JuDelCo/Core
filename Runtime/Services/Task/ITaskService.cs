@@ -8,7 +8,7 @@ using Ju.Time;
 
 namespace Ju.Services
 {
-	public interface ITaskService : IServiceLoad, ILoggableService
+	public interface ITaskService
 	{
 		void RunOnMainThread(Action action, float delay = 0f);
 

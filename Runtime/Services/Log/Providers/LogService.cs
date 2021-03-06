@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Ju.Services
 {
-	public class LogService : ILogService
+	public class LogService : ILogService, IServiceLoad
 	{
 		public event LogServiceEvent OnDebugMessage = delegate { };
 		public event LogServiceEvent OnInfoMessage = delegate { };
@@ -18,7 +18,7 @@ namespace Ju.Services
 		private LogLevel minLogLevel = LogLevel.Debug;
 		private StringBuilder sb;
 
-		public void Setup()
+		public void Load()
 		{
 			sb = new StringBuilder();
 		}

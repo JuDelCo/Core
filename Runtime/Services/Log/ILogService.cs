@@ -6,7 +6,7 @@ namespace Ju.Services
 	public delegate void LogServiceEvent(string message, string timeStamp, params object[] args);
 	public delegate void LogGeneralServiceEvent(string message, string timeStamp, LogLevel logLevel, params object[] args);
 
-	public interface ILogService : IServiceLoad
+	public interface ILogService
 	{
 		event LogServiceEvent OnDebugMessage;
 		event LogServiceEvent OnInfoMessage;

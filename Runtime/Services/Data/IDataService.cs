@@ -8,7 +8,7 @@ namespace Ju.Services
 {
 	public delegate void DataServiceListEvent(Type type, object obj);
 
-	public interface IDataService : IServiceLoad, ILoggableService
+	public interface IDataService
 	{
 		event DataServiceListEvent OnListAdd;
 		event DataServiceListEvent OnListRemove;

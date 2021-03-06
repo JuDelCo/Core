@@ -154,7 +154,7 @@ namespace Ju.Services
 
 				if (service is IServiceLoad serviceLoad)
 				{
-					serviceLoad.Setup();
+					serviceLoad.Load();
 				}
 			}
 			else

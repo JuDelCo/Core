@@ -5,7 +5,7 @@
 
 namespace Ju.Services
 {
-	public interface ILogUnityService : IServiceLoad
+	public interface ILogUnityService
 	{
 	}
 }

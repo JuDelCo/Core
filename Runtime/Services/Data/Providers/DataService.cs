@@ -8,7 +8,7 @@ using Identifier = System.String;
 
 namespace Ju.Services
 {
-	public class DataService : IDataService
+	public class DataService : IDataService, IServiceLoad, ILoggableService
 	{
 		public event DataServiceListEvent OnListAdd = delegate { };
 		public event DataServiceListEvent OnListRemove = delegate { };
@@ -22,7 +22,7 @@ namespace Ju.Services
 		private Dictionary<Type, Dictionary<Identifier, object>> sharedItems;
 		private Dictionary<Type, Dictionary<Identifier, object>> listItems;
 
-		public void Setup()
+		public void Load()
 		{
 			sharedItems = new Dictionary<Type, Dictionary<Identifier, object>>();
 			listItems = new Dictionary<Type, Dictionary<Identifier, object>>();

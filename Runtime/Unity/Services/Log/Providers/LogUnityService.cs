@@ -8,9 +8,9 @@ using UnityEngine;
 
 namespace Ju.Services
 {
-	public class LogUnityService : ILogUnityService
+	public class LogUnityService : ILogUnityService, IServiceLoad
 	{
-		public void Setup()
+		public void Load()
 		{
 			var logService = ServiceContainer.Get<ILogService>();
 			logService.SetLogLevel(LogLevel.Debug);

@@ -9,7 +9,7 @@ using Ju.Time;
 
 namespace Ju.Services
 {
-	public abstract class InputService : IInputServiceRaw, IInputService
+	public abstract class InputService : IInputServiceRaw, IInputService, IServiceLoad, ILoggableService
 	{
 		public event InputServiceGamepadStatusEvent OnGamepadConnected = delegate { };
 		public event InputServiceGamepadStatusEvent OnGamepadDisconnected = delegate { };
@@ -32,7 +32,7 @@ namespace Ju.Services
 		protected List<IGamepadController> gamepads;
 		protected List<IGamepadController> customControllers;
 
-		public void Setup()
+		public void Load()
 		{
 			players = new List<IInputPlayer>();
 			mouse = new MouseController(this);

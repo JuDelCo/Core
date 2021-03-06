@@ -8,7 +8,7 @@ namespace Ju.Services
 	public delegate bool UnityServiceQuitRequestedEvent();
 	public delegate void UnityServiceQuitEvent();
 
-	public interface IUnityService : IServiceLoad, ILoggableService
+	public interface IUnityService
 	{
 		event UnityServiceQuitRequestedEvent OnApplicationWantsToQuit;
 		event UnityServiceQuitEvent OnApplicationQuit;

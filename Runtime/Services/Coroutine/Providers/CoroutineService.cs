@@ -22,7 +22,7 @@ namespace Ju.Services
 		}
 	}
 
-	public class CoroutineService : ICoroutineService
+	public class CoroutineService : ICoroutineService, IServiceLoad, ILoggableService
 	{
 		public event LogMessageEvent OnLogDebug = delegate { };
 		public event LogMessageEvent OnLogInfo = delegate { };
@@ -33,7 +33,7 @@ namespace Ju.Services
 		private readonly List<CoroutineHandlePair> coroutines = new List<CoroutineHandlePair>();
 		private readonly List<CoroutineHandlePair> coroutinesRunner = new List<CoroutineHandlePair>();
 
-		public void Setup()
+		public void Load()
 		{
 			this.EventSubscribe<LoopUpdateEvent>(Tick);
 		}

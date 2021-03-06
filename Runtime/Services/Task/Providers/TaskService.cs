@@ -24,7 +24,7 @@ namespace Ju.Services
 		}
 	}
 
-	public class TaskService : ITaskService
+	public class TaskService : ITaskService, IServiceLoad, ILoggableService
 	{
 		public event LogMessageEvent OnLogDebug = delegate { };
 		public event LogMessageEvent OnLogInfo = delegate { };
@@ -35,7 +35,7 @@ namespace Ju.Services
 		private readonly List<TaskPromise> actions = new List<TaskPromise>();
 		private readonly List<TaskPromise> actionsRunner = new List<TaskPromise>();
 
-		public void Setup()
+		public void Load()
 		{
 			this.EventSubscribe<LoopUpdateEvent>(Tick);
 		}

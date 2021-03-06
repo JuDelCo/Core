@@ -10,7 +10,7 @@ namespace Ju.Services
 {
 	public delegate void EventBusServiceFiredEvent(ChannelId channel, EventType type, object obj, int actionCount);
 
-	public interface IEventBusService : IServiceLoad, ILoggableService
+	public interface IEventBusService
 	{
 		event EventBusServiceFiredEvent OnEventFired;
 

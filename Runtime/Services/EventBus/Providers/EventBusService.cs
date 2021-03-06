@@ -28,7 +28,7 @@ namespace Ju.Services
 		}
 	}
 
-	public class EventBusService : IEventBusService
+	public class EventBusService : IEventBusService, IServiceLoad, ILoggableService
 	{
 		public event EventBusServiceFiredEvent OnEventFired;
 
@@ -50,7 +50,7 @@ namespace Ju.Services
 		private const int MAX_EVENT_STACK_LIMIT = 128;
 		private Thread mainThread;
 
-		public void Setup()
+		public void Load()
 		{
 			subscribers = new Dictionary<EventType, List<SubscriberData>>[Byte.MaxValue];
 			cachedSubscribers = new List<SubscriberData>[MAX_EVENT_STACK_LIMIT];

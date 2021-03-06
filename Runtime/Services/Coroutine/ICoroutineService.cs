@@ -6,7 +6,7 @@ using Ju.Handlers;
 
 namespace Ju.Services
 {
-	public interface ICoroutineService : IServiceLoad, ILoggableService
+	public interface ICoroutineService
 	{
 		Coroutine StartCoroutine(ILinkHandler handle, IEnumerator routine);
 	}

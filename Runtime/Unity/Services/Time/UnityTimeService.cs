@@ -17,7 +17,7 @@ namespace Ju.Services
 		private const int SMOOTH_AVERAGE_COUNT = 10;
 		private float originalFixedDeltaTime;
 
-		public void Setup()
+		public void Load()
 		{
 			deltaTimeHistory = new List<float>(SMOOTH_AVERAGE_COUNT);
 			unscaledDeltaTimeHistory = new List<float>(SMOOTH_AVERAGE_COUNT);
