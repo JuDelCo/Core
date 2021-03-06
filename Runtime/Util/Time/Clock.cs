@@ -7,7 +7,7 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class Clock<T> : IClock, IDisposable where T : ILoopTimeEvent
+	public class Clock<T> : IClock where T : ILoopTimeEvent
 	{
 		private readonly DisposableLinkHandler linkHandler;
 		private Span elapsed;

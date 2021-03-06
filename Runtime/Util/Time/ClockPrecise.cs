@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
+using System;
+
 namespace Ju.Time
 {
 	public class ClockPrecise : IClock
@@ -29,6 +31,11 @@ namespace Ju.Time
 		public Span GetElapsedTime()
 		{
 			return Span.Now() - startTime;
+		}
+
+		public void Dispose()
+		{
+			GC.SuppressFinalize(this);
 		}
 	}
 }

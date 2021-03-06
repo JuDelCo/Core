@@ -91,25 +91,25 @@ public static class StateUtilitiesExtensions
 		return ServiceContainer.Get<ITaskService>().WaitForNextFixedUpdate(new StateLinkHandler(state));
 	}
 
-	public static Clock<T> NewClock<T>(this State state) where T : ILoopTimeEvent
+	public static IClock NewClock<T>(this State state) where T : ILoopTimeEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new Clock<T>(() => linkHandler.IsActive);
 	}
 
-	public static Clock<T> NewClock<T>(this State state, float elapsedSeconds) where T : ILoopTimeEvent
+	public static IClock NewClock<T>(this State state, float elapsedSeconds) where T : ILoopTimeEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 	}
 
-	public static Timer<T> NewTimer<T>(this State state, float seconds, Action onCompleted) where T : ILoopTimeEvent
+	public static ITimer NewTimer<T>(this State state, float seconds, Action onCompleted) where T : ILoopTimeEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);
 	}
 
-	public static FrameTimer<T> NewFrameTimer<T>(this State state, int frames, Action onCompleted) where T : ILoopEvent
+	public static IFrameTimer NewFrameTimer<T>(this State state, int frames, Action onCompleted) where T : ILoopEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new FrameTimer<T>(frames, onCompleted, () => linkHandler.IsActive);

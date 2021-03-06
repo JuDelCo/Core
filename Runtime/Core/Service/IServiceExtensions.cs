@@ -91,5 +91,29 @@ namespace Ju.Services.Extensions
 		{
 			return ServiceContainer.Get<ITaskService>().WaitForNextFixedUpdate(new ObjectLinkHandler<IService>(service));
 		}
+
+		public static IClock NewClock<T>(this IService service) where T : ILoopTimeEvent
+		{
+			var linkHandler = new ObjectLinkHandler<IService>(service);
+			return new Clock<T>(() => linkHandler.IsActive);
+		}
+
+		public static IClock NewClock<T>(this IService service, float elapsedSeconds) where T : ILoopTimeEvent
+		{
+			var linkHandler = new ObjectLinkHandler<IService>(service);
+			return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
+		}
+
+		public static ITimer NewTimer<T>(this IService service, float seconds, Action onCompleted) where T : ILoopTimeEvent
+		{
+			var linkHandler = new ObjectLinkHandler<IService>(service);
+			return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);
+		}
+
+		public static IFrameTimer NewFrameTimer<T>(this IService service, int frames, Action onCompleted) where T : ILoopEvent
+		{
+			var linkHandler = new ObjectLinkHandler<IService>(service);
+			return new FrameTimer<T>(frames, onCompleted, () => linkHandler.IsActive);
+		}
 	}
 }

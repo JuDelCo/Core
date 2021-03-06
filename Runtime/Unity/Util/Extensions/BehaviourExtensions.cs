@@ -127,25 +127,25 @@ namespace Ju.Extensions
 			return ServiceContainer.Get<ITaskService>().WaitForNextFixedUpdate(new BehaviourLinkHandler(behaviour, alwaysActive));
 		}
 
-		public static Clock<T> NewClock<T>(this Behaviour behaviour, bool alwaysActive = false) where T : ILoopTimeEvent
+		public static IClock NewClock<T>(this Behaviour behaviour, bool alwaysActive = false) where T : ILoopTimeEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new Clock<T>(() => linkHandler.IsActive);
 		}
 
-		public static Clock<T> NewClock<T>(this Behaviour behaviour, float elapsedSeconds, bool alwaysActive = false) where T : ILoopTimeEvent
+		public static IClock NewClock<T>(this Behaviour behaviour, float elapsedSeconds, bool alwaysActive = false) where T : ILoopTimeEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 		}
 
-		public static Timer<T> NewTimer<T>(this Behaviour behaviour, float seconds, Action onCompleted, bool alwaysActive = false) where T : ILoopTimeEvent
+		public static ITimer NewTimer<T>(this Behaviour behaviour, float seconds, Action onCompleted, bool alwaysActive = false) where T : ILoopTimeEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);
 		}
 
-		public static FrameTimer<T> NewFrameTimer<T>(this Behaviour behaviour, int frames, Action onCompleted, bool alwaysActive = false) where T : ILoopEvent
+		public static IFrameTimer NewFrameTimer<T>(this Behaviour behaviour, int frames, Action onCompleted, bool alwaysActive = false) where T : ILoopEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new FrameTimer<T>(frames, onCompleted, () => linkHandler.IsActive);
