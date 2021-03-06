@@ -12,8 +12,6 @@ namespace Ju.Services
 	{
 		public void Setup()
 		{
-			// IMPORTANT: Other services should be accessed always on Start(), not here in Setup().
-			// This is a special case because ILogService is always available and we want catch all the log messages from the start.
 			var logService = ServiceContainer.Get<ILogService>();
 			logService.SetLogLevel(LogLevel.Debug);
 
@@ -22,10 +20,6 @@ namespace Ju.Services
 			logService.OnNoticeMessage += OnNoticeMessage;
 			logService.OnWarningMessage += OnWarningMessage;
 			logService.OnErrorMessage += OnErrorMessage;
-		}
-
-		public void Start()
-		{
 		}
 
 		private void OnDebugMessage(string message, string timeStamp, params object[] args)

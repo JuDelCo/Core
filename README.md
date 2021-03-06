@@ -1,7 +1,7 @@
 JuCore
 =====================
 
-JuCore is a service locator, object factory and a collection of basic services to ease the development of C# applications or games.
+JuCore is a service locator with lots of useful services to ease the development of C# applications and games.
 
 Any feedback is welcome !
 

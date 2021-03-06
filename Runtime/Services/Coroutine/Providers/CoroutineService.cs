@@ -35,10 +35,6 @@ namespace Ju.Services
 
 		public void Setup()
 		{
-		}
-
-		public void Start()
-		{
 			this.EventSubscribe<LoopUpdateEvent>(Tick);
 		}
 

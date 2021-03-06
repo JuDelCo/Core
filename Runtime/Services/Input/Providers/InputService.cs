@@ -39,10 +39,7 @@ namespace Ju.Services
 			keyboard = new KeyboardController(this);
 			gamepads = new List<IGamepadController>();
 			customControllers = new List<IGamepadController>();
-		}
 
-		public void Start()
-		{
 			Initialize();
 
 			this.EventSubscribe<LoopPreUpdateEvent>(e =>

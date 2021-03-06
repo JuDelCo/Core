@@ -9,18 +9,11 @@ namespace Ju.Services
 {
 	public abstract class YieldInstruction : IEnumerator
 	{
-		public virtual bool KeepWaiting { get { return false; } }
+		public abstract bool KeepWaiting { get; }
+		public abstract object Current { get; }
 
-		public virtual object Current { get { return null; } }
-
-		public virtual bool MoveNext()
-		{
-			return KeepWaiting;
-		}
-
-		public virtual void Reset()
-		{
-		}
+		public abstract bool MoveNext();
+		public abstract void Reset();
 	}
 
 	public class Coroutine : YieldInstruction
@@ -50,7 +43,21 @@ namespace Ju.Services
 		}
 	}
 
-	public class TaskWaitUntil : YieldInstruction
+	public abstract class YieldTaskBase : YieldInstruction
+	{
+		public override object Current { get { return null; } }
+
+		public override bool MoveNext()
+		{
+			return KeepWaiting;
+		}
+
+		public override void Reset()
+		{
+		}
+	}
+
+	public class TaskWaitUntil : YieldTaskBase
 	{
 		public override bool KeepWaiting { get { return !condition(); } }
 
@@ -62,7 +69,7 @@ namespace Ju.Services
 		}
 	}
 
-	public class TaskWaitWhile : YieldInstruction
+	public class TaskWaitWhile : YieldTaskBase
 	{
 		public override bool KeepWaiting { get { return condition(); } }
 
@@ -74,7 +81,7 @@ namespace Ju.Services
 		}
 	}
 
-	public class TaskWaitForSeconds<T> : YieldInstruction where T : ILoopTimeEvent
+	public class TaskWaitForSeconds<T> : YieldTaskBase where T : ILoopTimeEvent
 	{
 		public override bool KeepWaiting { get { return timer.GetTimeLeft().seconds > 0f; } }
 
@@ -86,15 +93,29 @@ namespace Ju.Services
 		}
 	}
 
-	public class TaskWaitForFrames<T> : YieldInstruction where T : ILoopEvent
+	public class TaskWaitForTicks<T> : YieldTaskBase where T : ILoopEvent
 	{
 		public override bool KeepWaiting { get { return timer.GetFramesLeft() > 0; } }
 
 		private readonly IFrameTimer timer;
 
-		public TaskWaitForFrames(int frameCount)
+		public TaskWaitForTicks(int ticks)
 		{
-			timer = new FrameTimer<T>(frameCount);
+			timer = new FrameTimer<T>(ticks);
+		}
+	}
+
+	public class TaskWaitForNextUpdate : TaskWaitForTicks<LoopUpdateEvent>
+	{
+		public TaskWaitForNextUpdate() : base(1)
+		{
+		}
+	}
+
+	public class TaskWaitForNextFixedUpdate : TaskWaitForTicks<LoopFixedUpdateEvent>
+	{
+		public TaskWaitForNextFixedUpdate() : base(1)
+		{
 		}
 	}
 }

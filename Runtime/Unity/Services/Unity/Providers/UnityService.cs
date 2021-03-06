@@ -52,6 +52,8 @@ namespace Ju.Services
 				OnLogWarning("NET Debugger detected");
 			}
 
+			eventService = ServiceContainer.Get<IEventBusService>();
+
 			SubscribeApplicationStateEvents();
 			SubscribeLoopEvents();
 		}
@@ -177,11 +179,6 @@ namespace Ju.Services
 			target.subSystemList = newSubSystems;
 
 			return target;
-		}
-
-		public void Start()
-		{
-			eventService = ServiceContainer.Get<IEventBusService>();
 		}
 
 		private void OnUnityUpdate()

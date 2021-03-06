@@ -21,10 +21,7 @@ namespace Ju.Services
 		{
 			deltaTimeHistory = new List<float>(SMOOTH_AVERAGE_COUNT);
 			unscaledDeltaTimeHistory = new List<float>(SMOOTH_AVERAGE_COUNT);
-		}
 
-		public void Start()
-		{
 			TimeScale = UnityEngine.Time.timeScale;
 
 			// Scaled time in seconds since the start of the first Update call. Returns fixedTime when in FixedUpdate.

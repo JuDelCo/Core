@@ -28,10 +28,6 @@ namespace Ju.Services
 			listItems = new Dictionary<Type, Dictionary<Identifier, object>>();
 		}
 
-		public void Start()
-		{
-		}
-
 		public void Set<T>(T obj, string id, bool overwrite)
 		{
 			var type = typeof(T);

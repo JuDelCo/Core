@@ -10,6 +10,7 @@ using Ju.Promises;
 using Ju.Services;
 using Ju.Time;
 using UnityEngine;
+using ChannelId = System.Byte;
 
 namespace Ju.Extensions
 {
@@ -46,24 +47,44 @@ namespace Ju.Extensions
 {
 	public static class BehaviourUtilitiesExtensions
 	{
-		public static void EventSubscribe<T>(this Behaviour behaviour, Action<T> action, bool alwaysActive = false)
+		public static void EventSubscribe<T>(this Behaviour behaviour, Action<T> action, int priority = 0, bool alwaysActive = false)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action);
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, priority);
 		}
 
-		public static void EventSubscribe<T>(this Behaviour behaviour, Action action, bool alwaysActive = false)
+		public static void EventSubscribe<T>(this Behaviour behaviour, Action action, int priority = 0, bool alwaysActive = false)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), (T _) => action());
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), (T _) => action(), priority);
 		}
 
-		public static void EventSubscribe<T>(this Behaviour behaviour, Action<T> action, Func<T, bool> filter, bool alwaysActive = false)
+		public static void EventSubscribe<T>(this Behaviour behaviour, Action<T> action, Func<T, bool> filter, int priority = 0, bool alwaysActive = false)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter);
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
 		}
 
-		public static void EventSubscribe<T>(this Behaviour behaviour, Action action, Func<T, bool> filter, bool alwaysActive = false)
+		public static void EventSubscribe<T>(this Behaviour behaviour, Action action, Func<T, bool> filter, int priority = 0, bool alwaysActive = false)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter);
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action<T> action, int priority = 0, bool alwaysActive = false)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, priority);
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action action, int priority = 0, bool alwaysActive = false)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), (T _) => action(), priority);
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action<T> action, Func<T, bool> filter, int priority = 0, bool alwaysActive = false)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action action, Func<T, bool> filter, int priority = 0, bool alwaysActive = false)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
 		}
 
 		public static Services.Coroutine CoroutineStart(this Behaviour behaviour, IEnumerator routine, bool alwaysActive = true)
@@ -81,9 +102,29 @@ namespace Ju.Extensions
 			return ServiceContainer.Get<ITaskService>().WaitWhile(new BehaviourLinkHandler(behaviour, alwaysActive), condition);
 		}
 
-		public static IPromise WaitForSeconds(this Behaviour behaviour, float delay, bool alwaysActive = false)
+		public static IPromise WaitForSeconds<T>(this Behaviour behaviour, float seconds, bool alwaysActive = false) where T : ILoopTimeEvent
 		{
-			return ServiceContainer.Get<ITaskService>().WaitForSeconds(new BehaviourLinkHandler(behaviour, alwaysActive), delay);
+			return ServiceContainer.Get<ITaskService>().WaitForSeconds<T>(new BehaviourLinkHandler(behaviour, alwaysActive), seconds);
+		}
+
+		public static IPromise WaitForSeconds(this Behaviour behaviour, float seconds, bool alwaysActive = false)
+		{
+			return ServiceContainer.Get<ITaskService>().WaitForSeconds<LoopUpdateEvent>(new BehaviourLinkHandler(behaviour, alwaysActive), seconds);
+		}
+
+		public static IPromise WaitForTicks<T>(this Behaviour behaviour, int ticks, bool alwaysActive = false) where T : ILoopEvent
+		{
+			return ServiceContainer.Get<ITaskService>().WaitForTicks<T>(new BehaviourLinkHandler(behaviour, alwaysActive), ticks);
+		}
+
+		public static IPromise WaitForNextUpdate(this Behaviour behaviour, bool alwaysActive = false)
+		{
+			return ServiceContainer.Get<ITaskService>().WaitForNextUpdate(new BehaviourLinkHandler(behaviour, alwaysActive));
+		}
+
+		public static IPromise WaitForNextFixedUpdate(this Behaviour behaviour, bool alwaysActive = false)
+		{
+			return ServiceContainer.Get<ITaskService>().WaitForNextFixedUpdate(new BehaviourLinkHandler(behaviour, alwaysActive));
 		}
 
 		public static Clock<T> NewClock<T>(this Behaviour behaviour, bool alwaysActive = false) where T : ILoopTimeEvent

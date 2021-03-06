@@ -23,10 +23,6 @@ namespace Ju.Services
 			sb = new StringBuilder();
 		}
 
-		public void Start()
-		{
-		}
-
 		public void SetLogLevel(LogLevel logLevel)
 		{
 			minLogLevel = logLevel;

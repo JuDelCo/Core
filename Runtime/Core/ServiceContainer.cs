@@ -90,6 +90,11 @@ namespace Ju.Services
 			var services = InternalInstance();
 			var baseType = typeof(T);
 
+			if (baseType == typeof(ILogService))
+			{
+				throw new Exception("ILogService is a special service and can't be unloaded");
+			}
+
 			if (services.servicesRegistered.ContainsKey(baseType))
 			{
 				services.servicesRegistered[baseType].Remove(id);
@@ -150,7 +155,6 @@ namespace Ju.Services
 				if (service is IServiceLoad serviceLoad)
 				{
 					serviceLoad.Setup();
-					serviceLoad.Start();
 				}
 			}
 			else

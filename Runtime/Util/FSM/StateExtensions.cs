@@ -7,27 +7,48 @@ using Ju.FSM;
 using Ju.Promises;
 using Ju.Services;
 using Ju.Time;
+using ChannelId = System.Byte;
 
 public static class StateUtilitiesExtensions
 {
-	public static void EventSubscribe<T>(this State state, Action<T> action)
+	public static void EventSubscribe<T>(this State state, Action<T> action, int priority = 0)
 	{
-		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action);
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, priority);
 	}
 
-	public static void EventSubscribe<T>(this State state, Action action)
+	public static void EventSubscribe<T>(this State state, Action action, int priority = 0)
 	{
-		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), (T _) => action());
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), (T _) => action(), priority);
 	}
 
-	public static void EventSubscribe<T>(this State state, Action<T> action, Func<T, bool> filter)
+	public static void EventSubscribe<T>(this State state, Action<T> action, Func<T, bool> filter, int priority = 0)
 	{
-		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter);
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter, priority);
 	}
 
-	public static void EventSubscribe<T>(this State state, Action action, Func<T, bool> filter)
+	public static void EventSubscribe<T>(this State state, Action action, Func<T, bool> filter, int priority = 0)
 	{
-		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter);
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter, priority);
+	}
+
+	public static void EventSubscribe<T>(this State state, ChannelId channel, Action<T> action, int priority = 0)
+	{
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, priority);
+	}
+
+	public static void EventSubscribe<T>(this State state, ChannelId channel, Action action, int priority = 0)
+	{
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), (T _) => action(), priority);
+	}
+
+	public static void EventSubscribe<T>(this State state, ChannelId channel, Action<T> action, Func<T, bool> filter, int priority = 0)
+	{
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter, priority);
+	}
+
+	public static void EventSubscribe<T>(this State state, ChannelId channel, Action action, Func<T, bool> filter, int priority = 0)
+	{
+		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter, priority);
 	}
 
 	public static Coroutine CoroutineStart(this State state, IEnumerator routine)
@@ -45,9 +66,29 @@ public static class StateUtilitiesExtensions
 		return ServiceContainer.Get<ITaskService>().WaitWhile(new StateLinkHandler(state), condition);
 	}
 
-	public static IPromise WaitForSeconds(this State state, float delay)
+	public static IPromise WaitForSeconds<T>(this State state, float seconds) where T : ILoopTimeEvent
 	{
-		return ServiceContainer.Get<ITaskService>().WaitForSeconds(new StateLinkHandler(state), delay);
+		return ServiceContainer.Get<ITaskService>().WaitForSeconds<T>(new StateLinkHandler(state), seconds);
+	}
+
+	public static IPromise WaitForSeconds(this State state, float seconds)
+	{
+		return ServiceContainer.Get<ITaskService>().WaitForSeconds<LoopUpdateEvent>(new StateLinkHandler(state), seconds);
+	}
+
+	public static IPromise WaitForTicks<T>(this State state, int ticks) where T : ILoopEvent
+	{
+		return ServiceContainer.Get<ITaskService>().WaitForTicks<T>(new StateLinkHandler(state), ticks);
+	}
+
+	public static IPromise WaitForNextUpdate(this State state)
+	{
+		return ServiceContainer.Get<ITaskService>().WaitForNextUpdate(new StateLinkHandler(state));
+	}
+
+	public static IPromise WaitForNextFixedUpdate(this State state)
+	{
+		return ServiceContainer.Get<ITaskService>().WaitForNextFixedUpdate(new StateLinkHandler(state));
 	}
 
 	public static Clock<T> NewClock<T>(this State state) where T : ILoopTimeEvent

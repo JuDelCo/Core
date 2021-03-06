@@ -24,12 +24,8 @@ namespace Ju.Services
 		}
 	}
 
-	internal delegate void TaskUpdateEvent(float deltaTime);
-
 	public class TaskService : ITaskService
 	{
-		internal event TaskUpdateEvent OnTick = delegate { };
-
 		public event LogMessageEvent OnLogDebug = delegate { };
 		public event LogMessageEvent OnLogInfo = delegate { };
 		public event LogMessageEvent OnLogNotice = delegate { };
@@ -41,20 +37,10 @@ namespace Ju.Services
 
 		public void Setup()
 		{
+			this.EventSubscribe<LoopUpdateEvent>(Tick);
 		}
 
-		public void Start()
-		{
-			this.EventSubscribe<LoopUpdateEvent>(e => Tick(e.DeltaTime));
-		}
-
-		private void Tick(float deltaTime)
-		{
-			TickActions();
-			OnTick(deltaTime);
-		}
-
-		private void TickActions()
+		private void Tick()
 		{
 			lock (actions)
 			{
@@ -114,7 +100,7 @@ namespace Ju.Services
 			}
 			else
 			{
-				WaitForSeconds(new KeepLinkHandler(), delay).Then(action);
+				WaitForSeconds<LoopUpdateEvent>(new KeepLinkHandler(), delay).Then(action);
 			}
 		}
 
@@ -135,20 +121,58 @@ namespace Ju.Services
 			return WaitUntil(handle, () => !condition());
 		}
 
-		public IPromise WaitForSeconds(ILinkHandler handle, float delay)
+		public IPromise WaitForSeconds<T>(ILinkHandler handle, float seconds) where T : ILoopTimeEvent
 		{
-			var timer = 0f;
+			var promise = new Promise();
 
-			void eventHandler(float dt)
+			Timer<T> timer = null;
+			timer = new Timer<T>(seconds,
+			() =>
 			{
-				timer += dt;
-			}
+				if (handle.IsActive)
+				{
+					promise.Resolve();
+				}
 
-			OnTick += eventHandler;
+				timer.Dispose();
+			},
+			() =>
+			{
+				if (handle.IsDestroyed)
+				{
+					timer.Dispose();
+				}
 
-			var promise = WaitUntil(handle, () => timer >= delay);
+				return handle.IsActive;
+			});
 
-			promise.Finally(() => OnTick -= eventHandler);
+			return promise;
+		}
+
+		public IPromise WaitForTicks<T>(ILinkHandler handle, int ticks) where T : ILoopEvent
+		{
+			var promise = new Promise();
+
+			FrameTimer<T> timer = null;
+			timer = new FrameTimer<T>(ticks,
+			() =>
+			{
+				if (handle.IsActive)
+				{
+					promise.Resolve();
+				}
+
+				timer.Dispose();
+			},
+			() =>
+			{
+				if (handle.IsDestroyed)
+				{
+					timer.Dispose();
+				}
+
+				return handle.IsActive;
+			});
 
 			return promise;
 		}

@@ -4,6 +4,7 @@
 using System;
 using Ju.Handlers;
 using Ju.Promises;
+using Ju.Time;
 
 namespace Ju.Services
 {
@@ -13,6 +14,7 @@ namespace Ju.Services
 
 		IPromise WaitUntil(ILinkHandler handle, Func<bool> condition);
 		IPromise WaitWhile(ILinkHandler handle, Func<bool> condition);
-		IPromise WaitForSeconds(ILinkHandler handle, float delay);
+		IPromise WaitForSeconds<T>(ILinkHandler handle, float seconds) where T : ILoopTimeEvent;
+		IPromise WaitForTicks<T>(ILinkHandler handle, int ticks) where T : ILoopEvent;
 	}
 }

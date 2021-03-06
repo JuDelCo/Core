@@ -14,7 +14,18 @@ namespace Ju.Services
 	{
 		event EventBusServiceFiredEvent OnEventFired;
 
-		void Subscribe<T>(ChannelId channel, ILinkHandler handle, Action<T> action);
+		void Subscribe<T>(ChannelId channel, ILinkHandler handle, Action<T> action, int priority = 0);
+
 		void Fire<T>(ChannelId channel, T data);
+		void FireAsync<T>(ChannelId channel, T data);
+
+		void FireSticky<T>(ChannelId channel, T data);
+		void FireStickyAsync<T>(ChannelId channel, T data);
+
+		T GetSticky<T>(ChannelId channel);
+		void ClearSticky<T>(ChannelId channel);
+		void ClearAllSticky();
+
+		void StopCurrentEventPropagation();
 	}
 }
