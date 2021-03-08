@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Ju.Extensions;
 using Identifier = System.String;
 
 namespace Ju.Services
@@ -20,6 +21,14 @@ namespace Ju.Services
 
 		public void Dispose()
 		{
+			services.ForEachReverse(typeService =>
+			{
+				typeService.Value.ForEachReverse(idService =>
+				{
+					Unload(typeService.Key, idService.Key);
+				});
+			});
+
 			services.Clear();
 			classFactories.Clear();
 		}
@@ -75,12 +84,7 @@ namespace Ju.Services
 				throw new Exception(string.Format("Tried to re-register a class of type '{0}' with ID '{1}'", type.ToString(), id));
 			}
 
-			if (!services.ContainsKey(type))
-			{
-				services.Add(type, new Dictionary<Identifier, IService>());
-			}
-
-			services[type].Add(id, service);
+			services.GetOrInsertNew(type).Add(id, service);
 		}
 
 		private void RegisterFactory(Type type, Identifier id, Func<object> classConstructor)
@@ -90,12 +94,7 @@ namespace Ju.Services
 				throw new Exception(string.Format("Tried to re-register a factory of type '{0}' with ID '{1}'", type.ToString(), id));
 			}
 
-			if (!classFactories.ContainsKey(type))
-			{
-				classFactories.Add(type, new Dictionary<Identifier, Func<object>>());
-			}
-
-			classFactories[type].Add(id, classConstructor);
+			classFactories.GetOrInsertNew(type).Add(id, classConstructor);
 		}
 
 		private bool CheckDuplicatedClass(Type type, Identifier id)

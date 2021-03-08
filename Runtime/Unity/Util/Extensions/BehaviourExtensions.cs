@@ -69,22 +69,22 @@ namespace Ju.Extensions
 
 		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action<T> action, int priority = 0, bool alwaysActive = false)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, priority);
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), action, priority);
 		}
 
 		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action action, int priority = 0, bool alwaysActive = false)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), (T _) => action(), priority);
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), (T _) => action(), priority);
 		}
 
 		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action<T> action, Func<T, bool> filter, int priority = 0, bool alwaysActive = false)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
 		}
 
 		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action action, Func<T, bool> filter, int priority = 0, bool alwaysActive = false)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
 		}
 
 		public static Services.Coroutine CoroutineStart(this Behaviour behaviour, IEnumerator routine, bool alwaysActive = true)

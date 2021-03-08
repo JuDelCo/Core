@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Ju.Extensions;
 using Identifier = System.String;
 
 namespace Ju.Services
@@ -73,11 +74,7 @@ namespace Ju.Services
 				throw new Exception(string.Format("Tried to re-register a service of type '{0}' with ID '{1}'", serviceType.ToString(), id));
 			}
 
-			if (!services.servicesRegistered.ContainsKey(baseType))
-			{
-				services.servicesRegistered.Add(baseType, new Dictionary<Identifier, Type>());
-			}
-			services.servicesRegistered[baseType].Add(id, serviceType);
+			services.servicesRegistered.GetOrInsertNew(baseType).Add(id, serviceType);
 		}
 
 		public static void UnloadService<T>() where T : IService, new()
@@ -136,13 +133,9 @@ namespace Ju.Services
 			else if (services.servicesRegistered.ContainsKey(baseType) && services.servicesRegistered[baseType].ContainsKey(id))
 			{
 				var serviceType = services.servicesRegistered[baseType][id];
-				services.servicesRegistered[baseType].Remove(id);
 
-				if (!services.servicesLoaded.ContainsKey(baseType))
-				{
-					services.servicesLoaded.Add(baseType, new Dictionary<Identifier, Type>());
-				}
-				services.servicesLoaded[baseType].Add(id, serviceType);
+				services.servicesRegistered[baseType].Remove(id);
+				services.servicesLoaded.GetOrInsertNew(baseType).Add(id, serviceType);
 
 				service = (IService)Activator.CreateInstance(serviceType);
 				services.container.Register<T>(id, service);

@@ -1,12 +1,18 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
+using System;
 using System.Linq;
 
 namespace Ju.Extensions
 {
 	public static class StringExtensions
 	{
+		public static bool ContainsCaseInsensitive(this string self, string value, StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase)
+		{
+			return (self.IndexOf(value, stringComparison) >= 0);
+		}
+
 		public static int GetSimpleHash(this string self)
 		{
 			return self.Select(c => (int)c).Sum();

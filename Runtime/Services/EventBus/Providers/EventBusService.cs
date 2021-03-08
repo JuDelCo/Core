@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Ju.Extensions;
 using Ju.Handlers;
 using Ju.Services.Extensions;
 using Ju.Time;
@@ -82,14 +83,7 @@ namespace Ju.Services
 					subscribers[channel] = new Dictionary<EventType, List<SubscriberData>>();
 				}
 
-				var channelSubscribers = subscribers[channel];
-
-				if (!channelSubscribers.ContainsKey(type))
-				{
-					channelSubscribers.Add(type, new List<SubscriberData>());
-				}
-
-				var subscriberList = channelSubscribers[type];
+				var subscriberList = subscribers[channel].GetOrInsertNew(type);
 				var subscriberIndex = 0;
 
 				for (int i = (subscriberList.Count - 1); i > 0; i--)
@@ -101,7 +95,7 @@ namespace Ju.Services
 					}
 				}
 
-				channelSubscribers[type].Insert(subscriberIndex, new SubscriberData(handle, action, priority));
+				subscriberList.Insert(subscriberIndex, new SubscriberData(handle, action, priority));
 			}
 
 			if (stickyData.ContainsKey(type))

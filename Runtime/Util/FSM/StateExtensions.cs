@@ -33,22 +33,22 @@ public static class StateUtilitiesExtensions
 
 	public static void EventSubscribe<T>(this State state, ChannelId channel, Action<T> action, int priority = 0)
 	{
-		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, priority);
+		ServiceContainer.Get<IEventBusService>().Subscribe(channel, new StateLinkHandler(state), action, priority);
 	}
 
 	public static void EventSubscribe<T>(this State state, ChannelId channel, Action action, int priority = 0)
 	{
-		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), (T _) => action(), priority);
+		ServiceContainer.Get<IEventBusService>().Subscribe(channel, new StateLinkHandler(state), (T _) => action(), priority);
 	}
 
 	public static void EventSubscribe<T>(this State state, ChannelId channel, Action<T> action, Func<T, bool> filter, int priority = 0)
 	{
-		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter, priority);
+		ServiceContainer.Get<IEventBusService>().Subscribe(channel, new StateLinkHandler(state), action, filter, priority);
 	}
 
 	public static void EventSubscribe<T>(this State state, ChannelId channel, Action action, Func<T, bool> filter, int priority = 0)
 	{
-		ServiceContainer.Get<IEventBusService>().Subscribe(new StateLinkHandler(state), action, filter, priority);
+		ServiceContainer.Get<IEventBusService>().Subscribe(channel, new StateLinkHandler(state), action, filter, priority);
 	}
 
 	public static Coroutine CoroutineStart(this State state, IEnumerator routine)

@@ -3,7 +3,7 @@
 
 #if UNITY_2019_3_OR_NEWER
 
-namespace Ju.ColorUtil
+namespace Ju.Color
 {
 	public partial struct Color32
 	{

@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Ju.Extensions;
 using Identifier = System.String;
 
 namespace Ju.Services
@@ -32,10 +33,7 @@ namespace Ju.Services
 		{
 			var type = typeof(T);
 
-			if (!sharedItems.ContainsKey(type))
-			{
-				sharedItems.Add(type, new Dictionary<Identifier, object>());
-			}
+			sharedItems.GetOrInsertNew(type);
 
 			if (!overwrite && sharedItems[type].ContainsKey(id))
 			{
@@ -97,10 +95,7 @@ namespace Ju.Services
 		{
 			var type = obj.GetType();
 
-			if (!listItems.ContainsKey(type))
-			{
-				listItems.Add(type, new Dictionary<Identifier, object>());
-			}
+			listItems.GetOrInsertNew(type);
 
 			IList list;
 

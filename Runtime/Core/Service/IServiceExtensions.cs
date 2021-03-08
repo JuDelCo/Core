@@ -34,22 +34,22 @@ namespace Ju.Services.Extensions
 
 		public static void EventSubscribe<T>(this IService service, ChannelId channel, Action<T> action, int priority = 0)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new ObjectLinkHandler<IService>(service), action, priority);
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new ObjectLinkHandler<IService>(service), action, priority);
 		}
 
 		public static void EventSubscribe<T>(this IService service, ChannelId channel, Action action, int priority = 0)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new ObjectLinkHandler<IService>(service), (T _) => action(), priority);
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new ObjectLinkHandler<IService>(service), (T _) => action(), priority);
 		}
 
 		public static void EventSubscribe<T>(this IService service, ChannelId channel, Action<T> action, Func<T, bool> filter, int priority = 0)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new ObjectLinkHandler<IService>(service), action, filter, priority);
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new ObjectLinkHandler<IService>(service), action, filter, priority);
 		}
 
 		public static void EventSubscribe<T>(this IService service, ChannelId channel, Action action, Func<T, bool> filter, int priority = 0)
 		{
-			ServiceContainer.Get<IEventBusService>().Subscribe(new ObjectLinkHandler<IService>(service), (T _) => action(), filter, priority);
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new ObjectLinkHandler<IService>(service), (T _) => action(), filter, priority);
 		}
 
 		public static Coroutine CoroutineStart(this IService service, IEnumerator routine)

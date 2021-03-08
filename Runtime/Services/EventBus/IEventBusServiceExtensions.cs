@@ -33,7 +33,7 @@ public static class IEventBusServiceExtensions
 
 	public static void Subscribe<T>(this IEventBusService eventBusService, ILinkHandler handle, Action action, Func<T, bool> filter, int priority = 0)
 	{
-		eventBusService.Subscribe(handle, (T _) => action(), filter, priority);
+		eventBusService.Subscribe(DEFAULT_CHANNEL, handle, (T _) => action(), filter, priority);
 	}
 
 	public static void Subscribe<T>(this IEventBusService eventBusService, ChannelId channel, ILinkHandler handle, Action<T> action, int priority = 0)
