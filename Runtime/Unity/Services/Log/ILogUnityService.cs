@@ -7,6 +7,8 @@ namespace Ju.Services
 {
 	public interface ILogUnityService
 	{
+		void SetLogLevel(LogLevel logLevel);
+		void ToggleStackTraces(bool enabled);
 	}
 }
 

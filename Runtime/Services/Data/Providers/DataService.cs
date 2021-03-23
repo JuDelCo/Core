@@ -9,22 +9,19 @@ using Identifier = System.String;
 
 namespace Ju.Services
 {
-	public class DataService : IDataService, IServiceLoad, ILoggableService
-	{
-		public event DataServiceListEvent OnListAdd = delegate { };
-		public event DataServiceListEvent OnListRemove = delegate { };
+	using Ju.Log;
 
-		public event LogMessageEvent OnLogDebug = delegate { };
-		public event LogMessageEvent OnLogInfo = delegate { };
-		public event LogMessageEvent OnLogNotice = delegate { };
-		public event LogMessageEvent OnLogWarning = delegate { };
-		public event LogMessageEvent OnLogError = delegate { };
+	public class DataService : IDataService, IServiceLoad
+	{
+		private IEventBusService eventService;
 
 		private Dictionary<Type, Dictionary<Identifier, object>> sharedItems;
 		private Dictionary<Type, Dictionary<Identifier, object>> listItems;
 
 		public void Load()
 		{
+			eventService = ServiceContainer.Get<IEventBusService>();
+
 			sharedItems = new Dictionary<Type, Dictionary<Identifier, object>>();
 			listItems = new Dictionary<Type, Dictionary<Identifier, object>>();
 		}
@@ -37,7 +34,7 @@ namespace Ju.Services
 
 			if (!overwrite && sharedItems[type].ContainsKey(id))
 			{
-				OnLogWarning("A shared object of type {0} was already stored", type);
+				Log.Warning($"A shared object of type {type} was already stored");
 			}
 			else
 			{
@@ -111,7 +108,7 @@ namespace Ju.Services
 
 			list.Add(obj);
 
-			OnListAdd(type, obj);
+			eventService.Fire(new DataAddEvent(type, obj));
 		}
 
 		public List<T> ListGet<T>(string id)
@@ -152,7 +149,7 @@ namespace Ju.Services
 						}
 					}
 
-					OnListRemove(type, obj);
+					eventService.Fire(new DataRemoveEvent(type, obj));
 				}
 			}
 		}

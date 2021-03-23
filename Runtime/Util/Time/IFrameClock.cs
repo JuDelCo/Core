@@ -7,7 +7,7 @@ namespace Ju.Time
 {
 	public interface IFrameClock : IDisposable
 	{
-		int Reset();
+		int Reset(int elapsedFrames = 0);
 		int GetElapsedFrames();
 	}
 }

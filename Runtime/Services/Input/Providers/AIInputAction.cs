@@ -3,15 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using Ju.Services;
 
 namespace Ju.Input
 {
 	public class AIInputAction : IAIInputAction, IInputAction
 	{
-		public event InputServiceActionEvent OnPressed = delegate { };
-		public event InputServiceActionEvent OnHeld = delegate { };
-		public event InputServiceActionEvent OnReleased = delegate { };
-
 		public string Id { get; }
 		public IInputPlayer Player { get; private set; }
 		public bool Enabled { get; set; }
@@ -27,11 +24,14 @@ namespace Ju.Input
 		private float axisRawValueX;
 		private float axisRawValueY;
 		private bool eventTriggered;
+		private readonly IEventBusService eventService;
 
 		public AIInputAction(string id)
 		{
 			Id = id;
 			Enabled = true;
+
+			eventService = ServiceContainer.Get<IEventBusService>();
 		}
 
 		public void ResetState()
@@ -114,19 +114,19 @@ namespace Ju.Input
 			if (!previousPressed && pressed)
 			{
 				eventTriggered = true;
-				OnPressed(this);
+				eventService.Fire(new InputActionPressedEvent(this));
 			}
 
 			if (previousPressed && pressed)
 			{
 				eventTriggered = true;
-				OnHeld(this);
+				eventService.Fire(new InputActionHeldEvent(this));
 			}
 
 			if (previousPressed && !pressed)
 			{
 				eventTriggered = true;
-				OnReleased(this);
+				eventService.Fire(new InputActionReleased(this));
 			}
 		}
 

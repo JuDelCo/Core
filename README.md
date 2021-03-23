@@ -27,18 +27,17 @@ Contents
 #### Core
 - [Service Container](https://github.com/JuDelCo/Core/wiki/Usage.Service-Container)
 - [Service Interfaces](https://github.com/JuDelCo/Core/wiki/Usage.Services)
-- [LoopUpdate Events](https://github.com/JuDelCo/Core/wiki/Usage.LoopUpdate-Events)
+- [TimeUpdate Events](https://github.com/JuDelCo/Core/wiki/Usage.TimeUpdate-Events)
 - [LinkHandlers](https://github.com/JuDelCo/Core/wiki/Usage.LinkHandlers)
 
 #### Services
 
+- [EventBus](https://github.com/JuDelCo/Core/wiki/API.Service.EventBus)
+- [Time](https://github.com/JuDelCo/Core/wiki/API.Service.Time)
+- [Input](https://github.com/JuDelCo/Core/wiki/API.Service.Input)
+- [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
 - [Coroutine](https://github.com/JuDelCo/Core/wiki/API.Service.Coroutine)
 - [Data](https://github.com/JuDelCo/Core/wiki/API.Service.Data)
-- [EventBus](https://github.com/JuDelCo/Core/wiki/API.Service.EventBus)
-- [Input](https://github.com/JuDelCo/Core/wiki/API.Service.Input)
-- [Log](https://github.com/JuDelCo/Core/wiki/API.Service.Log)
-- [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
-- [Time](https://github.com/JuDelCo/Core/wiki/API.Service.Time)
 - [Extensions](https://github.com/JuDelCo/Core/wiki/API.Service.Extensions)
 
 #### Util
@@ -52,6 +51,7 @@ Contents
 - [ObjectPool](https://github.com/JuDelCo/Core/wiki/API.Util.ObjectPool)
 - [Observables](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
 - [Promises](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
+- [Random](https://github.com/JuDelCo/Core/wiki/API.Util.Random)
 - [Time](https://github.com/JuDelCo/Core/wiki/API.Util.Time)
 	- Span
 	- Clock
@@ -62,21 +62,26 @@ Contents
 - [Extensions](https://github.com/JuDelCo/Core/wiki/API.Util.Extensions)
 	- IEnumerable
 	- ICollection
+	- IDictionary
 	- String
+	- Float
 	- Bool
 
 #### Unity3D
 
 - [Services](https://github.com/JuDelCo/Core/wiki/API.Unity.Services)
-	- InputUnity
 	- LogUnity
+	- InputUnity
+	- PrefabPool
 	- Unity
 	- Service Extensions
 - [Extensions](https://github.com/JuDelCo/Core/wiki/API.Unity.Util-Extensions)
 	- Behaviour
+	- LayerMask
 	- Color
 	- Color32
 	- Observable
+	- Random
 
 
 The MIT License (MIT)

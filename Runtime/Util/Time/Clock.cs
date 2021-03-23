@@ -7,7 +7,7 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class Clock<T> : IClock where T : ILoopTimeEvent
+	public class Clock<T> : IClock where T : ITimeDeltaEvent
 	{
 		private readonly DisposableLinkHandler linkHandler;
 		private Span elapsed;
@@ -40,11 +40,11 @@ namespace Ju.Time
 			GC.SuppressFinalize(this);
 		}
 
-		public Span Reset()
+		public Span Reset(float elapsedSeconds = 0f)
 		{
 			var elapsedTime = elapsed;
 
-			elapsed = Span.zero;
+			elapsed = Span.Seconds(Math.Max(elapsedSeconds, 0f));
 
 			return elapsedTime;
 		}
@@ -65,6 +65,46 @@ namespace Ju.Time
 			}
 
 			elapsed += Span.Seconds(deltaTime);
+		}
+
+		public static bool operator <(Clock<T> clock, float seconds)
+		{
+			return clock.GetElapsedTime().seconds < seconds;
+		}
+
+		public static bool operator <=(Clock<T> clock, float seconds)
+		{
+			return clock.GetElapsedTime().seconds <= seconds;
+		}
+
+		public static bool operator >(Clock<T> clock, float seconds)
+		{
+			return clock.GetElapsedTime().seconds > seconds;
+		}
+
+		public static bool operator >=(Clock<T> clock, float seconds)
+		{
+			return clock.GetElapsedTime().seconds >= seconds;
+		}
+
+		public static bool operator <(Clock<T> a, Clock<T> b)
+		{
+			return a.GetElapsedTime() < b.GetElapsedTime();
+		}
+
+		public static bool operator <=(Clock<T> a, Clock<T> b)
+		{
+			return a.GetElapsedTime() <= b.GetElapsedTime();
+		}
+
+		public static bool operator >(Clock<T> a, Clock<T> b)
+		{
+			return a.GetElapsedTime() > b.GetElapsedTime();
+		}
+
+		public static bool operator >=(Clock<T> a, Clock<T> b)
+		{
+			return a.GetElapsedTime() >= b.GetElapsedTime();
 		}
 	}
 }

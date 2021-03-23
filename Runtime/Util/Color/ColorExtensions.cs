@@ -40,6 +40,7 @@ namespace Ju.Color
 			aValue = 1f;
 		}
 
+		// Do not use max saturation or value
 		public static Color FromHSV(float hue, float saturation, float value, float alpha)
 		{
 			if (saturation == 0f)

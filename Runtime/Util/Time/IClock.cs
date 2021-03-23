@@ -7,7 +7,7 @@ namespace Ju.Time
 {
 	public interface IClock : IDisposable
 	{
-		Span Reset();
+		Span Reset(float elapsedSeconds = 0f);
 		Span GetElapsedTime();
 	}
 }

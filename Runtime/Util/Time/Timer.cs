@@ -7,7 +7,7 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class Timer<T> : ITimer where T : ILoopTimeEvent
+	public class Timer<T> : ITimer where T : ITimeDeltaEvent
 	{
 		private readonly DisposableLinkHandler linkHandler;
 		private Span elapsed;
@@ -85,6 +85,46 @@ namespace Ju.Time
 					onCompleted();
 				}
 			}
+		}
+
+		public static bool operator <(Timer<T> timer, float seconds)
+		{
+			return timer.GetTimeLeft().seconds < seconds;
+		}
+
+		public static bool operator <=(Timer<T> timer, float seconds)
+		{
+			return timer.GetTimeLeft().seconds <= seconds;
+		}
+
+		public static bool operator >(Timer<T> timer, float seconds)
+		{
+			return timer.GetTimeLeft().seconds > seconds;
+		}
+
+		public static bool operator >=(Timer<T> timer, float seconds)
+		{
+			return timer.GetTimeLeft().seconds >= seconds;
+		}
+
+		public static bool operator <(Timer<T> a, Timer<T> b)
+		{
+			return a.GetTimeLeft() < b.GetTimeLeft();
+		}
+
+		public static bool operator <=(Timer<T> a, Timer<T> b)
+		{
+			return a.GetTimeLeft() <= b.GetTimeLeft();
+		}
+
+		public static bool operator >(Timer<T> a, Timer<T> b)
+		{
+			return a.GetTimeLeft() > b.GetTimeLeft();
+		}
+
+		public static bool operator >=(Timer<T> a, Timer<T> b)
+		{
+			return a.GetTimeLeft() >= b.GetTimeLeft();
 		}
 	}
 }

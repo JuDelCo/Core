@@ -71,7 +71,7 @@ namespace Ju.Services
 
 			if (instance == null)
 			{
-				throw new NullReferenceException(string.Format("No class of type '{0}' with id '{1}' found", type.ToString(), id));
+				throw new NullReferenceException($"No class of type '{type}' with id '{id}' found");
 			}
 
 			return instance;
@@ -81,7 +81,7 @@ namespace Ju.Services
 		{
 			if (CheckDuplicatedClass(type, id))
 			{
-				throw new Exception(string.Format("Tried to re-register a class of type '{0}' with ID '{1}'", type.ToString(), id));
+				throw new Exception($"Tried to re-register a class of type '{type}' with ID '{id}'");
 			}
 
 			services.GetOrInsertNew(type).Add(id, service);
@@ -91,7 +91,7 @@ namespace Ju.Services
 		{
 			if (CheckDuplicatedClass(type, id))
 			{
-				throw new Exception(string.Format("Tried to re-register a factory of type '{0}' with ID '{1}'", type.ToString(), id));
+				throw new Exception($"Tried to re-register a factory of type '{type}' with ID '{id}'");
 			}
 
 			classFactories.GetOrInsertNew(type).Add(id, classConstructor);

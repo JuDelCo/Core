@@ -10,15 +10,12 @@ namespace Ju.Extensions
 	{
 		public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key, TValue defaultValue = default(TValue))
 		{
-			TValue value;
-			return self.TryGetValue(key, out value) ? value : defaultValue;
+			return self.TryGetValue(key, out TValue value) ? value : defaultValue;
 		}
 
 		public static TValue GetOrInsertDefault<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key, TValue defaultValue = default(TValue))
 		{
-			TValue value;
-
-			if (!self.TryGetValue(key, out value))
+			if (!self.TryGetValue(key, out TValue value))
 			{
 				value = defaultValue;
 				self[key] = value;
@@ -29,9 +26,7 @@ namespace Ju.Extensions
 
 		public static TValue GetOrInsertNew<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key) where TValue : new()
 		{
-			TValue value;
-
-			if (!self.TryGetValue(key, out value))
+			if (!self.TryGetValue(key, out TValue value))
 			{
 				value = new TValue();
 				self[key] = value;

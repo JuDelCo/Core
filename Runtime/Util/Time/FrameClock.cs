@@ -7,7 +7,7 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class FrameClock<T> : IFrameClock where T : ILoopEvent
+	public class FrameClock<T> : IFrameClock where T : ITimeEvent
 	{
 		private readonly DisposableLinkHandler linkHandler;
 		private int elapsed;
@@ -40,11 +40,11 @@ namespace Ju.Time
 			GC.SuppressFinalize(this);
 		}
 
-		public int Reset()
+		public int Reset(int elapsedFrames = 0)
 		{
 			var elapsedTime = elapsed;
 
-			elapsed = 0;
+			elapsed = Math.Max(elapsedFrames, 0);
 
 			return elapsedTime;
 		}
@@ -65,6 +65,46 @@ namespace Ju.Time
 			}
 
 			elapsed += 1;
+		}
+
+		public static bool operator <(FrameClock<T> clock, int frames)
+		{
+			return clock.GetElapsedFrames() < frames;
+		}
+
+		public static bool operator <=(FrameClock<T> clock, int frames)
+		{
+			return clock.GetElapsedFrames() <= frames;
+		}
+
+		public static bool operator >(FrameClock<T> clock, int frames)
+		{
+			return clock.GetElapsedFrames() > frames;
+		}
+
+		public static bool operator >=(FrameClock<T> clock, int frames)
+		{
+			return clock.GetElapsedFrames() >= frames;
+		}
+
+		public static bool operator <(FrameClock<T> a, FrameClock<T> b)
+		{
+			return a.GetElapsedFrames() < b.GetElapsedFrames();
+		}
+
+		public static bool operator <=(FrameClock<T> a, FrameClock<T> b)
+		{
+			return a.GetElapsedFrames() <= b.GetElapsedFrames();
+		}
+
+		public static bool operator >(FrameClock<T> a, FrameClock<T> b)
+		{
+			return a.GetElapsedFrames() > b.GetElapsedFrames();
+		}
+
+		public static bool operator >=(FrameClock<T> a, FrameClock<T> b)
+		{
+			return a.GetElapsedFrames() >= b.GetElapsedFrames();
 		}
 	}
 }

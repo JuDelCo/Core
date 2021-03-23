@@ -6,13 +6,8 @@ using Ju.Input;
 
 namespace Ju.Services
 {
-	public delegate void InputServiceGamepadStatusEvent(IGamepadController controller);
-
 	public interface IInputService
 	{
-		event InputServiceGamepadStatusEvent OnGamepadConnected;
-		event InputServiceGamepadStatusEvent OnGamepadDisconnected;
-
 		IEnumerable<IInputPlayer> Players { get; }
 		IMouseController Mouse { get; }
 		IKeyboardController Keyboard { get; }

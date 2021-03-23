@@ -10,10 +10,6 @@ namespace Ju.Services
 {
 	public class InputAction : IInputAction
 	{
-		public event InputServiceActionEvent OnPressed = delegate { };
-		public event InputServiceActionEvent OnHeld = delegate { };
-		public event InputServiceActionEvent OnReleased = delegate { };
-
 		public string Id { get; }
 		public IInputPlayer Player { get; private set; }
 		public bool Enabled { get; set; }
@@ -36,6 +32,7 @@ namespace Ju.Services
 		private float axisValue;
 		private float axisRawValueX;
 		private float axisRawValueY;
+		private readonly IEventBusService eventService;
 
 		public InputAction(IInputPlayer player, string id)
 		{
@@ -51,6 +48,8 @@ namespace Ju.Services
 			gamepadButtons = new List<GamepadButton>();
 			gamepadButtonsNegative = new List<GamepadButton>();
 			gamepadAxis = new List<GamepadAxis>();
+
+			eventService = ServiceContainer.Get<IEventBusService>();
 
 			ResetBindings();
 		}
@@ -106,17 +105,17 @@ namespace Ju.Services
 
 			if (!previousPressed && pressed)
 			{
-				OnPressed(this);
+				eventService.Fire(new InputActionPressedEvent(this));
 			}
 
 			if (previousPressed && pressed)
 			{
-				OnHeld(this);
+				eventService.Fire(new InputActionHeldEvent(this));
 			}
 
 			if (previousPressed && !pressed)
 			{
-				OnReleased(this);
+				eventService.Fire(new InputActionReleased(this));
 			}
 		}
 

@@ -67,6 +67,26 @@ namespace Ju.Extensions
 			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
 		}
 
+		public static void EventSubscribe<T>(this Behaviour behaviour, Action<T> action, bool alwaysActive)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action);
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, Action action, bool alwaysActive)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), (T _) => action());
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, Action<T> action, Func<T, bool> filter, bool alwaysActive)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter);
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, Action action, Func<T, bool> filter, bool alwaysActive)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action, filter);
+		}
+
 		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action<T> action, int priority = 0, bool alwaysActive = false)
 		{
 			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), action, priority);
@@ -87,6 +107,26 @@ namespace Ju.Extensions
 			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), action, filter, priority);
 		}
 
+		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action<T> action, bool alwaysActive)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), action);
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action action, bool alwaysActive)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), (T _) => action());
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action<T> action, Func<T, bool> filter, bool alwaysActive)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), action, filter);
+		}
+
+		public static void EventSubscribe<T>(this Behaviour behaviour, ChannelId channel, Action action, Func<T, bool> filter, bool alwaysActive)
+		{
+			ServiceContainer.Get<IEventBusService>().Subscribe(channel, new BehaviourLinkHandler(behaviour, alwaysActive), action, filter);
+		}
+
 		public static Services.Coroutine CoroutineStart(this Behaviour behaviour, IEnumerator routine, bool alwaysActive = true)
 		{
 			return ServiceContainer.Get<ICoroutineService>().StartCoroutine(new BehaviourLinkHandler(behaviour, alwaysActive), routine);
@@ -102,17 +142,17 @@ namespace Ju.Extensions
 			return ServiceContainer.Get<ITaskService>().WaitWhile(new BehaviourLinkHandler(behaviour, alwaysActive), condition);
 		}
 
-		public static IPromise WaitForSeconds<T>(this Behaviour behaviour, float seconds, bool alwaysActive = false) where T : ILoopTimeEvent
+		public static IPromise WaitForSeconds<T>(this Behaviour behaviour, float seconds, bool alwaysActive = false) where T : ITimeDeltaEvent
 		{
 			return ServiceContainer.Get<ITaskService>().WaitForSeconds<T>(new BehaviourLinkHandler(behaviour, alwaysActive), seconds);
 		}
 
 		public static IPromise WaitForSeconds(this Behaviour behaviour, float seconds, bool alwaysActive = false)
 		{
-			return ServiceContainer.Get<ITaskService>().WaitForSeconds<LoopUpdateEvent>(new BehaviourLinkHandler(behaviour, alwaysActive), seconds);
+			return ServiceContainer.Get<ITaskService>().WaitForSeconds<TimeUpdateEvent>(new BehaviourLinkHandler(behaviour, alwaysActive), seconds);
 		}
 
-		public static IPromise WaitForTicks<T>(this Behaviour behaviour, int ticks, bool alwaysActive = false) where T : ILoopEvent
+		public static IPromise WaitForTicks<T>(this Behaviour behaviour, int ticks, bool alwaysActive = false) where T : ITimeEvent
 		{
 			return ServiceContainer.Get<ITaskService>().WaitForTicks<T>(new BehaviourLinkHandler(behaviour, alwaysActive), ticks);
 		}
@@ -127,25 +167,25 @@ namespace Ju.Extensions
 			return ServiceContainer.Get<ITaskService>().WaitForNextFixedUpdate(new BehaviourLinkHandler(behaviour, alwaysActive));
 		}
 
-		public static IClock NewClock<T>(this Behaviour behaviour, bool alwaysActive = false) where T : ILoopTimeEvent
+		public static IClock NewClock<T>(this Behaviour behaviour, bool alwaysActive = false) where T : ITimeDeltaEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new Clock<T>(() => linkHandler.IsActive);
 		}
 
-		public static IClock NewClock<T>(this Behaviour behaviour, float elapsedSeconds, bool alwaysActive = false) where T : ILoopTimeEvent
+		public static IClock NewClock<T>(this Behaviour behaviour, float elapsedSeconds, bool alwaysActive = false) where T : ITimeDeltaEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 		}
 
-		public static ITimer NewTimer<T>(this Behaviour behaviour, float seconds, Action onCompleted, bool alwaysActive = false) where T : ILoopTimeEvent
+		public static ITimer NewTimer<T>(this Behaviour behaviour, float seconds, Action onCompleted, bool alwaysActive = false) where T : ITimeDeltaEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);
 		}
 
-		public static IFrameTimer NewFrameTimer<T>(this Behaviour behaviour, int frames, Action onCompleted, bool alwaysActive = false) where T : ILoopEvent
+		public static IFrameTimer NewFrameTimer<T>(this Behaviour behaviour, int frames, Action onCompleted, bool alwaysActive = false) where T : ITimeEvent
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new FrameTimer<T>(frames, onCompleted, () => linkHandler.IsActive);

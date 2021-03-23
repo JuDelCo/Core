@@ -4,52 +4,121 @@
 #if UNITY_2019_3_OR_NEWER
 
 using System;
+using System.Text;
 using UnityEngine;
+using Ju.Services.Extensions;
 
 namespace Ju.Services
 {
 	public class LogUnityService : ILogUnityService, IServiceLoad
 	{
+		private LogLevel minLogLevel = LogLevel.Debug;
+		private bool generateStackTraces = false;
+		private StringBuilder sb;
+
 		public void Load()
 		{
-			var logService = ServiceContainer.Get<ILogService>();
-			logService.SetLogLevel(LogLevel.Debug);
+			sb = new StringBuilder();
 
-			logService.OnDebugMessage += OnDebugMessage;
-			logService.OnInfoMessage += OnInfoMessage;
-			logService.OnNoticeMessage += OnNoticeMessage;
-			logService.OnWarningMessage += OnWarningMessage;
-			logService.OnErrorMessage += OnErrorMessage;
+			this.EventSubscribe<LogEvent>(OnLogEvent);
+
+			SetLogLevel(minLogLevel);
 		}
 
-		private void OnDebugMessage(string message, string timeStamp, params object[] args)
+		public void SetLogLevel(LogLevel logLevel)
 		{
-			UnityEngine.Debug.Log((Application.isEditor ? "" : timeStamp + " ") + (args.Length > 0 ? string.Format(message, args) : message));
-		}
+			minLogLevel = logLevel;
 
-		private void OnInfoMessage(string message, string timeStamp, params object[] args)
-		{
-			UnityEngine.Debug.Log((Application.isEditor ? "" : timeStamp + " ") + (args.Length > 0 ? string.Format(message, args) : message));
-		}
-
-		private void OnNoticeMessage(string message, string timeStamp, params object[] args)
-		{
-			UnityEngine.Debug.Log((Application.isEditor ? "" : timeStamp + " ") + (args.Length > 0 ? string.Format(message, args) : message));
-		}
-
-		private void OnWarningMessage(string message, string timeStamp, params object[] args)
-		{
-			UnityEngine.Debug.LogWarning((Application.isEditor ? "" : timeStamp + " ") + (args.Length > 0 ? string.Format(message, args) : message));
-		}
-
-		private void OnErrorMessage(string message, string timeStamp, params object[] args)
-		{
-			UnityEngine.Debug.LogError((Application.isEditor ? "" : timeStamp + " ") + (args.Length > 0 ? string.Format(message, args) : message));
-
-			if (args.Length > 0 && args[args.Length - 1] is Exception exception)
+			switch (logLevel)
 			{
-				UnityEngine.Debug.LogException(exception);
+				case LogLevel.Debug:
+				case LogLevel.Info:
+				case LogLevel.Notice:
+					Debug.unityLogger.filterLogType = LogType.Log;
+					break;
+				case LogLevel.Warning:
+					Debug.unityLogger.filterLogType = LogType.Warning;
+					break;
+				case LogLevel.Error:
+					Debug.unityLogger.filterLogType = LogType.Error;
+					break;
 			}
+		}
+
+		public void ToggleStackTraces(bool enabled)
+		{
+			generateStackTraces = enabled;
+		}
+
+		private void OnLogEvent(LogEvent e)
+		{
+			if (minLogLevel > LogLevel.Error)
+			{
+				return;
+			}
+
+			var timeStamp = Application.isEditor ? null : GetCurrentTime() + " ";
+			var message = e.Message;
+
+			if (timeStamp != null || e.Context != null)
+			{
+				message = $"{timeStamp}{e.Message}{e.Context}";
+			}
+
+			switch (e.LogLevel)
+			{
+				case LogLevel.Debug:
+				case LogLevel.Info:
+				case LogLevel.Notice:
+					if (generateStackTraces)
+					{
+						UnityEngine.Debug.Log(message);
+					}
+					else
+					{
+						UnityEngine.Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, message);
+					}
+					break;
+				case LogLevel.Warning:
+					if (generateStackTraces)
+					{
+						UnityEngine.Debug.LogWarning(message);
+					}
+					else
+					{
+						UnityEngine.Debug.LogFormat(LogType.Warning, LogOption.NoStacktrace, null, message);
+					}
+					break;
+				case LogLevel.Error:
+					if (generateStackTraces)
+					{
+						UnityEngine.Debug.LogError(message);
+					}
+					else
+					{
+						UnityEngine.Debug.LogFormat(LogType.Error, LogOption.NoStacktrace, null, message);
+					}
+					break;
+			}
+
+			if (e.Exception != null)
+			{
+				UnityEngine.Debug.LogException(e.Exception);
+			}
+		}
+
+		private string GetCurrentTime()
+		{
+			var now = DateTime.Now;
+
+			sb.Length = 0;
+			sb.Append(now.Hour.ToString().PadLeft(2, '0'));
+			sb.Append(":");
+			sb.Append(now.Minute.ToString().PadLeft(2, '0'));
+			sb.Append(":");
+			sb.Append(now.Second.ToString().PadLeft(2, '0'));
+
+			return sb.ToString();
 		}
 	}
 }

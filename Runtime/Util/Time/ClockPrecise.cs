@@ -19,11 +19,11 @@ namespace Ju.Time
 			startTime = Span.Seconds(elapsedSeconds);
 		}
 
-		public Span Reset()
+		public Span Reset(float elapsedSeconds = 0f)
 		{
 			var elapsed = GetElapsedTime();
 
-			startTime = Span.Now();
+			startTime = Span.Now() - Span.Seconds(elapsedSeconds);
 
 			return elapsed;
 		}
@@ -36,6 +36,46 @@ namespace Ju.Time
 		public void Dispose()
 		{
 			GC.SuppressFinalize(this);
+		}
+
+		public static bool operator <(ClockPrecise clock, float seconds)
+		{
+			return clock.GetElapsedTime().seconds < seconds;
+		}
+
+		public static bool operator <=(ClockPrecise clock, float seconds)
+		{
+			return clock.GetElapsedTime().seconds <= seconds;
+		}
+
+		public static bool operator >(ClockPrecise clock, float seconds)
+		{
+			return clock.GetElapsedTime().seconds > seconds;
+		}
+
+		public static bool operator >=(ClockPrecise clock, float seconds)
+		{
+			return clock.GetElapsedTime().seconds >= seconds;
+		}
+
+		public static bool operator <(ClockPrecise a, ClockPrecise b)
+		{
+			return a.GetElapsedTime() < b.GetElapsedTime();
+		}
+
+		public static bool operator <=(ClockPrecise a, ClockPrecise b)
+		{
+			return a.GetElapsedTime() <= b.GetElapsedTime();
+		}
+
+		public static bool operator >(ClockPrecise a, ClockPrecise b)
+		{
+			return a.GetElapsedTime() > b.GetElapsedTime();
+		}
+
+		public static bool operator >=(ClockPrecise a, ClockPrecise b)
+		{
+			return a.GetElapsedTime() >= b.GetElapsedTime();
 		}
 	}
 }

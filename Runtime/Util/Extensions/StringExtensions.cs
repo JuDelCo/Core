@@ -13,6 +13,16 @@ namespace Ju.Extensions
 			return (self.IndexOf(value, stringComparison) >= 0);
 		}
 
+		public static string Truncate(this string self, int maxLength)
+		{
+			if (string.IsNullOrEmpty(self))
+			{
+				return self;
+			}
+
+			return (self.Length <= maxLength ? self : self.Substring(0, maxLength));
+		}
+
 		public static int GetSimpleHash(this string self)
 		{
 			return self.Select(c => (int)c).Sum();

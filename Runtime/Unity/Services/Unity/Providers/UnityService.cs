@@ -14,19 +14,13 @@ using UnityEngine.SceneManagement;
 
 namespace Ju.Services
 {
-	public class UnityService : IUnityService, IServiceLoad, ILoggableService
+	using Ju.Log;
+
+	public class UnityService : IUnityService, IServiceLoad
 	{
-		public event UnityServiceQuitRequestedEvent OnApplicationWantsToQuit;
-		public event UnityServiceQuitEvent OnApplicationQuit;
-
-		public event LogMessageEvent OnLogDebug = delegate { };
-		public event LogMessageEvent OnLogInfo = delegate { };
-		public event LogMessageEvent OnLogNotice = delegate { };
-		public event LogMessageEvent OnLogWarning = delegate { };
-		public event LogMessageEvent OnLogError = delegate { };
-
 		private IEventBusService eventService;
 		private bool appHasFocus = true;
+		private bool wantsToQuit = false;
 		private bool quitting = false;
 
 		private struct UnityServiceLoopUpdateHook { };
@@ -42,14 +36,14 @@ namespace Ju.Services
 			{
 				if (!Application.genuine)
 				{
-					OnLogError("App integrity was compromised");
+					Log.Error("App integrity was compromised");
 					Application.Quit();
 				}
 			}
 
 			if (System.Diagnostics.Debugger.IsAttached)
 			{
-				OnLogWarning("NET Debugger detected");
+				Log.Warning("NET Debugger detected");
 			}
 
 			eventService = ServiceContainer.Get<IEventBusService>();
@@ -183,19 +177,19 @@ namespace Ju.Services
 
 		private void OnUnityUpdate()
 		{
-			eventService.Fire(new LoopPreUpdateEvent(UnityEngine.Time.deltaTime));
-			eventService.Fire(new LoopUpdateEvent(UnityEngine.Time.deltaTime));
+			eventService.Fire(new TimePreUpdateEvent(UnityEngine.Time.deltaTime));
+			eventService.Fire(new TimeUpdateEvent(UnityEngine.Time.deltaTime));
 		}
 
 		private void OnUnityPostLateUpdate()
 		{
-			eventService.Fire(new LoopPostUpdateEvent(UnityEngine.Time.deltaTime));
+			eventService.Fire(new TimePostUpdateEvent(UnityEngine.Time.deltaTime));
 		}
 
 		private void OnUnityFixedUpdate()
 		{
-			eventService.Fire(new LoopPreFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
-			eventService.Fire(new LoopFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			eventService.Fire(new TimePreFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			eventService.Fire(new TimeFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 
 			if (Application.isFocused && !appHasFocus)
 			{
@@ -211,17 +205,17 @@ namespace Ju.Services
 
 		private void OnUnityPreCollisionsUpdate()
 		{
-			eventService.Fire(new LoopPreCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			eventService.Fire(new TimePreCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 		}
 
 		private void OnUnityPostCollisionsUpdate()
 		{
-			eventService.Fire(new LoopPostCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			eventService.Fire(new TimePostCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 		}
 
 		private void OnUnityPostFixedUpdate()
 		{
-			eventService.Fire(new LoopPostFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			eventService.Fire(new TimePostFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 		}
 
 		private void OnUnitySceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
@@ -231,12 +225,12 @@ namespace Ju.Services
 
 		private void OnUnityApplicationFocus(bool hasFocus)
 		{
-			eventService.Fire(new UnityApplicationFocusEvent(hasFocus));
+			eventService.Fire(new UnityAppFocusEvent(hasFocus));
 		}
 
 		private void HandleLowMemoryWarning()
 		{
-			OnLogWarning("Low memory detected");
+			Log.Warning("Low memory detected");
 
 			Resources.UnloadUnusedAssets();
 		}
@@ -251,18 +245,22 @@ namespace Ju.Services
 		}
 #endif
 
+		public void CancelAppQuit()
+		{
+			wantsToQuit = false;
+		}
+
 		private bool OnUnityApplicationWantsToQuit()
 		{
 			var result = true;
 
 			if (!quitting)
 			{
-				if (OnApplicationWantsToQuit != null)
-				{
-					result = OnApplicationWantsToQuit();
-				}
+				wantsToQuit = true;
 
-				if (result)
+				eventService.Fire<UnityQuitRequestedEvent>();
+
+				if (wantsToQuit)
 				{
 					result = false;
 					StartApplicationQuitRoutine();
@@ -276,10 +274,7 @@ namespace Ju.Services
 		{
 			quitting = true;
 
-			if (OnApplicationQuit != null)
-			{
-				OnApplicationQuit();
-			}
+			eventService.Fire<UnityQuitEvent>();
 
 			foreach (var obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
 			{

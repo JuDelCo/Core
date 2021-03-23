@@ -11,6 +11,8 @@ using UnityEngine;
 
 namespace Ju.Services
 {
+	using Ju.Log;
+
 	public class InputUnityService : InputService
 	{
 		private ClockPrecise interval;
@@ -493,7 +495,7 @@ namespace Ju.Services
 				}
 				catch (System.Exception e)
 				{
-					ServiceContainer.Get<ILogService>().Error(e.Message);
+					Log.Exception(null, e);
 				}
 			}
 

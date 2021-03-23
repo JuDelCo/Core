@@ -7,17 +7,8 @@ using Ju.Extensions;
 
 namespace Ju.Promises
 {
-	public delegate void PromiseUnhandledExceptionEvent(Exception e);
-
 	public partial class Promise : IPromise
 	{
-		public static event PromiseUnhandledExceptionEvent OnUnhandledException = delegate { };
-
-		internal static void NotifyUnhandledException(Exception e)
-		{
-			OnUnhandledException(e);
-		}
-
 		public static IPromise Resolved()
 		{
 			var promise = new Promise();

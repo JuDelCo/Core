@@ -67,17 +67,17 @@ namespace Ju.Services.Extensions
 			return ServiceContainer.Get<ITaskService>().WaitWhile(new ObjectLinkHandler<IService>(service), condition);
 		}
 
-		public static IPromise WaitForSeconds<T>(this IService service, float seconds) where T : ILoopTimeEvent
+		public static IPromise WaitForSeconds<T>(this IService service, float seconds) where T : ITimeDeltaEvent
 		{
 			return ServiceContainer.Get<ITaskService>().WaitForSeconds<T>(new ObjectLinkHandler<IService>(service), seconds);
 		}
 
 		public static IPromise WaitForSeconds(this IService service, float seconds)
 		{
-			return ServiceContainer.Get<ITaskService>().WaitForSeconds<LoopUpdateEvent>(new ObjectLinkHandler<IService>(service), seconds);
+			return ServiceContainer.Get<ITaskService>().WaitForSeconds<TimeUpdateEvent>(new ObjectLinkHandler<IService>(service), seconds);
 		}
 
-		public static IPromise WaitForTicks<T>(this IService service, int ticks) where T : ILoopEvent
+		public static IPromise WaitForTicks<T>(this IService service, int ticks) where T : ITimeEvent
 		{
 			return ServiceContainer.Get<ITaskService>().WaitForTicks<T>(new ObjectLinkHandler<IService>(service), ticks);
 		}
@@ -92,25 +92,25 @@ namespace Ju.Services.Extensions
 			return ServiceContainer.Get<ITaskService>().WaitForNextFixedUpdate(new ObjectLinkHandler<IService>(service));
 		}
 
-		public static IClock NewClock<T>(this IService service) where T : ILoopTimeEvent
+		public static IClock NewClock<T>(this IService service) where T : ITimeDeltaEvent
 		{
 			var linkHandler = new ObjectLinkHandler<IService>(service);
 			return new Clock<T>(() => linkHandler.IsActive);
 		}
 
-		public static IClock NewClock<T>(this IService service, float elapsedSeconds) where T : ILoopTimeEvent
+		public static IClock NewClock<T>(this IService service, float elapsedSeconds) where T : ITimeDeltaEvent
 		{
 			var linkHandler = new ObjectLinkHandler<IService>(service);
 			return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 		}
 
-		public static ITimer NewTimer<T>(this IService service, float seconds, Action onCompleted) where T : ILoopTimeEvent
+		public static ITimer NewTimer<T>(this IService service, float seconds, Action onCompleted) where T : ITimeDeltaEvent
 		{
 			var linkHandler = new ObjectLinkHandler<IService>(service);
 			return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);
 		}
 
-		public static IFrameTimer NewFrameTimer<T>(this IService service, int frames, Action onCompleted) where T : ILoopEvent
+		public static IFrameTimer NewFrameTimer<T>(this IService service, int frames, Action onCompleted) where T : ITimeEvent
 		{
 			var linkHandler = new ObjectLinkHandler<IService>(service);
 			return new FrameTimer<T>(frames, onCompleted, () => linkHandler.IsActive);

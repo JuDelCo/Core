@@ -6,13 +6,8 @@ using System.Collections.Generic;
 
 namespace Ju.Services
 {
-	public delegate void DataServiceListEvent(Type type, object obj);
-
 	public interface IDataService
 	{
-		event DataServiceListEvent OnListAdd;
-		event DataServiceListEvent OnListRemove;
-
 		void Set<T>(T obj, string id, bool overwrite = true);
 		T Get<T>(string id) where T : class;
 		void Unset<T>(string id);

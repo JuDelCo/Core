@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
-using System;
 using System.Collections.Generic;
 
 namespace Ju.Random
@@ -33,6 +32,11 @@ namespace Ju.Random
 			return Random.ListElementsUnique(list, maxIterations, random);
 		}
 
+		public static T RandomRemoveElement<T>(this IList<T> list, System.Random random = null)
+		{
+			return Random.ListRemoveElement(list, random);
+		}
+
 		public static TValue RandomElement<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, System.Random random = null)
 		{
 			return Random.DictionaryElement(dictionary, random);
@@ -51,6 +55,11 @@ namespace Ju.Random
 		public static IEnumerable<TValue> RandomElementsUnique<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, int maxIterations, System.Random random = null)
 		{
 			return Random.DictionaryElementsUnique(dictionary, maxIterations, random);
+		}
+
+		public static TValue RandomRemoveElement<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, System.Random random = null)
+		{
+			return Random.DictionaryRemoveElement(dictionary, random);
 		}
 	}
 }

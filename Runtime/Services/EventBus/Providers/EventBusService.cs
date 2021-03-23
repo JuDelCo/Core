@@ -15,6 +15,8 @@ using EventType = System.Type;
 
 namespace Ju.Services
 {
+	using Ju.Log;
+
 	internal class SubscriberData
 	{
 		public ILinkHandler handle;
@@ -29,16 +31,8 @@ namespace Ju.Services
 		}
 	}
 
-	public class EventBusService : IEventBusService, IServiceLoad, ILoggableService
+	public class EventBusService : IEventBusService, IServiceLoad
 	{
-		public event EventBusServiceFiredEvent OnEventFired;
-
-		public event LogMessageEvent OnLogDebug = delegate { };
-		public event LogMessageEvent OnLogInfo = delegate { };
-		public event LogMessageEvent OnLogNotice = delegate { };
-		public event LogMessageEvent OnLogWarning = delegate { };
-		public event LogMessageEvent OnLogError = delegate { };
-
 		private Dictionary<EventType, List<SubscriberData>>[] subscribers = null;
 		private List<SubscriberData>[] cachedSubscribers = null;
 		private List<Action> asyncEvents = null;
@@ -50,6 +44,8 @@ namespace Ju.Services
 		private Stack<EventType> stackEventTypes = null;
 		private const int MAX_EVENT_STACK_LIMIT = 128;
 		private Thread mainThread;
+		private EventType eventFiredEventType;
+		private bool eventFiredEventFired;
 
 		public void Load()
 		{
@@ -60,10 +56,11 @@ namespace Ju.Services
 			stackEventTypes = new Stack<EventType>();
 			cancelEventStatus = new bool[MAX_EVENT_STACK_LIMIT];
 			stickyData = new Dictionary<EventType, EventPayload>();
+			eventFiredEventType = typeof(EventFiredEvent);
 
 			mainThread = Thread.CurrentThread;
 
-			this.EventSubscribe<LoopPostUpdateEvent>(ProcessAsyncEvents);
+			this.EventSubscribe<TimePostUpdateEvent>(ProcessAsyncEvents);
 		}
 
 		public void Subscribe<T>(ChannelId channel, ILinkHandler handle, Action<T> action, int priority = 0)
@@ -72,7 +69,7 @@ namespace Ju.Services
 
 			if (action == null)
 			{
-				OnLogError("Subscriber action of event type {0} can't be null", type.ToString(), new ArgumentNullException("action"));
+				Log.Exception($"Subscriber action of event type {type} can't be null", new ArgumentNullException("action"));
 				return;
 			}
 
@@ -86,7 +83,7 @@ namespace Ju.Services
 				var subscriberList = subscribers[channel].GetOrInsertNew(type);
 				var subscriberIndex = 0;
 
-				for (int i = (subscriberList.Count - 1); i > 0; i--)
+				for (int i = (subscriberList.Count - 1); i >= 0; --i)
 				{
 					if (subscriberList[i].priority <= priority)
 					{
@@ -102,13 +99,13 @@ namespace Ju.Services
 			{
 				if (Thread.CurrentThread != mainThread)
 				{
-					OnLogError("Synchronous sticky event can't be auto fired from outside of the Main Thread", new InvalidOperationException());
+					Log.Exception("Synchronous sticky event can't be auto fired from outside of the Main Thread", new InvalidOperationException());
 					return;
 				}
 
 				if (callStackCounter > MAX_EVENT_STACK_LIMIT)
 				{
-					OnLogError("Max eventbus stack reached, subscriber won't get the sticky event of type {0}", type.ToString(), new StackOverflowException());
+					Log.Exception($"Max eventbus stack reached, subscriber won't get the sticky event of type {type}", new StackOverflowException());
 					return;
 				}
 
@@ -120,7 +117,7 @@ namespace Ju.Services
 		{
 			if (Thread.CurrentThread != mainThread)
 			{
-				OnLogError("Synchronous event Fire method can't be called from outside of the Main Thread", new InvalidOperationException());
+				Log.Exception("Synchronous event Fire method can't be called from outside of the Main Thread", new InvalidOperationException());
 				return;
 			}
 
@@ -130,17 +127,13 @@ namespace Ju.Services
 
 			if (channelSubscribers == null || !channelSubscribers.ContainsKey(type))
 			{
-				if (OnEventFired != null)
-				{
-					OnEventFired(channel, type, data, 0);
-				}
-
+				FireDebugEvent(channel, type, data, 0);
 				return;
 			}
 
 			if (callStackCounter > MAX_EVENT_STACK_LIMIT)
 			{
-				OnLogError("Max eventbus stack reached, ignoring firing of an event of type {0}", type.ToString(), new StackOverflowException());
+				Log.Exception($"Max eventbus stack reached, ignoring firing of an event of type {type}", new StackOverflowException());
 				return;
 			}
 
@@ -151,18 +144,13 @@ namespace Ju.Services
 
 			var subscriberList = cachedSubscribers[callStackCounter];
 			subscriberList.AddRange(channelSubscribers[type]);
-			var subscriberCount = subscriberList.Count;
+			var subscribersCount = subscriberList.Count;
 
 			cancelEventStatus[callStackCounter] = false;
 
-			if (OnEventFired != null)
-			{
-				callStackCounter++;
-				OnEventFired(channel, type, data, subscriberCount);
-				callStackCounter--;
-			}
+			FireDebugEvent(channel, type, data, subscribersCount);
 
-			for (int i = 0; i < subscriberCount; ++i)
+			for (int i = 0; i < subscribersCount; ++i)
 			{
 				var handle = subscriberList[i].handle;
 
@@ -255,6 +243,27 @@ namespace Ju.Services
 			}
 		}
 
+		private void FireDebugEvent<T>(ChannelId channel, EventType type, T data, int subscribersCount)
+		{
+			if (!eventFiredEventFired && type != eventFiredEventType && subscribers[0] != null && subscribers[0].ContainsKey(eventFiredEventType))
+			{
+				string serializedData = null;
+
+				if (typeof(ISerializableEvent).IsAssignableFrom(type))
+				{
+					serializedData = (data as ISerializableEvent).Serialize();
+				}
+
+				eventFiredEventFired = true;
+				++callStackCounter;
+
+				this.Fire(0, new EventFiredEvent(channel, type, serializedData, subscribersCount));
+
+				--callStackCounter;
+				eventFiredEventFired = false;
+			}
+		}
+
 		private void ProcessAsyncEvents()
 		{
 			cachedAsyncEvents.AddRange(asyncEvents);
@@ -272,29 +281,22 @@ namespace Ju.Services
 		{
 			if (stackEventTypes.Contains(type))
 			{
-				OnLogWarning("An event subscriber of type {0} has fired another event of the same type. This can lead to stackoverflow issues.", type.ToString());
+				Log.Warning($"An event subscriber of type {type} has fired another event of the same type. This can lead to stackoverflow issues.");
 			}
 
 			stackEventTypes.Push(type);
-			callStackCounter++;
+			++callStackCounter;
 
-			if (System.Diagnostics.Debugger.IsAttached)
+			try
 			{
 				action(data);
 			}
-			else
+			catch (Exception e)
 			{
-				try
-				{
-					action(data);
-				}
-				catch (Exception e)
-				{
-					OnLogError("Uncaught event exception (Type: {0})", type.ToString(), e);
-				}
+				Log.Exception($"Uncaught event exception (Type: {type})", e);
 			}
 
-			callStackCounter--;
+			--callStackCounter;
 			stackEventTypes.Pop();
 		}
 	}

@@ -53,8 +53,8 @@ namespace Ju.Services
 
 			originalFixedDeltaTime = UnityEngine.Time.fixedDeltaTime;
 
-			this.EventSubscribe<LoopPreUpdateEvent>(PreUpdate);
-			this.EventSubscribe<LoopPreFixedUpdateEvent>(PreFixedUpdate);
+			this.EventSubscribe<TimePreUpdateEvent>(PreUpdate);
+			this.EventSubscribe<TimePreFixedUpdateEvent>(PreFixedUpdate);
 		}
 
 		public override void SetTimeScale(float timeScale)

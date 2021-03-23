@@ -7,7 +7,7 @@ using Ju.Services;
 
 namespace Ju.Time
 {
-	public class FrameTimer<T> : IFrameTimer where T : ILoopEvent
+	public class FrameTimer<T> : IFrameTimer where T : ITimeEvent
 	{
 		private readonly DisposableLinkHandler linkHandler;
 		private int elapsed;
@@ -85,6 +85,46 @@ namespace Ju.Time
 					onCompleted();
 				}
 			}
+		}
+
+		public static bool operator <(FrameTimer<T> timer, int frames)
+		{
+			return timer.GetFramesLeft() < frames;
+		}
+
+		public static bool operator <=(FrameTimer<T> timer, int frames)
+		{
+			return timer.GetFramesLeft() <= frames;
+		}
+
+		public static bool operator >(FrameTimer<T> timer, int frames)
+		{
+			return timer.GetFramesLeft() > frames;
+		}
+
+		public static bool operator >=(FrameTimer<T> timer, int frames)
+		{
+			return timer.GetFramesLeft() >= frames;
+		}
+
+		public static bool operator <(FrameTimer<T> a, FrameTimer<T> b)
+		{
+			return a.GetFramesLeft() < b.GetFramesLeft();
+		}
+
+		public static bool operator <=(FrameTimer<T> a, FrameTimer<T> b)
+		{
+			return a.GetFramesLeft() <= b.GetFramesLeft();
+		}
+
+		public static bool operator >(FrameTimer<T> a, FrameTimer<T> b)
+		{
+			return a.GetFramesLeft() > b.GetFramesLeft();
+		}
+
+		public static bool operator >=(FrameTimer<T> a, FrameTimer<T> b)
+		{
+			return a.GetFramesLeft() >= b.GetFramesLeft();
 		}
 	}
 }

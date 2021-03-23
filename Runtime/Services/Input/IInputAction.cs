@@ -5,14 +5,8 @@ using System.Collections.Generic;
 
 namespace Ju.Input
 {
-	public delegate void InputServiceActionEvent(IInputAction action);
-
 	public interface IInputAction
 	{
-		event InputServiceActionEvent OnPressed;
-		event InputServiceActionEvent OnHeld;
-		event InputServiceActionEvent OnReleased;
-
 		string Id { get; }
 		IInputPlayer Player { get; }
 		bool Enabled { get; set; }

@@ -14,7 +14,7 @@ namespace Ju.Services
 
 		IPromise WaitUntil(ILinkHandler handle, Func<bool> condition);
 		IPromise WaitWhile(ILinkHandler handle, Func<bool> condition);
-		IPromise WaitForSeconds<T>(ILinkHandler handle, float seconds) where T : ILoopTimeEvent;
-		IPromise WaitForTicks<T>(ILinkHandler handle, int ticks) where T : ILoopEvent;
+		IPromise WaitForSeconds<T>(ILinkHandler handle, float seconds) where T : ITimeDeltaEvent;
+		IPromise WaitForTicks<T>(ILinkHandler handle, int ticks) where T : ITimeEvent;
 	}
 }

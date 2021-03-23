@@ -8,6 +8,8 @@ using Identifier = System.String;
 
 namespace Ju.Services
 {
+	using Ju.Log;
+
 	public class ServiceContainer
 	{
 		private static readonly Identifier DEFAULT_ID = "base";
@@ -71,7 +73,7 @@ namespace Ju.Services
 
 			if (CheckDuplicatedType(baseType, id))
 			{
-				throw new Exception(string.Format("Tried to re-register a service of type '{0}' with ID '{1}'", serviceType.ToString(), id));
+				throw new Exception($"Tried to re-register a service of type '{serviceType}' with ID '{id}'");
 			}
 
 			services.servicesRegistered.GetOrInsertNew(baseType).Add(id, serviceType);
@@ -87,9 +89,9 @@ namespace Ju.Services
 			var services = InternalInstance();
 			var baseType = typeof(T);
 
-			if (baseType == typeof(ILogService))
+			if (baseType == typeof(IEventBusService))
 			{
-				throw new Exception("ILogService is a special service and can't be unloaded");
+				throw new Exception("IEventBusService is a special service and can't be unloaded");
 			}
 
 			if (services.servicesRegistered.ContainsKey(baseType))
@@ -140,11 +142,6 @@ namespace Ju.Services
 				service = (IService)Activator.CreateInstance(serviceType);
 				services.container.Register<T>(id, service);
 
-				if (typeof(ILoggableService).IsAssignableFrom(service.GetType()))
-				{
-					Get<ILogService>().SubscribeLoggable((ILoggableService)service);
-				}
-
 				if (service is IServiceLoad serviceLoad)
 				{
 					serviceLoad.Load();
@@ -152,7 +149,7 @@ namespace Ju.Services
 			}
 			else
 			{
-				throw new Exception(string.Format("No service of type '{0}' with ID '{1}' has been registered", baseType.ToString(), id));
+				throw new Exception($"No service of type '{baseType}' with ID '{id}' has been registered");
 			}
 
 			return (T)service;
@@ -163,7 +160,7 @@ namespace Ju.Services
 			if (instance == null)
 			{
 				instance = (new ServiceContainer());
-				RegisterService<ILogService, LogService>();
+				RegisterService<IEventBusService, EventBusService>();
 			}
 
 			return instance;
@@ -192,9 +189,11 @@ namespace Ju.Services
 		{
 			if (instance != null)
 			{
+				instance.container.Dispose();
+				Log.Dispose();
+
 				instance.servicesRegistered.Clear();
 				instance.servicesLoaded.Clear();
-				instance.container.Dispose();
 				instance = null;
 			}
 		}

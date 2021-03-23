@@ -10,6 +10,8 @@ using Ju.Time;
 
 namespace Ju.Services
 {
+	using Ju.Log;
+
 	internal class TaskPromise
 	{
 		public ILinkHandler handle;
@@ -24,20 +26,14 @@ namespace Ju.Services
 		}
 	}
 
-	public class TaskService : ITaskService, IServiceLoad, ILoggableService
+	public class TaskService : ITaskService, IServiceLoad
 	{
-		public event LogMessageEvent OnLogDebug = delegate { };
-		public event LogMessageEvent OnLogInfo = delegate { };
-		public event LogMessageEvent OnLogNotice = delegate { };
-		public event LogMessageEvent OnLogWarning = delegate { };
-		public event LogMessageEvent OnLogError = delegate { };
-
 		private readonly List<TaskPromise> actions = new List<TaskPromise>();
 		private readonly List<TaskPromise> actionsRunner = new List<TaskPromise>();
 
 		public void Load()
 		{
-			this.EventSubscribe<LoopUpdateEvent>(Tick);
+			this.EventSubscribe<TimeUpdateEvent>(Tick);
 		}
 
 		private void Tick()
@@ -80,7 +76,7 @@ namespace Ju.Services
 						}
 						catch (Exception e)
 						{
-							OnLogError("Uncaught task exception", e);
+							Log.Exception("Uncaught task exception", e);
 						}
 					}
 				}
@@ -100,7 +96,7 @@ namespace Ju.Services
 			}
 			else
 			{
-				WaitForSeconds<LoopUpdateEvent>(new KeepLinkHandler(), delay).Then(action);
+				WaitForSeconds<TimeUpdateEvent>(new KeepLinkHandler(), delay).Then(action);
 			}
 		}
 
@@ -121,7 +117,7 @@ namespace Ju.Services
 			return WaitUntil(handle, () => !condition());
 		}
 
-		public IPromise WaitForSeconds<T>(ILinkHandler handle, float seconds) where T : ILoopTimeEvent
+		public IPromise WaitForSeconds<T>(ILinkHandler handle, float seconds) where T : ITimeDeltaEvent
 		{
 			var promise = new Promise();
 
@@ -149,7 +145,7 @@ namespace Ju.Services
 			return promise;
 		}
 
-		public IPromise WaitForTicks<T>(ILinkHandler handle, int ticks) where T : ILoopEvent
+		public IPromise WaitForTicks<T>(ILinkHandler handle, int ticks) where T : ITimeEvent
 		{
 			var promise = new Promise();
 

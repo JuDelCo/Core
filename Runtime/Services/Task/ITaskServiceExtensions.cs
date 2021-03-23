@@ -10,11 +10,11 @@ public static class ITaskServiceExtensions
 {
 	public static IPromise WaitForNextUpdate(this ITaskService taskService, ILinkHandler handle)
 	{
-		return taskService.WaitForSeconds<LoopUpdateEvent>(handle, 0f);
+		return taskService.WaitForSeconds<TimeUpdateEvent>(handle, 0f);
 	}
 
 	public static IPromise WaitForNextFixedUpdate(this ITaskService taskService, ILinkHandler handle)
 	{
-		return taskService.WaitForTicks<LoopFixedUpdateEvent>(handle, 1);
+		return taskService.WaitForTicks<TimeFixedUpdateEvent>(handle, 1);
 	}
 }

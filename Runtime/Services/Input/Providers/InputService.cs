@@ -9,17 +9,8 @@ using Ju.Time;
 
 namespace Ju.Services
 {
-	public abstract class InputService : IInputServiceRaw, IInputService, IServiceLoad, ILoggableService
+	public abstract class InputService : IInputServiceRaw, IInputService, IServiceLoad
 	{
-		public event InputServiceGamepadStatusEvent OnGamepadConnected = delegate { };
-		public event InputServiceGamepadStatusEvent OnGamepadDisconnected = delegate { };
-
-		public event LogMessageEvent OnLogDebug = delegate { };
-		public event LogMessageEvent OnLogInfo = delegate { };
-		public event LogMessageEvent OnLogNotice = delegate { };
-		public event LogMessageEvent OnLogWarning = delegate { };
-		public event LogMessageEvent OnLogError = delegate { };
-
 		public IEnumerable<IInputPlayer> Players => players;
 		public IMouseController Mouse => mouse;
 		public IKeyboardController Keyboard => keyboard;
@@ -32,6 +23,8 @@ namespace Ju.Services
 		protected List<IGamepadController> gamepads;
 		protected List<IGamepadController> customControllers;
 
+		private IEventBusService eventService;
+
 		public void Load()
 		{
 			players = new List<IInputPlayer>();
@@ -42,7 +35,9 @@ namespace Ju.Services
 
 			Initialize();
 
-			this.EventSubscribe<LoopPreUpdateEvent>(e =>
+			eventService = ServiceContainer.Get<IEventBusService>();
+
+			this.EventSubscribe<TimePreUpdateEvent>(e =>
 			{
 				UpdateActions(e.DeltaTime);
 				Update();
@@ -74,7 +69,7 @@ namespace Ju.Services
 				var gamepad = new GamepadController(gamepadId, this);
 				gamepads.Add(gamepad);
 
-				OnGamepadConnected(gamepad);
+				eventService.Fire(new InputGamepadConnectedEvent(gamepad));
 			}
 			else
 			{
@@ -84,7 +79,7 @@ namespace Ju.Services
 				{
 					gamepad.Enabled = true;
 
-					OnGamepadConnected(gamepad);
+					eventService.Fire(new InputGamepadConnectedEvent(gamepad));
 				}
 			}
 		}
@@ -97,7 +92,7 @@ namespace Ju.Services
 			{
 				gamepad.Enabled = false;
 
-				OnGamepadDisconnected(gamepad);
+				eventService.Fire(new InputGamepadDisconnectedEvent(gamepad));
 			}
 		}
 

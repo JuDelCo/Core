@@ -66,17 +66,17 @@ public static class StateUtilitiesExtensions
 		return ServiceContainer.Get<ITaskService>().WaitWhile(new StateLinkHandler(state), condition);
 	}
 
-	public static IPromise WaitForSeconds<T>(this State state, float seconds) where T : ILoopTimeEvent
+	public static IPromise WaitForSeconds<T>(this State state, float seconds) where T : ITimeDeltaEvent
 	{
 		return ServiceContainer.Get<ITaskService>().WaitForSeconds<T>(new StateLinkHandler(state), seconds);
 	}
 
 	public static IPromise WaitForSeconds(this State state, float seconds)
 	{
-		return ServiceContainer.Get<ITaskService>().WaitForSeconds<LoopUpdateEvent>(new StateLinkHandler(state), seconds);
+		return ServiceContainer.Get<ITaskService>().WaitForSeconds<TimeUpdateEvent>(new StateLinkHandler(state), seconds);
 	}
 
-	public static IPromise WaitForTicks<T>(this State state, int ticks) where T : ILoopEvent
+	public static IPromise WaitForTicks<T>(this State state, int ticks) where T : ITimeEvent
 	{
 		return ServiceContainer.Get<ITaskService>().WaitForTicks<T>(new StateLinkHandler(state), ticks);
 	}
@@ -91,25 +91,25 @@ public static class StateUtilitiesExtensions
 		return ServiceContainer.Get<ITaskService>().WaitForNextFixedUpdate(new StateLinkHandler(state));
 	}
 
-	public static IClock NewClock<T>(this State state) where T : ILoopTimeEvent
+	public static IClock NewClock<T>(this State state) where T : ITimeDeltaEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new Clock<T>(() => linkHandler.IsActive);
 	}
 
-	public static IClock NewClock<T>(this State state, float elapsedSeconds) where T : ILoopTimeEvent
+	public static IClock NewClock<T>(this State state, float elapsedSeconds) where T : ITimeDeltaEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 	}
 
-	public static ITimer NewTimer<T>(this State state, float seconds, Action onCompleted) where T : ILoopTimeEvent
+	public static ITimer NewTimer<T>(this State state, float seconds, Action onCompleted) where T : ITimeDeltaEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);
 	}
 
-	public static IFrameTimer NewFrameTimer<T>(this State state, int frames, Action onCompleted) where T : ILoopEvent
+	public static IFrameTimer NewFrameTimer<T>(this State state, int frames, Action onCompleted) where T : ITimeEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new FrameTimer<T>(frames, onCompleted, () => linkHandler.IsActive);

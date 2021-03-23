@@ -82,7 +82,7 @@ namespace Ju.Services
 				{
 					if (!go.activeInHierarchy && !go.activeSelf)
 					{
-						total++;
+						++total;
 					}
 				}
 
@@ -125,7 +125,7 @@ namespace Ju.Services
 				{
 					GameObject.Destroy(go);
 					pool.Remove(go);
-					total--;
+					--total;
 				}
 			});
 
@@ -140,7 +140,7 @@ namespace Ju.Services
 
 					GameObject.Destroy(go);
 					pool.Remove(go);
-					total--;
+					--total;
 				});
 			}
 		}

@@ -10,6 +10,8 @@ using Ju.Time;
 
 namespace Ju.Services
 {
+	using Ju.Log;
+
 	internal class CoroutineHandlePair
 	{
 		public ILinkHandler handle;
@@ -22,20 +24,14 @@ namespace Ju.Services
 		}
 	}
 
-	public class CoroutineService : ICoroutineService, IServiceLoad, ILoggableService
+	public class CoroutineService : ICoroutineService, IServiceLoad
 	{
-		public event LogMessageEvent OnLogDebug = delegate { };
-		public event LogMessageEvent OnLogInfo = delegate { };
-		public event LogMessageEvent OnLogNotice = delegate { };
-		public event LogMessageEvent OnLogWarning = delegate { };
-		public event LogMessageEvent OnLogError = delegate { };
-
 		private readonly List<CoroutineHandlePair> coroutines = new List<CoroutineHandlePair>();
 		private readonly List<CoroutineHandlePair> coroutinesRunner = new List<CoroutineHandlePair>();
 
 		public void Load()
 		{
-			this.EventSubscribe<LoopUpdateEvent>(Tick);
+			this.EventSubscribe<TimeUpdateEvent>(Tick);
 		}
 
 		private void Tick()
@@ -85,7 +81,7 @@ namespace Ju.Services
 						}
 						catch (Exception e)
 						{
-							OnLogError("Uncaught coroutine exception", e);
+							Log.Exception("Uncaught coroutine exception", e);
 						}
 					}
 				}

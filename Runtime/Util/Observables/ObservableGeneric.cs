@@ -70,11 +70,11 @@ namespace Ju.Observables
 					continue;
 				}
 
-				callStackCounter++;
+				++callStackCounter;
 
 				actions[i].action(value);
 
-				callStackCounter--;
+				--callStackCounter;
 			}
 		}
 

@@ -39,6 +39,7 @@ csharp_prefer_simple_default_expression = false:none
 csharp_prefer_simple_using_statement = false:none
 csharp_style_prefer_switch_expression = false:none
 csharp_style_conditional_delegate_call = false:none
+csharp_style_implicit_object_creation_when_type_is_apparent = false:none
 dotnet_code_quality_unused_parameters = non_public:none
 dotnet_style_object_initializer = false:silent
 dotnet_style_collection_initializer = false:silent

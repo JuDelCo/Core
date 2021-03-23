@@ -57,7 +57,7 @@ public static class IDataServiceUnityExtensions
 
 		if (instance == null && autoCreate)
 		{
-			instance = dataService.SetSO<T>(instance, id);
+			instance = dataService.SetSO<T>(null, id);
 		}
 
 		return instance;
