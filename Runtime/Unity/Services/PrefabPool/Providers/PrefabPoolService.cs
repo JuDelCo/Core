@@ -59,7 +59,7 @@ namespace Ju.Services
 		{
 			var pool = GetPoolContaining(target);
 
-			if (pool != null)
+			if (!(pool is null))
 			{
 				target.SetActive(false);
 				target.transform.SetParent(container.transform, true);

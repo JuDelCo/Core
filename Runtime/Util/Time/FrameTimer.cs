@@ -66,7 +66,7 @@ namespace Ju.Time
 
 		private void Tick()
 		{
-			if (updateCondition != null)
+			if (!(updateCondition is null))
 			{
 				if (!updateCondition())
 				{
@@ -80,7 +80,7 @@ namespace Ju.Time
 
 			if (!completed && elapsed >= duration)
 			{
-				if (onCompleted != null)
+				if (!(onCompleted is null))
 				{
 					onCompleted();
 				}

@@ -56,7 +56,7 @@ namespace Ju.Time
 
 		private void Update(float deltaTime)
 		{
-			if (updateCondition != null)
+			if (!(updateCondition is null))
 			{
 				if (!updateCondition())
 				{

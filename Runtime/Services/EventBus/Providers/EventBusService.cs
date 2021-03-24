@@ -67,7 +67,7 @@ namespace Ju.Services
 		{
 			var type = typeof(T);
 
-			if (action == null)
+			if (action is null)
 			{
 				Log.Exception($"Subscriber action of event type {type} can't be null", new ArgumentNullException("action"));
 				return;
@@ -75,7 +75,7 @@ namespace Ju.Services
 
 			lock (subscribers)
 			{
-				if (subscribers[channel] == null)
+				if (subscribers[channel] is null)
 				{
 					subscribers[channel] = new Dictionary<EventType, List<SubscriberData>>();
 				}
@@ -125,7 +125,7 @@ namespace Ju.Services
 
 			var channelSubscribers = subscribers[channel];
 
-			if (channelSubscribers == null || !channelSubscribers.ContainsKey(type))
+			if (channelSubscribers is null || !channelSubscribers.ContainsKey(type))
 			{
 				FireDebugEvent(channel, type, data, 0);
 				return;
@@ -137,7 +137,7 @@ namespace Ju.Services
 				return;
 			}
 
-			if (cachedSubscribers[callStackCounter] == null)
+			if (cachedSubscribers[callStackCounter] is null)
 			{
 				cachedSubscribers[callStackCounter] = new List<SubscriberData>();
 			}
@@ -245,7 +245,7 @@ namespace Ju.Services
 
 		private void FireDebugEvent<T>(ChannelId channel, EventType type, T data, int subscribersCount)
 		{
-			if (!eventFiredEventFired && type != eventFiredEventType && subscribers[0] != null && subscribers[0].ContainsKey(eventFiredEventType))
+			if (!eventFiredEventFired && type != eventFiredEventType && !(subscribers[0] is null) && subscribers[0].ContainsKey(eventFiredEventType))
 			{
 				string serializedData = null;
 

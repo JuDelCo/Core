@@ -60,7 +60,7 @@ namespace Ju.Services
 			var timeStamp = Application.isEditor ? null : GetCurrentTime() + " ";
 			var message = e.Message;
 
-			if (timeStamp != null || e.Context != null)
+			if (!(timeStamp is null) || !(e.Context is null))
 			{
 				message = $"{timeStamp}{e.Message}{e.Context}";
 			}
@@ -101,7 +101,7 @@ namespace Ju.Services
 					break;
 			}
 
-			if (e.Exception != null)
+			if (!(e.Exception is null))
 			{
 				UnityEngine.Debug.LogException(e.Exception);
 			}

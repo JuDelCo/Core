@@ -77,7 +77,7 @@ namespace Ju.Log
 		{
 			get
 			{
-				if (eventBus == null)
+				if (eventBus is null)
 				{
 					eventBus = ServiceContainer.Get<IEventBusService>();
 				}

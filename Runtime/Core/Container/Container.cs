@@ -69,7 +69,7 @@ namespace Ju.Services
 				instance = services[type][id];
 			}
 
-			if (instance == null)
+			if (instance is null)
 			{
 				throw new NullReferenceException($"No class of type '{type}' with id '{id}' found");
 			}

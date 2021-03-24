@@ -75,9 +75,9 @@ namespace Ju.FSM
 
 		private void SetState(State state)
 		{
-			if (state != null && CurrentState != state && states.Contains(state))
+			if (!(state is null) && CurrentState != state && states.Contains(state))
 			{
-				if (CurrentState != null)
+				if (!(CurrentState is null))
 				{
 					CurrentState.OnExit();
 				}
@@ -105,7 +105,7 @@ namespace Ju.FSM
 			++StateFrameCounter;
 			StateTimer += deltaTime;
 
-			if (CurrentState != null)
+			if (!(CurrentState is null))
 			{
 				CurrentState.OnTick();
 			}
@@ -124,7 +124,7 @@ namespace Ju.FSM
 
 		public void FixedTick()
 		{
-			if (CurrentState != null)
+			if (!(CurrentState is null))
 			{
 				CurrentState.OnFixedTick();
 			}

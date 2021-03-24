@@ -157,7 +157,7 @@ namespace Ju.Services
 
 		private static ServiceContainer InternalInstance()
 		{
-			if (instance == null)
+			if (instance is null)
 			{
 				instance = (new ServiceContainer());
 				RegisterService<IEventBusService, EventBusService>();
@@ -187,7 +187,7 @@ namespace Ju.Services
 
 		public static void Dispose()
 		{
-			if (instance != null)
+			if (!(instance is null))
 			{
 				instance.container.Dispose();
 				Log.Dispose();

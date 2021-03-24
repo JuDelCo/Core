@@ -18,7 +18,7 @@ namespace Ju.FSM
 
 		public void Tick()
 		{
-			if (currentState != null)
+			if (!(currentState is null))
 			{
 				currentState.action();
 			}
@@ -27,7 +27,7 @@ namespace Ju.FSM
 			{
 				var state = states[i];
 
-				if (state.condition == null || state.condition())
+				if (state.condition is null || state.condition())
 				{
 					if (currentState != state)
 					{

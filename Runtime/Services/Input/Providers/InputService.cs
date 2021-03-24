@@ -109,7 +109,7 @@ namespace Ju.Services
 				}
 			}
 
-			if (result == null)
+			if (result is null)
 			{
 				result = new InputPlayer(playerId);
 				players.Add(result);
