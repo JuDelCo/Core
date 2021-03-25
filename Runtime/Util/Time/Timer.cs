@@ -74,7 +74,7 @@ namespace Ju.Time
 				}
 			}
 
-			var completed = elapsed >= duration;
+			var completed = elapsed > duration;
 
 			elapsed += Span.Seconds(deltaTime);
 

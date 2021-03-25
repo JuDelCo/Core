@@ -1,6 +1,6 @@
 
 ; ---------------------------
-; 2020 Juan Delgado (JuDelCo)
+; 2021 Juan Delgado (JuDelCo)
 ; ---------------------------
 
 ; Basic text editor config
@@ -9,21 +9,6 @@
 indent_style = tab
 indent_size = 4
 charset = utf-8
-
-; -----------------------------------------------------------------------------
-; Important:
-;
-; 	1) Create a new file in
-;		%UnityEditor_Folder%/Editor/Data/Resources/PackageManager/.editorconfig
-;
-; 	2) Add this to the file to prevent Unity built-in packages to be analyzed:
-;
-;		[**.cs]
-;		generated_code = true
-;
-;	3) You will need to repeat that for each Unity installation.
-;
-; -----------------------------------------------------------------------------
 
 ; Code analysis - Ignore rules (Unity3D project)
 [**PackageCache/**.cs]

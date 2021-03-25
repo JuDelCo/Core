@@ -1,7 +1,7 @@
 JuCore
 =====================
 
-JuCore is a service locator with lots of useful services to ease the development of C# applications and games.
+Service locator with lots of useful services and util classes to ease the development of C# apps and games.
 
 Any feedback is welcome !
 
@@ -16,7 +16,7 @@ See also
 Documentation
 =====================
 
-Go to the Wiki to learn how to **install** and **use** this framework. The API is documented there too.
+Go to the Wiki to learn how to [**install**](https://github.com/JuDelCo/Core/wiki/Usage.Getting-Started) and [**use**](https://github.com/JuDelCo/Core/wiki) this framework. The API is documented there too.
 
 https://github.com/JuDelCo/Core/wiki
 
@@ -26,62 +26,43 @@ Contents
 
 #### Core
 - [Service Container](https://github.com/JuDelCo/Core/wiki/Usage.Service-Container)
-- [Service Interfaces](https://github.com/JuDelCo/Core/wiki/Usage.Services)
+- [Service Interfaces](https://github.com/JuDelCo/Core/wiki/Usage.Custom-Services)
 - [TimeUpdate Events](https://github.com/JuDelCo/Core/wiki/Usage.TimeUpdate-Events)
 - [LinkHandlers](https://github.com/JuDelCo/Core/wiki/Usage.LinkHandlers)
+- [Logging](https://github.com/JuDelCo/Core/wiki/Usage.Logging)
 
 #### Services
-
-- [EventBus](https://github.com/JuDelCo/Core/wiki/API.Service.EventBus)
-- [Time](https://github.com/JuDelCo/Core/wiki/API.Service.Time)
-- [Input](https://github.com/JuDelCo/Core/wiki/API.Service.Input)
-- [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
 - [Coroutine](https://github.com/JuDelCo/Core/wiki/API.Service.Coroutine)
 - [Data](https://github.com/JuDelCo/Core/wiki/API.Service.Data)
-- [Extensions](https://github.com/JuDelCo/Core/wiki/API.Service.Extensions)
+- [EventBus](https://github.com/JuDelCo/Core/wiki/API.Service.EventBus)
+- [Input](https://github.com/JuDelCo/Core/wiki/API.Service.Input)
+- [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
+- [Time](https://github.com/JuDelCo/Core/wiki/API.Service.Time)
 
 #### Util
-
+- [Extensions](https://github.com/JuDelCo/Core/wiki/API.Util.Extensions)
 - [Color](https://github.com/JuDelCo/Core/wiki/API.Util.Color)
-	- Color
-	- Color32
-- [Finite State Machine](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
-	- FSM
-	- SimpleFSM
+- [FSM](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
 - [ObjectPool](https://github.com/JuDelCo/Core/wiki/API.Util.ObjectPool)
 - [Observables](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
 - [Promises](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
 - [Random](https://github.com/JuDelCo/Core/wiki/API.Util.Random)
-- [Time](https://github.com/JuDelCo/Core/wiki/API.Util.Time)
-	- Span
-	- Clock
-	- ClockPrecise
-	- Timer
-	- FrameClock
-	- FrameTimer
-- [Extensions](https://github.com/JuDelCo/Core/wiki/API.Util.Extensions)
-	- IEnumerable
-	- ICollection
-	- IDictionary
-	- String
-	- Float
-	- Bool
+- [SimpleFSM](https://github.com/JuDelCo/Core/wiki/API.Util.SimpleFSM)
+- [Clocks](https://github.com/JuDelCo/Core/wiki/API.Util.Clocks)
+- [Timers](https://github.com/JuDelCo/Core/wiki/API.Util.Timers)
+- [Span](https://github.com/JuDelCo/Core/wiki/API.Util.Span)
 
-#### Unity3D
+#### Unity3D Services
+- [Data](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Data)
+- [Input](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Input)
+- [Log](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Log)
+- [PrefabPool](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.PrefabPool)
+- [Time](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Time)
+- [Unity](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Unity)
 
-- [Services](https://github.com/JuDelCo/Core/wiki/API.Unity.Services)
-	- LogUnity
-	- InputUnity
-	- PrefabPool
-	- Unity
-	- Service Extensions
-- [Extensions](https://github.com/JuDelCo/Core/wiki/API.Unity.Util-Extensions)
-	- Behaviour
-	- LayerMask
-	- Color
-	- Color32
-	- Observable
-	- Random
+#### Unity3D Integrations
+- [Behaviour Extensions](https://github.com/JuDelCo/Core/wiki/API.Unity.Behaviour-Extensions)
+- [Util Extensions](https://github.com/JuDelCo/Core/wiki/API.Unity.Util-Extensions)
 
 
 The MIT License (MIT)
