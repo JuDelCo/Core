@@ -45,7 +45,7 @@ namespace Ju.Services
 		private const int MAX_EVENT_STACK_LIMIT = 128;
 		private Thread mainThread;
 		private EventType eventFiredEventType;
-		private bool eventFiredEventFired;
+		private bool suppressDebugEvent;
 
 		public void Load()
 		{
@@ -60,7 +60,18 @@ namespace Ju.Services
 
 			mainThread = Thread.CurrentThread;
 
-			this.EventSubscribe<TimePostUpdateEvent>(ProcessAsyncEvents);
+			this.EventSubscribe<TimePostUpdateEvent>(() =>
+			{
+				cachedAsyncEvents.AddRange(asyncEvents);
+				asyncEvents.Clear();
+
+				foreach (var asyncEvent in cachedAsyncEvents)
+				{
+					asyncEvent();
+				}
+
+				cachedAsyncEvents.Clear();
+			});
 		}
 
 		public void Subscribe<T>(ChannelId channel, ILinkHandler handle, Action<T> action, int priority = 0)
@@ -117,7 +128,9 @@ namespace Ju.Services
 		{
 			if (Thread.CurrentThread != mainThread)
 			{
+				suppressDebugEvent = true;
 				Log.Exception("Synchronous event Fire method can't be called from outside of the Main Thread", new InvalidOperationException());
+				suppressDebugEvent = false;
 				return;
 			}
 
@@ -133,7 +146,9 @@ namespace Ju.Services
 
 			if (callStackCounter > MAX_EVENT_STACK_LIMIT)
 			{
+				suppressDebugEvent = true;
 				Log.Exception($"Max eventbus stack reached, ignoring firing of an event of type {type}", new StackOverflowException());
+				suppressDebugEvent = false;
 				return;
 			}
 
@@ -245,7 +260,7 @@ namespace Ju.Services
 
 		private void FireDebugEvent<T>(ChannelId channel, EventType type, T data, int subscribersCount)
 		{
-			if (!eventFiredEventFired && type != eventFiredEventType && !(subscribers[0] is null) && subscribers[0].ContainsKey(eventFiredEventType))
+			if (!suppressDebugEvent && type != eventFiredEventType && !(subscribers[0] is null) && subscribers[0].ContainsKey(eventFiredEventType))
 			{
 				string serializedData = null;
 
@@ -254,34 +269,23 @@ namespace Ju.Services
 					serializedData = (data as ISerializableEvent).Serialize();
 				}
 
-				eventFiredEventFired = true;
+				suppressDebugEvent = true;
 				++callStackCounter;
 
 				this.Fire(0, new EventFiredEvent(channel, type, serializedData, subscribersCount));
 
 				--callStackCounter;
-				eventFiredEventFired = false;
+				suppressDebugEvent = false;
 			}
-		}
-
-		private void ProcessAsyncEvents()
-		{
-			cachedAsyncEvents.AddRange(asyncEvents);
-			asyncEvents.Clear();
-
-			foreach (var asyncEvent in cachedAsyncEvents)
-			{
-				asyncEvent();
-			}
-
-			cachedAsyncEvents.Clear();
 		}
 
 		private void DispatchEvent<T>(EventType type, Action<T> action, T data)
 		{
 			if (stackEventTypes.Contains(type))
 			{
+				suppressDebugEvent = true;
 				Log.Warning($"An event subscriber of type {type} has fired another event of the same type. This can lead to stackoverflow issues.");
+				suppressDebugEvent = false;
 			}
 
 			stackEventTypes.Push(type);
@@ -293,7 +297,9 @@ namespace Ju.Services
 			}
 			catch (Exception e)
 			{
+				suppressDebugEvent = true;
 				Log.Exception($"Uncaught event exception (Type: {type})", e);
+				suppressDebugEvent = false;
 			}
 
 			--callStackCounter;

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Ju.Extensions;
 using Ju.Input;
 using Ju.Services.Extensions;
+using Ju.Services.Internal;
 using Ju.Time;
 
 namespace Ju.Services
@@ -23,8 +24,6 @@ namespace Ju.Services
 		protected List<IGamepadController> gamepads;
 		protected List<IGamepadController> customControllers;
 
-		private IEventBusService eventService;
-
 		public void Load()
 		{
 			players = new List<IInputPlayer>();
@@ -35,26 +34,20 @@ namespace Ju.Services
 
 			Initialize();
 
-			eventService = ServiceContainer.Get<IEventBusService>();
-
 			this.EventSubscribe<TimePreUpdateEvent>(e =>
 			{
-				UpdateActions(e.DeltaTime);
+				foreach (var player in players)
+				{
+					var actions = (List<IInputAction>)player.Actions;
+
+					foreach (InputAction action in actions)
+					{
+						action.Update(e.DeltaTime);
+					}
+				}
+
 				Update();
 			});
-		}
-
-		private void UpdateActions(float deltaTime)
-		{
-			foreach (var player in players)
-			{
-				var actions = (List<IInputAction>)player.Actions;
-
-				foreach (InputAction action in actions)
-				{
-					action.Update(deltaTime);
-				}
-			}
 		}
 
 		protected void ConnectGamepad(string gamepadId)
@@ -69,7 +62,7 @@ namespace Ju.Services
 				var gamepad = new GamepadController(gamepadId, this);
 				gamepads.Add(gamepad);
 
-				eventService.Fire(new InputGamepadConnectedEvent(gamepad));
+				ServiceCache.EventBus.Fire(new InputGamepadConnectedEvent(gamepad));
 			}
 			else
 			{
@@ -79,7 +72,7 @@ namespace Ju.Services
 				{
 					gamepad.Enabled = true;
 
-					eventService.Fire(new InputGamepadConnectedEvent(gamepad));
+					ServiceCache.EventBus.Fire(new InputGamepadConnectedEvent(gamepad));
 				}
 			}
 		}
@@ -92,7 +85,7 @@ namespace Ju.Services
 			{
 				gamepad.Enabled = false;
 
-				eventService.Fire(new InputGamepadDisconnectedEvent(gamepad));
+				ServiceCache.EventBus.Fire(new InputGamepadDisconnectedEvent(gamepad));
 			}
 		}
 

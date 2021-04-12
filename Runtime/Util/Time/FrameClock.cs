@@ -3,7 +3,7 @@
 
 using System;
 using Ju.Handlers;
-using Ju.Services;
+using Ju.Services.Internal;
 
 namespace Ju.Time
 {
@@ -16,7 +16,19 @@ namespace Ju.Time
 		public FrameClock()
 		{
 			linkHandler = new DisposableLinkHandler(false);
-			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, Tick);
+
+			ServiceCache.EventBus.Subscribe<T>(linkHandler, () =>
+			{
+				if (!(updateCondition is null))
+				{
+					if (!updateCondition())
+					{
+						return;
+					}
+				}
+
+				elapsed += 1;
+			});
 		}
 
 		public FrameClock(int elapsedFrames) : this()
@@ -52,19 +64,6 @@ namespace Ju.Time
 		public int GetElapsedFrames()
 		{
 			return elapsed;
-		}
-
-		private void Tick()
-		{
-			if (!(updateCondition is null))
-			{
-				if (!updateCondition())
-				{
-					return;
-				}
-			}
-
-			elapsed += 1;
 		}
 
 		public static bool operator <(FrameClock<T> clock, int frames)

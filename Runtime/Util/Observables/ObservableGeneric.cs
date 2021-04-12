@@ -24,7 +24,14 @@ namespace Ju.Observables
 		public T Value
 		{
 			get => value;
-			set => SetValue(value);
+			set
+			{
+				if (!EqualityComparer<T>.Default.Equals(value, value))
+				{
+					this.value = value;
+					Trigger();
+				}
+			}
 		}
 
 		private readonly List<ObservableHandleActionPair<T>> actions = null;
@@ -75,15 +82,6 @@ namespace Ju.Observables
 				actions[i].action(value);
 
 				--callStackCounter;
-			}
-		}
-
-		private void SetValue(T newValue)
-		{
-			if (!EqualityComparer<T>.Default.Equals(value, newValue))
-			{
-				value = newValue;
-				Trigger();
 			}
 		}
 	}

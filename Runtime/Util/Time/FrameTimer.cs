@@ -3,7 +3,7 @@
 
 using System;
 using Ju.Handlers;
-using Ju.Services;
+using Ju.Services.Internal;
 
 namespace Ju.Time
 {
@@ -18,7 +18,29 @@ namespace Ju.Time
 		public FrameTimer(int frames)
 		{
 			linkHandler = new DisposableLinkHandler(false);
-			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, Tick);
+
+			ServiceCache.EventBus.Subscribe<T>(linkHandler, () =>
+			{
+				if (!(updateCondition is null))
+				{
+					if (!updateCondition())
+					{
+						return;
+					}
+				}
+
+				var completed = elapsed > duration;
+
+				elapsed += 1;
+
+				if (!completed && elapsed >= duration)
+				{
+					if (!(onCompleted is null))
+					{
+						onCompleted();
+					}
+				}
+			});
 
 			this.duration = frames;
 		}
@@ -46,7 +68,7 @@ namespace Ju.Time
 
 		public void Stop()
 		{
-			elapsed = duration;
+			elapsed = duration + 1;
 		}
 
 		public int GetDuration()
@@ -62,29 +84,6 @@ namespace Ju.Time
 		public int GetFramesLeft()
 		{
 			return duration - elapsed;
-		}
-
-		private void Tick()
-		{
-			if (!(updateCondition is null))
-			{
-				if (!updateCondition())
-				{
-					return;
-				}
-			}
-
-			var completed = elapsed > duration;
-
-			elapsed += 1;
-
-			if (!completed && elapsed >= duration)
-			{
-				if (!(onCompleted is null))
-				{
-					onCompleted();
-				}
-			}
 		}
 
 		public static bool operator <(FrameTimer<T> timer, int frames)

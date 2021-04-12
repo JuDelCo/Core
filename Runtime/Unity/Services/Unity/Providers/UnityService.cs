@@ -15,10 +15,10 @@ using UnityEngine.SceneManagement;
 namespace Ju.Services
 {
 	using Ju.Log;
+	using Ju.Services.Internal;
 
 	public class UnityService : IUnityService, IServiceLoad
 	{
-		private IEventBusService eventService;
 		private bool appHasFocus = true;
 		private bool wantsToQuit = false;
 		private bool quitting = false;
@@ -45,8 +45,6 @@ namespace Ju.Services
 			{
 				Log.Warning("NET Debugger detected");
 			}
-
-			eventService = ServiceContainer.Get<IEventBusService>();
 
 			SubscribeApplicationStateEvents();
 			SubscribeLoopEvents();
@@ -177,19 +175,19 @@ namespace Ju.Services
 
 		private void OnUnityUpdate()
 		{
-			eventService.Fire(new TimePreUpdateEvent(UnityEngine.Time.deltaTime));
-			eventService.Fire(new TimeUpdateEvent(UnityEngine.Time.deltaTime));
+			ServiceCache.EventBus.Fire(new TimePreUpdateEvent(UnityEngine.Time.deltaTime));
+			ServiceCache.EventBus.Fire(new TimeUpdateEvent(UnityEngine.Time.deltaTime));
 		}
 
 		private void OnUnityPostLateUpdate()
 		{
-			eventService.Fire(new TimePostUpdateEvent(UnityEngine.Time.deltaTime));
+			ServiceCache.EventBus.Fire(new TimePostUpdateEvent(UnityEngine.Time.deltaTime));
 		}
 
 		private void OnUnityFixedUpdate()
 		{
-			eventService.Fire(new TimePreFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
-			eventService.Fire(new TimeFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			ServiceCache.EventBus.Fire(new TimePreFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			ServiceCache.EventBus.Fire(new TimeFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 
 			if (Application.isFocused && !appHasFocus)
 			{
@@ -205,27 +203,27 @@ namespace Ju.Services
 
 		private void OnUnityPreCollisionsUpdate()
 		{
-			eventService.Fire(new TimePreCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			ServiceCache.EventBus.Fire(new TimePreCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 		}
 
 		private void OnUnityPostCollisionsUpdate()
 		{
-			eventService.Fire(new TimePostCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			ServiceCache.EventBus.Fire(new TimePostCollisionsUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 		}
 
 		private void OnUnityPostFixedUpdate()
 		{
-			eventService.Fire(new TimePostFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
+			ServiceCache.EventBus.Fire(new TimePostFixedUpdateEvent(UnityEngine.Time.fixedDeltaTime));
 		}
 
 		private void OnUnitySceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
 		{
-			eventService.Fire(new UnitySceneLoadedEvent(scene.buildIndex, scene.name, loadSceneMode));
+			ServiceCache.EventBus.Fire(new UnitySceneLoadedEvent(scene.buildIndex, scene.name, loadSceneMode));
 		}
 
 		private void OnUnityApplicationFocus(bool hasFocus)
 		{
-			eventService.Fire(new UnityAppFocusEvent(hasFocus));
+			ServiceCache.EventBus.Fire(new UnityAppFocusEvent(hasFocus));
 		}
 
 		private void HandleLowMemoryWarning()
@@ -240,7 +238,8 @@ namespace Ju.Services
 		{
 			if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode && !quitting)
 			{
-				UnityEditor.EditorApplication.isPlaying = !OnUnityApplicationWantsToQuit();
+				OnUnityApplicationWantsToQuit();
+				UnityEditor.EditorApplication.isPlaying = true;
 			}
 		}
 #endif
@@ -252,17 +251,17 @@ namespace Ju.Services
 
 		private bool OnUnityApplicationWantsToQuit()
 		{
-			var result = true;
+			var result = false;
 
 			if (!quitting)
 			{
 				wantsToQuit = true;
 
-				eventService.Fire<UnityQuitRequestedEvent>();
+				ServiceCache.EventBus.Fire<UnityQuitRequestedEvent>();
 
 				if (wantsToQuit)
 				{
-					result = false;
+					result = true;
 					StartApplicationQuitRoutine();
 				}
 			}
@@ -274,7 +273,7 @@ namespace Ju.Services
 		{
 			quitting = true;
 
-			eventService.Fire<UnityQuitEvent>();
+			ServiceCache.EventBus.Fire<UnityQuitEvent>();
 
 			foreach (var obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
 			{

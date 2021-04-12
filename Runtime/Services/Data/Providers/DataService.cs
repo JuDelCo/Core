@@ -10,18 +10,15 @@ using Identifier = System.String;
 namespace Ju.Services
 {
 	using Ju.Log;
+	using Ju.Services.Internal;
 
 	public class DataService : IDataService, IServiceLoad
 	{
-		private IEventBusService eventService;
-
 		private Dictionary<Type, Dictionary<Identifier, object>> sharedItems;
 		private Dictionary<Type, Dictionary<Identifier, object>> listItems;
 
 		public void Load()
 		{
-			eventService = ServiceContainer.Get<IEventBusService>();
-
 			sharedItems = new Dictionary<Type, Dictionary<Identifier, object>>();
 			listItems = new Dictionary<Type, Dictionary<Identifier, object>>();
 		}
@@ -108,7 +105,7 @@ namespace Ju.Services
 
 			list.Add(obj);
 
-			eventService.Fire(new DataAddEvent(type, obj));
+			ServiceCache.EventBus.Fire(new DataAddEvent(type, obj));
 		}
 
 		public List<T> ListGet<T>(string id)
@@ -149,7 +146,7 @@ namespace Ju.Services
 						}
 					}
 
-					eventService.Fire(new DataRemoveEvent(type, obj));
+					ServiceCache.EventBus.Fire(new DataRemoveEvent(type, obj));
 				}
 			}
 		}

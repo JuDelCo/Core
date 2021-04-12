@@ -35,29 +35,8 @@ namespace Ju.Services
 
 		public T Get<T>(Identifier id)
 		{
-			return (T)(Get(typeof(T), id));
-		}
+			var type = typeof(T);
 
-		public void Register<T>(Identifier id, IService service)
-		{
-			Register(typeof(T), id, service);
-		}
-
-		public void RegisterFactory<T>(Identifier id, Func<T> classConstructor)
-		{
-			RegisterFactory(typeof(T), id, () =>
-			{
-				return classConstructor();
-			});
-		}
-
-		public void Unload<T>(Identifier id)
-		{
-			Unload(typeof(T), id);
-		}
-
-		private object Get(Type type, Identifier id)
-		{
 			object instance = null;
 
 			if (classFactories.ContainsKey(type) && classFactories[type].ContainsKey(id))
@@ -74,11 +53,13 @@ namespace Ju.Services
 				throw new NullReferenceException($"No class of type '{type}' with id '{id}' found");
 			}
 
-			return instance;
+			return (T)instance;
 		}
 
-		private void Register(Type type, Identifier id, IService service)
+		public void Register<T>(Identifier id, IService service)
 		{
+			var type = typeof(T);
+
 			if (CheckDuplicatedClass(type, id))
 			{
 				throw new Exception($"Tried to re-register a class of type '{type}' with ID '{id}'");
@@ -87,14 +68,24 @@ namespace Ju.Services
 			services.GetOrInsertNew(type).Add(id, service);
 		}
 
-		private void RegisterFactory(Type type, Identifier id, Func<object> classConstructor)
+		public void RegisterFactory<T>(Identifier id, Func<T> classConstructor)
 		{
+			var type = typeof(T);
+
 			if (CheckDuplicatedClass(type, id))
 			{
 				throw new Exception($"Tried to re-register a factory of type '{type}' with ID '{id}'");
 			}
 
-			classFactories.GetOrInsertNew(type).Add(id, classConstructor);
+			classFactories.GetOrInsertNew(type).Add(id, () =>
+			{
+				return classConstructor();
+			});
+		}
+
+		public void Unload<T>(Identifier id)
+		{
+			Unload(typeof(T), id);
 		}
 
 		private bool CheckDuplicatedClass(Type type, Identifier id)

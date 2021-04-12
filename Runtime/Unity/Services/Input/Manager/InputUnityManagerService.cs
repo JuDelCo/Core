@@ -34,7 +34,11 @@ namespace Ju.Services
 
 		public override void Update()
 		{
-			UpdateMousePosition();
+			// Update Mouse Position
+			{
+				var position = UnityEngine.Input.mousePosition;
+				mousePosition = new Vector2Int((int)position.x, (int)position.y);
+			}
 
 			if (interval.GetElapsedTime().seconds < UPDATE_INTERVAL)
 			{
@@ -57,12 +61,6 @@ namespace Ju.Services
 					DisconnectGamepad(gamepad.Id);
 				}
 			}
-		}
-
-		private void UpdateMousePosition()
-		{
-			var position = UnityEngine.Input.mousePosition;
-			mousePosition = new Vector2Int((int)position.x, (int)position.y);
 		}
 
 		public override bool GetMousePressedRaw(MouseButton button)
@@ -103,8 +101,8 @@ namespace Ju.Services
 
 		public override void GetMousePositionDelta(out float mouseX, out float mouseY)
 		{
-			mouseX = UnityEngine.Input.GetAxis("Mouse X");
-			mouseY = UnityEngine.Input.GetAxis("Mouse Y");
+			mouseX = UnityEngine.Input.GetAxisRaw("Mouse X");
+			mouseY = UnityEngine.Input.GetAxisRaw("Mouse Y");
 		}
 
 		public override float GetMouseWheelDelta()

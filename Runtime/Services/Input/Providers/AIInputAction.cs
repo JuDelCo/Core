@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Ju.Services;
+using Ju.Services.Internal;
 
 namespace Ju.Input
 {
@@ -24,14 +24,11 @@ namespace Ju.Input
 		private float axisRawValueX;
 		private float axisRawValueY;
 		private bool eventTriggered;
-		private readonly IEventBusService eventService;
 
 		public AIInputAction(string id)
 		{
 			Id = id;
 			Enabled = true;
-
-			eventService = ServiceContainer.Get<IEventBusService>();
 		}
 
 		public void ResetState()
@@ -114,19 +111,19 @@ namespace Ju.Input
 			if (!previousPressed && pressed)
 			{
 				eventTriggered = true;
-				eventService.Fire(new InputActionPressedEvent(this));
+				ServiceCache.EventBus.Fire(new InputActionPressedEvent(this));
 			}
 
 			if (previousPressed && pressed)
 			{
 				eventTriggered = true;
-				eventService.Fire(new InputActionHeldEvent(this));
+				ServiceCache.EventBus.Fire(new InputActionHeldEvent(this));
 			}
 
 			if (previousPressed && !pressed)
 			{
 				eventTriggered = true;
-				eventService.Fire(new InputActionReleased(this));
+				ServiceCache.EventBus.Fire(new InputActionReleased(this));
 			}
 		}
 

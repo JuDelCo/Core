@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Ju.Input;
 using Ju.Extensions;
+using Ju.Services.Internal;
 
 namespace Ju.Services
 {
@@ -32,7 +33,6 @@ namespace Ju.Services
 		private float axisValue;
 		private float axisRawValueX;
 		private float axisRawValueY;
-		private readonly IEventBusService eventService;
 
 		public InputAction(IInputPlayer player, string id)
 		{
@@ -48,8 +48,6 @@ namespace Ju.Services
 			gamepadButtons = new List<GamepadButton>();
 			gamepadButtonsNegative = new List<GamepadButton>();
 			gamepadAxis = new List<GamepadAxis>();
-
-			eventService = ServiceContainer.Get<IEventBusService>();
 
 			ResetBindings();
 		}
@@ -74,7 +72,15 @@ namespace Ju.Services
 
 		public void Update(float deltaTime)
 		{
-			ResetInternal();
+			// Reset
+			{
+				axisValue = 0f;
+				axisRawValueX = 0f;
+				axisRawValueY = 0f;
+
+				previousPressed = pressed;
+				pressed = false;
+			}
 
 			if (Enabled)
 			{
@@ -105,28 +111,18 @@ namespace Ju.Services
 
 			if (!previousPressed && pressed)
 			{
-				eventService.Fire(new InputActionPressedEvent(this));
+				ServiceCache.EventBus.Fire(new InputActionPressedEvent(this));
 			}
 
 			if (previousPressed && pressed)
 			{
-				eventService.Fire(new InputActionHeldEvent(this));
+				ServiceCache.EventBus.Fire(new InputActionHeldEvent(this));
 			}
 
 			if (previousPressed && !pressed)
 			{
-				eventService.Fire(new InputActionReleased(this));
+				ServiceCache.EventBus.Fire(new InputActionReleased(this));
 			}
-		}
-
-		private void ResetInternal()
-		{
-			axisValue = 0f;
-			axisRawValueX = 0f;
-			axisRawValueY = 0f;
-
-			previousPressed = pressed;
-			pressed = false;
 		}
 
 		private float GetButtonPressedInternal()

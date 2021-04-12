@@ -3,7 +3,7 @@
 
 using System;
 using Ju.Handlers;
-using Ju.Services;
+using Ju.Services.Internal;
 
 namespace Ju.Time
 {
@@ -18,7 +18,29 @@ namespace Ju.Time
 		public Timer(float seconds)
 		{
 			linkHandler = new DisposableLinkHandler(false);
-			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, e => Update(e.DeltaTime));
+
+			ServiceCache.EventBus.Subscribe<T>(linkHandler, e =>
+			{
+				if (!(updateCondition is null))
+				{
+					if (!updateCondition())
+					{
+						return;
+					}
+				}
+
+				var completed = elapsed > duration;
+
+				elapsed += Span.Seconds(e.DeltaTime);
+
+				if (!completed && elapsed >= duration)
+				{
+					if (!(onCompleted is null))
+					{
+						onCompleted();
+					}
+				}
+			});
 
 			this.duration = Span.Seconds(seconds);
 		}
@@ -46,7 +68,7 @@ namespace Ju.Time
 
 		public void Stop()
 		{
-			elapsed = duration;
+			elapsed = duration + Span.Microseconds(1);
 		}
 
 		public Span GetDuration()
@@ -62,29 +84,6 @@ namespace Ju.Time
 		public Span GetTimeLeft()
 		{
 			return duration - elapsed;
-		}
-
-		private void Update(float deltaTime)
-		{
-			if (!(updateCondition is null))
-			{
-				if (!updateCondition())
-				{
-					return;
-				}
-			}
-
-			var completed = elapsed > duration;
-
-			elapsed += Span.Seconds(deltaTime);
-
-			if (!completed && elapsed >= duration)
-			{
-				if (!(onCompleted is null))
-				{
-					onCompleted();
-				}
-			}
 		}
 
 		public static bool operator <(Timer<T> timer, float seconds)

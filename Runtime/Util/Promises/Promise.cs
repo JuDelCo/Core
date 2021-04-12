@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Ju.Services;
+using Ju.Services.Internal;
 
 namespace Ju.Promises
 {
@@ -224,7 +224,7 @@ namespace Ju.Promises
 		{
 			if (rejectActions.Count == 0)
 			{
-				Catch(e => ServiceContainer.Get<IEventBusService>().Fire(new PromiseUnhandledExceptionEvent(e)));
+				Catch(e => ServiceCache.EventBus.Fire(new PromiseUnhandledExceptionEvent(e)));
 			}
 		}
 

@@ -57,7 +57,18 @@ namespace Ju.Services
 
 		public void Recycle(GameObject target)
 		{
-			var pool = GetPoolContaining(target);
+			List<GameObject> pool = null;
+
+			foreach (var kvp in pools)
+			{
+				var prefabPool = kvp.Value;
+
+				if (prefabPool.Contains(target))
+				{
+					pool = prefabPool;
+					break;
+				}
+			}
 
 			if (!(pool is null))
 			{
@@ -170,21 +181,6 @@ namespace Ju.Services
 			{
 				Clear(kvp.Key, clearSpawned);
 			}
-		}
-
-		private List<GameObject> GetPoolContaining(GameObject target)
-		{
-			foreach (var kvp in pools)
-			{
-				var pool = kvp.Value;
-
-				if (pool.Contains(target))
-				{
-					return pool;
-				}
-			}
-
-			return null;
 		}
 	}
 }

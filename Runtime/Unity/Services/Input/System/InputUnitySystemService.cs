@@ -169,8 +169,8 @@ namespace Ju.Services
 		{
 			var mouseDelta = UnityEngine.InputSystem.Mouse.current.delta;
 
-			mouseX = mouseDelta.x.ReadUnprocessedValue();
-			mouseY = mouseDelta.y.ReadUnprocessedValue();
+			mouseX = mouseDelta.x.ReadUnprocessedValue() * UnityEngine.Time.unscaledDeltaTime;
+			mouseY = mouseDelta.y.ReadUnprocessedValue() * UnityEngine.Time.unscaledDeltaTime;
 		}
 
 		public override float GetMouseWheelDelta()

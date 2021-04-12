@@ -3,7 +3,7 @@
 
 using System;
 using Ju.Handlers;
-using Ju.Services;
+using Ju.Services.Internal;
 
 namespace Ju.Time
 {
@@ -16,7 +16,19 @@ namespace Ju.Time
 		public Clock()
 		{
 			linkHandler = new DisposableLinkHandler(false);
-			ServiceContainer.Get<IEventBusService>().Subscribe<T>(linkHandler, e => Update(e.DeltaTime));
+
+			ServiceCache.EventBus.Subscribe<T>(linkHandler, e =>
+			{
+				if (!(updateCondition is null))
+				{
+					if (!updateCondition())
+					{
+						return;
+					}
+				}
+
+				elapsed += Span.Seconds(e.DeltaTime);
+			});
 		}
 
 		public Clock(float elapsedSeconds) : this()
@@ -52,19 +64,6 @@ namespace Ju.Time
 		public Span GetElapsedTime()
 		{
 			return elapsed;
-		}
-
-		private void Update(float deltaTime)
-		{
-			if (!(updateCondition is null))
-			{
-				if (!updateCondition())
-				{
-					return;
-				}
-			}
-
-			elapsed += Span.Seconds(deltaTime);
 		}
 
 		public static bool operator <(Clock<T> clock, float seconds)

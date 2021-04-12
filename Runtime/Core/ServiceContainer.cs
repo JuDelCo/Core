@@ -8,7 +8,7 @@ using Identifier = System.String;
 
 namespace Ju.Services
 {
-	using Ju.Log;
+	using Ju.Services.Internal;
 
 	public class ServiceContainer
 	{
@@ -71,9 +71,24 @@ namespace Ju.Services
 			var baseType = typeof(T1);
 			var serviceType = typeof(T2);
 
-			if (CheckDuplicatedType(baseType, id))
+			// Check for duplicates
 			{
-				throw new Exception($"Tried to re-register a service of type '{serviceType}' with ID '{id}'");
+				bool duplicated = false;
+
+				if (services.servicesRegistered.ContainsKey(baseType))
+				{
+					duplicated |= services.servicesRegistered[baseType].ContainsKey(id);
+				}
+
+				if (services.servicesLoaded.ContainsKey(baseType))
+				{
+					duplicated |= services.servicesLoaded[baseType].ContainsKey(id);
+				}
+
+				if (duplicated)
+				{
+					throw new Exception($"Tried to re-register a service of type '{serviceType}' with ID '{id}'");
+				}
 			}
 
 			services.servicesRegistered.GetOrInsertNew(baseType).Add(id, serviceType);
@@ -166,31 +181,12 @@ namespace Ju.Services
 			return instance;
 		}
 
-		private static bool CheckDuplicatedType(Type baseType, Identifier id)
-		{
-			var services = InternalInstance();
-
-			bool duplicated = false;
-
-			if (services.servicesRegistered.ContainsKey(baseType))
-			{
-				duplicated |= services.servicesRegistered[baseType].ContainsKey(id);
-			}
-
-			if (services.servicesLoaded.ContainsKey(baseType))
-			{
-				duplicated |= services.servicesLoaded[baseType].ContainsKey(id);
-			}
-
-			return duplicated;
-		}
-
 		public static void Dispose()
 		{
 			if (!(instance is null))
 			{
 				instance.container.Dispose();
-				Log.Dispose();
+				ServiceCache.Dispose();
 
 				instance.servicesRegistered.Clear();
 				instance.servicesLoaded.Clear();
