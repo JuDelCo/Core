@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
+using System;
+
 namespace Ju.Color
 {
 	public partial struct Color
@@ -149,7 +151,7 @@ namespace Ju.Color
 
 		private static float Clamp01(float value)
 		{
-			return System.Math.Min(1f, System.Math.Max(0f, value));
+			return Math.Min(1f, Math.Max(0f, value));
 		}
 	}
 }

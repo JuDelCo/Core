@@ -1,6 +1,36 @@
 
 # Changelog
 
+## [1.35.0] - 2021-05-17
+
+### Added
+
+- Add new Data feature (JNode, JDict, JList, JData, JRef classes).
+- Add extensions methods for the new Data feature.
+- Add customized Hjson/Json library.
+- Add Hjson/Json extension methods.
+- Add new Cast class to convert the type of arbitrary data without throwing exceptions.
+- Add new DataTypeConverter class to convert the type of arbitrary data.
+- Add several new constructors to Clock, Timer and FrameTimer classes.
+- Add new Reset method to ITimer interface.
+- Add new extension methods for IDictionary.
+
+### Changed
+
+- Rename DataService to CacheService.
+- Rename some extension methods static classes.
+- Move observable extension methods to Ju.Observables namespace.
+- Move GamepadController class to the Ju.Input namespace.
+- Move KeyboardController class to the Ju.Input namespace.
+- Move MouseController class to the Ju.Input namespace.
+- Move InputAction class to the Ju.Input namespace.
+- Move InputPlayer class to the Ju.Input namespace.
+
+### Fixed
+
+- Fix LogUnityService error when logging messages with curly braces.
+- Fix Observable Value set property.
+
 ## [1.34.0] - 2021-04-12
 
 ### Fixed

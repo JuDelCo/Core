@@ -8,6 +8,7 @@ namespace Ju.Time
 	public interface ITimer : IDisposable
 	{
 		void Reset();
+		void Reset(Span elapsed);
 		void Stop();
 		Span GetDuration();
 		Span GetElapsedTime();

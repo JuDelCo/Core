@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
+using System;
+
 namespace Ju.Color
 {
 	public partial struct Color32
@@ -265,12 +267,12 @@ namespace Ju.Color
 
 		private static float Min(float a, float b, float c)
 		{
-			return System.Math.Min(a, System.Math.Min(b, c));
+			return Math.Min(a, Math.Min(b, c));
 		}
 
 		private static float Max(float a, float b, float c)
 		{
-			return System.Math.Max(a, System.Math.Max(b, c));
+			return Math.Max(a, Math.Max(b, c));
 		}
 	}
 }

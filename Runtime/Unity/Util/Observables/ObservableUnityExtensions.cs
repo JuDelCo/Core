@@ -5,14 +5,16 @@
 
 using System;
 using Ju.Handlers;
-using Ju.Observables;
 using UnityEngine;
 
-public static class ObservableUnityExtensions
+namespace Ju.Observables
 {
-	public static void Subscribe<T>(this Observable<T> observable, Behaviour behaviour, Action<T> action, bool alwaysActive = false)
+	public static class ObservableUnityExtensions
 	{
-		observable.Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action);
+		public static void Subscribe<T>(this Observable<T> observable, Behaviour behaviour, Action<T> action, bool alwaysActive = false)
+		{
+			observable.Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action);
+		}
 	}
 }
 

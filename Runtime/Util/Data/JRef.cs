@@ -1,0 +1,117 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
+
+using System;
+using System.Collections.Generic;
+using Ju.Handlers;
+
+namespace Ju.Data
+{
+	public class JRef : JNode
+	{
+		private readonly bool subscribeToRef;
+		private DisposableLinkHandler internalLinkHandler = null;
+		private JNode reference = null;
+
+		public JRef(JNode reference = null, bool subscribeToRef = false)
+		{
+			this.subscribeToRef = subscribeToRef;
+
+			if (reference != null)
+			{
+				Reference = reference;
+			}
+		}
+
+		public override void Reset()
+		{
+			reference.Reset();
+		}
+
+		public override void Subscribe(ILinkHandler handle, Action<JNode> action)
+		{
+			base.Subscribe(handle, action);
+
+			if (subscribeToRef && internalLinkHandler == null)
+			{
+				internalLinkHandler = new DisposableLinkHandler(false);
+				reference.Subscribe(internalLinkHandler, Trigger);
+			}
+		}
+
+		public override JNode Clone()
+		{
+			return new JRef(this.Reference);
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposedValue)
+			{
+				return;
+			}
+
+			if (disposing)
+			{
+				base.Dispose(disposing);
+
+				Unsubscribe();
+
+				reference = null;
+			}
+
+			disposedValue = true;
+		}
+
+		public override IEnumerator<JNode> GetEnumerator()
+		{
+			return reference.GetEnumerator();
+		}
+
+		public override IEnumerable<JNode> Children
+		{
+			get => reference.Children;
+		}
+
+		protected override void OnSubscribersEmpty()
+		{
+			Unsubscribe();
+		}
+
+		public JNode Reference
+		{
+			get => reference;
+			set
+			{
+				if (value == null)
+				{
+					throw new NullReferenceException();
+				}
+
+				Unsubscribe();
+
+				reference = value;
+
+				if (subscribeToRef && this.GetSubscriberCount() > 0)
+				{
+					internalLinkHandler = new DisposableLinkHandler(false);
+					reference.Subscribe(internalLinkHandler, Trigger);
+				}
+			}
+		}
+
+		private void Unsubscribe()
+		{
+			if (internalLinkHandler != null)
+			{
+				internalLinkHandler.Dispose();
+				internalLinkHandler = null;
+			}
+		}
+
+		public override string ToString()
+		{
+			return reference.ToString();
+		}
+	}
+}

@@ -3,9 +3,9 @@
 
 using System;
 using Ju.Extensions;
-using Ju.Input;
+using Ju.Services;
 
-namespace Ju.Services
+namespace Ju.Input
 {
 	public class GamepadController : IGamepadController
 	{

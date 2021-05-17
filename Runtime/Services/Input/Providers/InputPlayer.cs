@@ -2,9 +2,8 @@
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
 using System.Collections.Generic;
-using Ju.Input;
 
-namespace Ju.Services
+namespace Ju.Input
 {
 	public class InputPlayer : IInputPlayer
 	{

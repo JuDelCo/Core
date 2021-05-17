@@ -7,7 +7,7 @@ using Ju.Services.Internal;
 
 namespace Ju.Time
 {
-	public class Timer<T> : ITimer where T : ITimeDeltaEvent
+	public partial class Timer<T> : ITimer where T : ITimeDeltaEvent
 	{
 		private readonly DisposableLinkHandler linkHandler;
 		private Span elapsed;
@@ -64,6 +64,11 @@ namespace Ju.Time
 		public void Reset()
 		{
 			elapsed = Span.zero;
+		}
+
+		public void Reset(Span elapsed)
+		{
+			this.elapsed = elapsed;
 		}
 
 		public void Stop()

@@ -4,7 +4,7 @@
 using System;
 using Ju.Promises;
 
-public static class PromiseExtensions
+public static class PromiseUtilitiesExtensions
 {
 	public static IPromise Then(this IPromise promise, Action onResolved)
 	{

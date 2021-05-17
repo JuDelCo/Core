@@ -7,7 +7,7 @@ using Ju.Services.Internal;
 
 namespace Ju.Time
 {
-	public class Clock<T> : IClock where T : ITimeDeltaEvent
+	public partial class Clock<T> : IClock where T : ITimeDeltaEvent
 	{
 		private readonly DisposableLinkHandler linkHandler;
 		private Span elapsed;

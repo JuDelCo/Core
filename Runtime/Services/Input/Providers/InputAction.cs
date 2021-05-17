@@ -3,11 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using Ju.Input;
 using Ju.Extensions;
 using Ju.Services.Internal;
 
-namespace Ju.Services
+namespace Ju.Input
 {
 	public class InputAction : IInputAction
 	{

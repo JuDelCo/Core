@@ -33,7 +33,7 @@ Contents
 
 #### Services
 - [Coroutine](https://github.com/JuDelCo/Core/wiki/API.Service.Coroutine)
-- [Data](https://github.com/JuDelCo/Core/wiki/API.Service.Data)
+- [Cache](https://github.com/JuDelCo/Core/wiki/API.Service.Cache)
 - [EventBus](https://github.com/JuDelCo/Core/wiki/API.Service.EventBus)
 - [Input](https://github.com/JuDelCo/Core/wiki/API.Service.Input)
 - [Task](https://github.com/JuDelCo/Core/wiki/API.Service.Task)
@@ -43,6 +43,7 @@ Contents
 - [Extensions](https://github.com/JuDelCo/Core/wiki/API.Util.Extensions)
 - [Color](https://github.com/JuDelCo/Core/wiki/API.Util.Color)
 - [FSM](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
+- [Data](https://github.com/JuDelCo/Core/wiki/API.Util.Data)
 - [ObjectPool](https://github.com/JuDelCo/Core/wiki/API.Util.ObjectPool)
 - [Observables](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
 - [Promises](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
@@ -53,7 +54,7 @@ Contents
 - [Span](https://github.com/JuDelCo/Core/wiki/API.Util.Span)
 
 #### Unity3D Services
-- [Data](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Data)
+- [Cache](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Cache)
 - [Input](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Input)
 - [Log](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.Log)
 - [PrefabPool](https://github.com/JuDelCo/Core/wiki/API.Unity.Service.PrefabPool)

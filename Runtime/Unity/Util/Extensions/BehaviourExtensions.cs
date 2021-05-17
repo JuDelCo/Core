@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections;
+using Ju.Data;
 using Ju.Handlers;
 using Ju.Promises;
 using Ju.Services.Internal;
@@ -189,6 +190,35 @@ namespace Ju.Extensions
 		{
 			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
 			return new FrameTimer<T>(frames, onCompleted, () => linkHandler.IsActive);
+		}
+
+		public static void NodeSubscribe(this Behaviour behaviour, JNode node, Action<JNode> action, bool alwaysActive = false)
+		{
+			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
+			node.Subscribe(linkHandler, action);
+		}
+
+		public static void NodeSubscribe(this Behaviour behaviour, JNode node, Action action, bool alwaysActive = false)
+		{
+			behaviour.NodeSubscribe(node, (_) => action(), alwaysActive);
+		}
+
+		public static void DataSubscribe<T>(this Behaviour behaviour, JData<T> node, Action<JData<T>> action, bool alwaysActive = false)
+		{
+			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
+			node.Subscribe(linkHandler, action);
+		}
+
+		public static Action<T> DataBind<T>(this Behaviour behaviour, JData<T> node, Action<JData<T>> action, bool alwaysActive = false)
+		{
+			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
+			return node.Bind(linkHandler, action);
+		}
+
+		public static Action<TRemote> DataBind<T, TRemote>(this Behaviour behaviour, JData<T> node, Action<JData<T>> action, Func<TRemote, T> converter, bool alwaysActive = false)
+		{
+			var linkHandler = new BehaviourLinkHandler(behaviour, alwaysActive);
+			return node.Bind(linkHandler, action, converter);
 		}
 	}
 }

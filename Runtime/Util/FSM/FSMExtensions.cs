@@ -3,7 +3,7 @@
 
 using Ju.FSM;
 
-public static class FSMExtensions
+public static class FSMUtilitiesExtensions
 {
 	public static void AddState(this FSM fsm, int stateId, State state)
 	{

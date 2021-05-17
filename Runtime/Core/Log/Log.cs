@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Ju.Services;
 using Ju.Services.Internal;
@@ -59,9 +60,9 @@ namespace Ju.Log
 		private static string TruncateFolders(string path)
 		{
 #if UNITY_2019_3_OR_NEWER
-			return folderTrim ? System.IO.Path.GetFileName(path) : (path.Contains("Assets") ? path.Remove(0, path.LastIndexOf("Assets")) : path);
+			return folderTrim ? Path.GetFileName(path) : (path.Contains("Assets") ? path.Remove(0, path.LastIndexOf("Assets")) : path);
 #else
-			return folderTrim ? System.IO.Path.GetFileName(path) : path;
+			return folderTrim ? Path.GetFileName(path) : path;
 #endif
 		}
 

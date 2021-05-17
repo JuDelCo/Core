@@ -34,5 +34,37 @@ namespace Ju.Extensions
 
 			return value;
 		}
+
+		public static void ForEachKey<TKey, TValue>(this IDictionary<TKey, TValue> self, Action<TKey> action)
+		{
+			self.ForEach(kvp =>
+			{
+				action(kvp.Key);
+			});
+		}
+
+		public static void ForEachKeyReverse<TKey, TValue>(this IDictionary<TKey, TValue> self, Action<TKey> action)
+		{
+			self.ForEachReverse(kvp =>
+			{
+				action(kvp.Key);
+			});
+		}
+
+		public static void ForEachValue<TKey, TValue>(this IDictionary<TKey, TValue> self, Action<TValue> action)
+		{
+			self.ForEach(kvp =>
+			{
+				action(kvp.Value);
+			});
+		}
+
+		public static void ForEachValueReverse<TKey, TValue>(this IDictionary<TKey, TValue> self, Action<TValue> action)
+		{
+			self.ForEachReverse(kvp =>
+			{
+				action(kvp.Value);
+			});
+		}
 	}
 }

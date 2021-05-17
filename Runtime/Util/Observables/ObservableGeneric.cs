@@ -26,7 +26,7 @@ namespace Ju.Observables
 			get => value;
 			set
 			{
-				if (!EqualityComparer<T>.Default.Equals(value, value))
+				if (!EqualityComparer<T>.Default.Equals(this.value, value))
 				{
 					this.value = value;
 					Trigger();

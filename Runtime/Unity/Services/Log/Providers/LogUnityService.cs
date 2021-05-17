@@ -76,7 +76,7 @@ namespace Ju.Services
 					}
 					else
 					{
-						UnityEngine.Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, message);
+						UnityEngine.Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, message.Replace("{", "{{").Replace("}", "}}"));
 					}
 					break;
 				case LogLevel.Warning:
@@ -86,7 +86,7 @@ namespace Ju.Services
 					}
 					else
 					{
-						UnityEngine.Debug.LogFormat(LogType.Warning, LogOption.NoStacktrace, null, message);
+						UnityEngine.Debug.LogFormat(LogType.Warning, LogOption.NoStacktrace, null, message.Replace("{", "{{").Replace("}", "}}"));
 					}
 					break;
 				case LogLevel.Error:
@@ -96,7 +96,7 @@ namespace Ju.Services
 					}
 					else
 					{
-						UnityEngine.Debug.LogFormat(LogType.Error, LogOption.NoStacktrace, null, message);
+						UnityEngine.Debug.LogFormat(LogType.Error, LogOption.NoStacktrace, null, message.Replace("{", "{{").Replace("}", "}}"));
 					}
 					break;
 			}

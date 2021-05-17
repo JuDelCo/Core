@@ -7,7 +7,7 @@ using Ju.Services.Internal;
 
 namespace Ju.Time
 {
-	public class FrameTimer<T> : IFrameTimer where T : ITimeEvent
+	public partial class FrameTimer<T> : IFrameTimer where T : ITimeEvent
 	{
 		private readonly DisposableLinkHandler linkHandler;
 		private int elapsed;
