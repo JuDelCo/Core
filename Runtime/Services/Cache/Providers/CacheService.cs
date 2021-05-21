@@ -31,7 +31,7 @@ namespace Ju.Services
 
 			if (!overwrite && sharedItems[type].ContainsKey(id))
 			{
-				Log.Warning($"A shared object of type {type} was already stored");
+				Log.Warning($"A shared object of type {type.GetFriendlyName()} was already stored");
 			}
 			else
 			{

@@ -87,7 +87,7 @@ namespace Ju.Services
 
 				if (duplicated)
 				{
-					throw new Exception($"Tried to re-register a service of type '{serviceType}' with ID '{id}'");
+					throw new Exception($"Tried to re-register a service of type '{serviceType.GetFriendlyName()}' with ID '{id}'");
 				}
 			}
 
@@ -164,7 +164,7 @@ namespace Ju.Services
 			}
 			else
 			{
-				throw new Exception($"No service of type '{baseType}' with ID '{id}' has been registered");
+				throw new Exception($"No service of type '{baseType.GetFriendlyName()}' with ID '{id}' has been registered");
 			}
 
 			return (T)service;

@@ -80,7 +80,7 @@ namespace Ju.Services
 
 			if (action is null)
 			{
-				Log.Exception($"Subscriber action of event type {type} can't be null", new ArgumentNullException("action"));
+				Log.Exception($"Subscriber action of event type {type.GetFriendlyName()} can't be null", new ArgumentNullException("action"));
 				return;
 			}
 
@@ -116,7 +116,7 @@ namespace Ju.Services
 
 				if (callStackCounter > MAX_EVENT_STACK_LIMIT)
 				{
-					Log.Exception($"Max eventbus stack reached, subscriber won't get the sticky event of type {type}", new StackOverflowException());
+					Log.Exception($"Max eventbus stack reached, subscriber won't get the sticky event of type {type.GetFriendlyName()}", new StackOverflowException());
 					return;
 				}
 
@@ -147,7 +147,7 @@ namespace Ju.Services
 			if (callStackCounter > MAX_EVENT_STACK_LIMIT)
 			{
 				suppressDebugEvent = true;
-				Log.Exception($"Max eventbus stack reached, ignoring firing of an event of type {type}", new StackOverflowException());
+				Log.Exception($"Max eventbus stack reached, ignoring firing of an event of type {type.GetFriendlyName()}", new StackOverflowException());
 				suppressDebugEvent = false;
 				return;
 			}
@@ -284,7 +284,7 @@ namespace Ju.Services
 			if (stackEventTypes.Contains(type))
 			{
 				suppressDebugEvent = true;
-				Log.Warning($"An event subscriber of type {type} has fired another event of the same type. This can lead to stackoverflow issues.");
+				Log.Warning($"An event subscriber of type {type.GetFriendlyName()} has fired another event of the same type. This can lead to stackoverflow issues.");
 				suppressDebugEvent = false;
 			}
 
@@ -298,7 +298,7 @@ namespace Ju.Services
 			catch (Exception e)
 			{
 				suppressDebugEvent = true;
-				Log.Exception($"Uncaught event exception (Type: {type})", e);
+				Log.Exception($"Uncaught event exception (Event type: {type.GetFriendlyName()})", e);
 				suppressDebugEvent = false;
 			}
 

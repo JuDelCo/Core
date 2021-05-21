@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Ju.Extensions;
 
 namespace Ju.Data.Conversion
 {
@@ -33,7 +34,7 @@ namespace Ju.Data.Conversion
 		{
 			if (HasConverter(type))
 			{
-				Log.Warning($"Overwriting existing converter between the types {type.fromType.Name} and {type.toType.Name}");
+				Log.Warning($"Overwriting existing converter between the types {type.fromType.GetFriendlyName()} and {type.toType.GetFriendlyName()}");
 
 				converters[type] = converter;
 			}

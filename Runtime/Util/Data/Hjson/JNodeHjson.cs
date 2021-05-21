@@ -2,6 +2,7 @@
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
 using System;
+using Ju.Extensions;
 using Ju.Hjson;
 
 namespace Ju.Data
@@ -71,7 +72,7 @@ namespace Ju.Data
 					}
 					else
 					{
-						throw new Exception($"JsonValue of type Number contains an invalid type of: {valueType.Name}.");
+						throw new Exception($"JsonValue of type Number contains an invalid type of: {valueType.GetFriendlyName()}.");
 					}
 
 					break;

@@ -2,7 +2,6 @@
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Ju.Extensions;
 using Ju.Handlers;
@@ -411,6 +410,16 @@ namespace Ju.Data
 		public override string ToString()
 		{
 			return $"{{ {string.Join(", ", list)} }}";
+		}
+
+		public override string ToString(int maxDepth)
+		{
+			if (maxDepth == 0)
+			{
+				return "[...]";
+			}
+
+			return $"{{ {string.Join(", ", list.Map(n => n.ToString(maxDepth - 1)))} }}";
 		}
 	}
 }

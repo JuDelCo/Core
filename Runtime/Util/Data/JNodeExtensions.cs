@@ -83,7 +83,7 @@ public static class JNodeExtensions
 
 		if (jDataType != null && jDataType != typeof(T))
 		{
-			throw new Exception($"JData type {jDataType.Name} differs to the requested type {typeof(T).Name}.");
+			throw new Exception($"JData type {jDataType.GetFriendlyName()} differs to the requested type {typeof(T).GetFriendlyName()}.");
 		}
 
 		if (node is JData<T> jData)
@@ -175,7 +175,7 @@ public static class JNodeExtensions
 		{
 			if (!data.IsDict())
 			{
-				Log.Warning($"Tried to merge JNode of type {data.GetType().Name} into a JDict node in {node.Path}.");
+				Log.Warning($"Tried to merge JNode of type {data.GetType().GetFriendlyName()} into a JDict node in {node.Path}.");
 				return;
 			}
 
@@ -200,7 +200,7 @@ public static class JNodeExtensions
 		{
 			if (!data.IsList())
 			{
-				Log.Warning($"Tried to merge JNode of type {data.GetType().Name} into a JList node in {node.Path}.");
+				Log.Warning($"Tried to merge JNode of type {data.GetType().GetFriendlyName()} into a JList node in {node.Path}.");
 				return;
 			}
 
@@ -223,7 +223,7 @@ public static class JNodeExtensions
 		{
 			if (!data.IsData())
 			{
-				Log.Warning($"Tried to merge JNode of type {data.GetType().Name} into a JData node in {node.Path}.");
+				Log.Warning($"Tried to merge JNode of type {data.GetType().GetFriendlyName()} into a JData node in {node.Path}.");
 				return;
 			}
 

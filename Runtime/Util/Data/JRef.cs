@@ -57,6 +57,11 @@ namespace Ju.Data
 
 				Unsubscribe();
 
+				if (reference != null)
+				{
+					reference.Dispose();
+				}
+
 				reference = null;
 			}
 
@@ -111,7 +116,17 @@ namespace Ju.Data
 
 		public override string ToString()
 		{
-			return reference.ToString();
+			return $"Ref{{{reference}}}";
+		}
+
+		public override string ToString(int maxDepth)
+		{
+			if (maxDepth == 0)
+			{
+				return "Ref{...}";
+			}
+
+			return $"Ref{{{reference.ToString(maxDepth - 1)}}}";
 		}
 	}
 }

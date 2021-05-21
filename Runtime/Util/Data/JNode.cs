@@ -197,5 +197,7 @@ namespace Ju.Data
 		protected virtual void OnSubscribersEmpty()
 		{
 		}
+
+		public abstract string ToString(int maxDepth);
 	}
 }

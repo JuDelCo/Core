@@ -1,6 +1,21 @@
 
 # Changelog
 
+## [1.36.0] - 2021-05-21
+
+### Added
+
+- Add maxDepth parameter to the ToHjson/ToJson methods for JNode.
+- Add maxDepth parameter to the ToString method for JNode.
+- Add generic JList<T> class.
+- Add new GetFriendlyName extension method for Type.
+
+### Improved
+
+- Separate all IService, State and Behaviour extensions in different files.
+- Improve type naming in all log messages.
+- Update README.
+
 ## [1.35.0] - 2021-05-17
 
 ### Added
@@ -45,4 +60,6 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.36.0]: https://github.com/JuDelCo/Core/compare/v1.35.0...v1.36.0
+[1.35.0]: https://github.com/JuDelCo/Core/compare/v1.34.0...v1.35.0
 [1.34.0]: https://github.com/JuDelCo/Core/compare/v1.33.0...v1.34.0

@@ -3,6 +3,7 @@
 
 using System;
 using Ju.Data.Conversion;
+using Ju.Extensions;
 using Ju.Hjson;
 
 namespace Ju.Data
@@ -11,23 +12,28 @@ namespace Ju.Data
 
 	public static class JNodeHjsonExtensions
 	{
-		public static string ToHjson(this JNode node)
+		public static string ToHjson(this JNode node, int maxDepth = -1)
 		{
-			return Process(node).ToString(Stringify.Hjson);
+			return Process(node, maxDepth).ToString(Stringify.Hjson);
 		}
 
-		public static string ToJson(this JNode node, bool compact = false)
+		public static string ToJson(this JNode node, int maxDepth)
 		{
-			return Process(node).ToString(compact ? Stringify.Plain : Stringify.Formatted);
+			return node.ToJson(false, maxDepth);
 		}
 
-		private static JsonValue Process(JNode node)
+		public static string ToJson(this JNode node, bool compact = false, int maxDepth = -1)
+		{
+			return Process(node, maxDepth).ToString(compact ? Stringify.Plain : Stringify.Formatted);
+		}
+
+		private static JsonValue Process(JNode node, int maxDepth)
 		{
 			JsonValue result;
 
 			if (node == null)
 			{
-				result = new JsonObject();
+				result = null;
 			}
 			else if (node.IsRef())
 			{
@@ -44,22 +50,36 @@ namespace Ju.Data
 			{
 				if (node.IsDict())
 				{
-					var o = new JsonObject();
-					result = o;
-
-					foreach (var kvp in node.AsDict().AsEnumerableDict())
+					if (maxDepth == 0)
 					{
-						o.Add(kvp.Key, Process(kvp.Value));
+						result = new JsonObject();
+					}
+					else
+					{
+						var o = new JsonObject();
+						result = o;
+
+						foreach (var kvp in node.AsDict().AsEnumerableDict())
+						{
+							o.Add(kvp.Key, Process(kvp.Value, maxDepth - 1));
+						}
 					}
 				}
 				else if (node.IsList())
 				{
-					var a = new JsonArray();
-					result = a;
-
-					foreach (var item in node.AsList())
+					if (maxDepth == 0)
 					{
-						a.Add(Process(item));
+						result = new JsonArray();
+					}
+					else
+					{
+						var a = new JsonArray();
+						result = a;
+
+						foreach (var item in node.AsList())
+						{
+							a.Add(Process(item, maxDepth - 1));
+						}
 					}
 				}
 				else // JData
@@ -148,7 +168,7 @@ namespace Ju.Data
 			}
 			else
 			{
-				Log.Warning($"No string converter found for the type {dataType.Name}, falling back to default ToString() method");
+				Log.Warning($"No string converter found for the type {dataType.GetFriendlyName()}, falling back to default ToString() method");
 
 				result = new JsonPrimitive(node.GetRawData().ToString());
 			}

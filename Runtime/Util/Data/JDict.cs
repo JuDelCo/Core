@@ -370,5 +370,15 @@ namespace Ju.Data
 		{
 			return $"{{ {string.Join(", ", dictionary.Map(kvp => kvp.Key + " = " + kvp.Value))} }}";
 		}
+
+		public override string ToString(int maxDepth)
+		{
+			if (maxDepth == 0)
+			{
+				return "{...}";
+			}
+
+			return $"{{ {string.Join(", ", dictionary.Map(kvp => kvp.Key + " = " + kvp.Value.ToString(maxDepth - 1)))} }}";
+		}
 	}
 }

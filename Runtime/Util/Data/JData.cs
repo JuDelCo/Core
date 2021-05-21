@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Ju.Data.Conversion;
+using Ju.Extensions;
 using Ju.Handlers;
 
 namespace Ju.Data
@@ -139,7 +140,7 @@ namespace Ju.Data
 
 				if (!found)
 				{
-					throw new Exception($"Invalid conversion the Enum of type {type.Name} from the string {dataStr}.");
+					throw new Exception($"Invalid conversion the Enum of type {type.GetFriendlyName()} from the string {dataStr}.");
 				}
 			}
 			else
@@ -155,12 +156,12 @@ namespace Ju.Data
 					}
 					catch
 					{
-						throw new Exception($"Failed to convert from type {rawData.GetType().Name} to the type {typeof(T).Name} of the JData node.");
+						throw new Exception($"Failed to convert from type {rawData.GetType().GetFriendlyName()} to the type {typeof(T).GetFriendlyName()} of the JData node.");
 					}
 				}
 				else
 				{
-					throw new Exception($"No type converter found for a raw data of type {rawData.GetType().Name} to the type {typeof(T).Name} of the JData node.");
+					throw new Exception($"No type converter found for a raw data of type {rawData.GetType().GetFriendlyName()} to the type {typeof(T).GetFriendlyName()} of the JData node.");
 				}
 			}
 		}
@@ -243,6 +244,11 @@ namespace Ju.Data
 		public override string ToString()
 		{
 			return $"\"{value}\"";
+		}
+
+		public override string ToString(int maxDepth)
+		{
+			return ToString();
 		}
 	}
 }

@@ -47,6 +47,21 @@ namespace Ju.Data
 			return GetList(key, true, capacity);
 		}
 
+		protected JList<T> GetList<T>(string key, bool reseteable = true, int capacity = 0, bool subscribeToChildren = true) where T : JNode
+		{
+			if (!initialized)
+			{
+				this[key] = new JList<T>(reseteable, capacity, subscribeToChildren);
+			}
+
+			return this[key] as JList<T>;
+		}
+
+		protected JList<T> GetList<T>(string key, int capacity = 0) where T : JNode
+		{
+			return GetList<T>(key, true, capacity);
+		}
+
 		protected JData<T> GetData<T>(string key, T defaultValue = default(T))
 		{
 			if (!initialized)

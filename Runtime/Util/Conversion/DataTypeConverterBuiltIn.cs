@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Ju.Extensions;
 
 namespace Ju.Data.Conversion
 {
@@ -13,7 +14,7 @@ namespace Ju.Data.Conversion
 
 		private static string GetExceptionMsgBetween<TSource, TResult>()
 		{
-			return $"Error converting from type {typeof(TSource).Name} to type {typeof(TResult).Name}";
+			return $"Error converting from type {typeof(TSource).GetFriendlyName()} to type {typeof(TResult).GetFriendlyName()}";
 		}
 
 		private static void Initialize()
