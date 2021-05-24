@@ -14,7 +14,7 @@ namespace Ju.Hjson
 	/// <summary>Implements an object value.</summary>
 	public class JsonObject : JsonValue, IDictionary<string, JsonValue>, ICollection<JsonPair>
 	{
-		Dictionary<string, JsonValue> map;
+		readonly Dictionary<string, JsonValue> map;
 
 		/// <summary>Initializes a new instance of this class.</summary>
 		/// <remarks>You can also initialize an object using the C# add syntax: new JsonObject { { "key", "value" }, ... }</remarks>

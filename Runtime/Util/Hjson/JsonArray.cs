@@ -12,7 +12,7 @@ namespace Ju.Hjson
 	/// <summary>Implements an array value.</summary>
 	public class JsonArray : JsonValue, IList<JsonValue>
 	{
-		List<JsonValue> list;
+		readonly List<JsonValue> list;
 
 		/// <summary>Initializes a new instance of this class.</summary>
 		public JsonArray(params JsonValue[] items)

@@ -15,7 +15,7 @@ namespace Ju.Services
 		private static readonly Identifier DEFAULT_ID = "base";
 		private static ServiceContainer instance;
 
-		private readonly Dictionary<Type, Dictionary<Identifier, Type>> servicesRegistered = new Dictionary<Type, Dictionary<Identifier, Type>>();
+		private readonly Dictionary<Type, Dictionary<Identifier, object>> servicesRegistered = new Dictionary<Type, Dictionary<Identifier, object>>();
 		private readonly Dictionary<Type, Dictionary<Identifier, Type>> servicesLoaded = new Dictionary<Type, Dictionary<Identifier, Type>>();
 		private readonly Container container = new Container();
 
@@ -91,7 +91,7 @@ namespace Ju.Services
 				}
 			}
 
-			services.servicesRegistered.GetOrInsertNew(baseType).Add(id, serviceType);
+			services.servicesRegistered.GetOrInsertNew(baseType).Add(id, new T2());
 		}
 
 		public static void UnloadService<T>() where T : IService, new()
@@ -149,12 +149,11 @@ namespace Ju.Services
 			}
 			else if (services.servicesRegistered.ContainsKey(baseType) && services.servicesRegistered[baseType].ContainsKey(id))
 			{
-				var serviceType = services.servicesRegistered[baseType][id];
+				service = (IService)services.servicesRegistered[baseType][id];
 
 				services.servicesRegistered[baseType].Remove(id);
-				services.servicesLoaded.GetOrInsertNew(baseType).Add(id, serviceType);
+				services.servicesLoaded.GetOrInsertNew(baseType).Add(id, service.GetType());
 
-				service = (IService)Activator.CreateInstance(serviceType);
 				services.container.Register<T>(id, service);
 
 				if (service is IServiceLoad serviceLoad)

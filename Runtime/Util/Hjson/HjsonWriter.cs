@@ -14,10 +14,10 @@ namespace Ju.Hjson
 
 	internal class HjsonWriter
 	{
-		bool writeWsc;
-		bool emitRootBraces;
-		IEnumerable<IHjsonDsfProvider> dsfProviders = Enumerable.Empty<IHjsonDsfProvider>();
-		static Regex needsEscapeName = new Regex(@"[,\{\[\}\]\s:#""']|\/\/|\/\*|'''");
+		readonly bool writeWsc;
+		readonly bool emitRootBraces;
+		readonly IEnumerable<IHjsonDsfProvider> dsfProviders = Enumerable.Empty<IHjsonDsfProvider>();
+		static readonly Regex needsEscapeName = new Regex(@"[,\{\[\}\]\s:#""']|\/\/|\/\*|'''");
 
 		public HjsonWriter(HjsonOptions options)
 		{
@@ -30,13 +30,13 @@ namespace Ju.Hjson
 			else emitRootBraces = true;
 		}
 
-		void nl(TextWriter tw, int level)
+		void Nl(TextWriter tw, int level)
 		{
 			tw.Write(JsonValue.eol);
 			tw.Write(new string(' ', level * 2));
 		}
 
-		string getWsc(string str)
+		string GetWsc(string str)
 		{
 			if (string.IsNullOrEmpty(str)) return "";
 			for (int i = 0; i < str.Length; i++)
@@ -50,9 +50,9 @@ namespace Ju.Hjson
 			return str;
 		}
 
-		string getWsc(Dictionary<string, string> white, string key) { return white.ContainsKey(key) ? getWsc(white[key]) : ""; }
-		string getWsc(List<string> white, int index) { return white.Count > index ? getWsc(white[index]) : ""; }
-		bool testWsc(string str) { return str.Length > 0 && str[str[0] == '\r' && str.Length > 1 ? 1 : 0] != '\n'; }
+		string GetWsc(Dictionary<string, string> white, string key) { return white.ContainsKey(key) ? GetWsc(white[key]) : ""; }
+		string GetWsc(List<string> white, int index) { return white.Count > index ? GetWsc(white[index]) : ""; }
+		bool TestWsc(string str) { return str.Length > 0 && str[str[0] == '\r' && str.Length > 1 ? 1 : 0] != '\n'; }
 
 		public void Save(JsonValue value, TextWriter tw, int level, bool hasComment, string separator, bool noIndent = false, bool isRootObject = false)
 		{
@@ -78,51 +78,51 @@ namespace Ju.Hjson
 					var obj = value.Qo();
 					WscJsonObject kw = writeWsc ? obj as WscJsonObject : null;
 					bool showBraces = !isRootObject || (kw != null ? kw.RootBraces : emitRootBraces);
-					if (!noIndent) { if (obj.Count > 0) nl(tw, level); else tw.Write(separator); }
+					if (!noIndent) { if (obj.Count > 0) Nl(tw, level); else tw.Write(separator); }
 					if (showBraces) tw.Write('{');
 					else level--; // reduce level for root
 					if (kw != null)
 					{
-						var kwl = getWsc(kw.Comments, "");
+						var kwl = GetWsc(kw.Comments, "");
 						foreach (string key in kw.Order.Concat(kw.Keys).Distinct())
 						{
 							if (!obj.ContainsKey(key)) continue;
 							var val = obj[key];
 							tw.Write(kwl);
-							nl(tw, level + 1);
-							kwl = getWsc(kw.Comments, key);
+							Nl(tw, level + 1);
+							kwl = GetWsc(kw.Comments, key);
 
-							tw.Write(escapeName(key));
+							tw.Write(EscapeName(key));
 							tw.Write(":");
-							Save(val, tw, level + 1, testWsc(kwl), " ");
+							Save(val, tw, level + 1, TestWsc(kwl), " ");
 						}
 						tw.Write(kwl);
-						if (showBraces) nl(tw, level);
+						if (showBraces) Nl(tw, level);
 					}
 					else
 					{
 						bool skipFirst = !showBraces;
 						foreach (JsonPair pair in obj)
 						{
-							if (!skipFirst) nl(tw, level + 1); else skipFirst = false;
-							tw.Write(escapeName(pair.Key));
+							if (!skipFirst) Nl(tw, level + 1); else skipFirst = false;
+							tw.Write(EscapeName(pair.Key));
 							tw.Write(":");
 							Save(pair.Value, tw, level + 1, false, " ");
 						}
-						if (showBraces && obj.Count > 0) nl(tw, level);
+						if (showBraces && obj.Count > 0) Nl(tw, level);
 					}
 					if (showBraces) tw.Write('}');
 					break;
 				case JsonType.Array:
 					int i = 0, n = value.Count;
-					if (!noIndent) { if (n > 0) nl(tw, level); else tw.Write(separator); }
+					if (!noIndent) { if (n > 0) Nl(tw, level); else tw.Write(separator); }
 					tw.Write('[');
 					WscJsonArray whiteL = null;
 					string wsl = null;
 					if (writeWsc)
 					{
 						whiteL = value as WscJsonArray;
-						if (whiteL != null) wsl = getWsc(whiteL.Comments, 0);
+						if (whiteL != null) wsl = GetWsc(whiteL.Comments, 0);
 					}
 					for (; i < n; i++)
 					{
@@ -130,13 +130,13 @@ namespace Ju.Hjson
 						if (whiteL != null)
 						{
 							tw.Write(wsl);
-							wsl = getWsc(whiteL.Comments, i + 1);
+							wsl = GetWsc(whiteL.Comments, i + 1);
 						}
-						nl(tw, level + 1);
-						Save(v, tw, level + 1, wsl != null && testWsc(wsl), "", true);
+						Nl(tw, level + 1);
+						Save(v, tw, level + 1, wsl != null && TestWsc(wsl), "", true);
 					}
 					if (whiteL != null) tw.Write(wsl);
-					if (n > 0) nl(tw, level);
+					if (n > 0) Nl(tw, level);
 					tw.Write(']');
 					break;
 				case JsonType.Boolean:
@@ -144,7 +144,7 @@ namespace Ju.Hjson
 					tw.Write((bool)value ? "true" : "false");
 					break;
 				case JsonType.String:
-					writeString(((JsonPrimitive)value).GetRawString(), tw, level, hasComment, separator);
+					WriteString(((JsonPrimitive)value).GetRawString(), tw, level, hasComment, separator);
 					break;
 				default:
 					tw.Write(separator);
@@ -153,7 +153,7 @@ namespace Ju.Hjson
 			}
 		}
 
-		static string escapeName(string name)
+		static string EscapeName(string name)
 		{
 			if (name.Length == 0 || needsEscapeName.IsMatch(name))
 				return "\"" + JsonWriter.EscapeString(name) + "\"";
@@ -161,14 +161,13 @@ namespace Ju.Hjson
 				return name;
 		}
 
-		void writeString(string value, TextWriter tw, int level, bool hasComment, string separator)
+		void WriteString(string value, TextWriter tw, int level, bool hasComment, string separator)
 		{
 			if (value == "") { tw.Write(separator + "\"\""); return; }
 
 			char left = value[0], right = value[value.Length - 1];
 			char left1 = value.Length > 1 ? value[1] : '\0', left2 = value.Length > 2 ? value[2] : '\0';
-			bool doEscape = hasComment || value.Any(c => needsQuotes(c));
-			JsonValue dummy;
+			bool doEscape = hasComment || value.Any(c => NeedsQuotes(c));
 
 			if (doEscape ||
 			  BaseReader.IsWhite(left) || BaseReader.IsWhite(right) ||
@@ -177,8 +176,8 @@ namespace Ju.Hjson
 			  left == '#' ||
 			  left == '/' && (left1 == '*' || left1 == '/') ||
 			  HjsonValue.IsPunctuatorChar(left) ||
-			  HjsonReader.TryParseNumericLiteral(value, true, out dummy) ||
-			  startsWithKeyword(value))
+			  HjsonReader.TryParseNumericLiteral(value, true, out JsonValue dummy) ||
+			  StartsWithKeyword(value))
 			{
 				// If the string contains no control characters, no quote characters, and no
 				// backslash characters, then we can safely slap some quotes around it.
@@ -186,14 +185,14 @@ namespace Ju.Hjson
 				// format or we must replace the offending characters with safe escape
 				// sequences.
 
-				if (!value.Any(c => needsEscape(c))) tw.Write(separator + "\"" + value + "\"");
-				else if (!value.Any(c => needsEscapeML(c)) && !value.Contains("'''") && !value.All(c => BaseReader.IsWhite(c))) writeMLString(value, tw, level, separator);
+				if (!value.Any(c => NeedsEscape(c))) tw.Write(separator + "\"" + value + "\"");
+				else if (!value.Any(c => NeedsEscapeML(c)) && !value.Contains("'''") && !value.All(c => BaseReader.IsWhite(c))) WriteMLString(value, tw, level, separator);
 				else tw.Write(separator + "\"" + JsonWriter.EscapeString(value) + "\"");
 			}
 			else tw.Write(separator + value);
 		}
 
-		void writeMLString(string value, TextWriter tw, int level, string separator)
+		void WriteMLString(string value, TextWriter tw, int level, string separator)
 		{
 			var lines = value.Replace("\r", "").Split('\n');
 
@@ -206,20 +205,20 @@ namespace Ju.Hjson
 			else
 			{
 				level++;
-				nl(tw, level);
+				Nl(tw, level);
 				tw.Write("'''");
 
 				foreach (var line in lines)
 				{
-					nl(tw, !string.IsNullOrEmpty(line) ? level : 0);
+					Nl(tw, !string.IsNullOrEmpty(line) ? level : 0);
 					tw.Write(line);
 				}
-				nl(tw, level);
+				Nl(tw, level);
 				tw.Write("'''");
 			}
 		}
 
-		static bool startsWithKeyword(string text)
+		static bool StartsWithKeyword(string text)
 		{
 			int p;
 			if (text.StartsWith("true") || text.StartsWith("null")) p = 4;
@@ -231,7 +230,7 @@ namespace Ju.Hjson
 			return ch == ',' || ch == '}' || ch == ']' || ch == '#' || ch == '/' && (text.Length > p + 1 && (text[p + 1] == '/' || text[p + 1] == '*'));
 		}
 
-		static bool needsQuotes(char c)
+		static bool NeedsQuotes(char c)
 		{
 			switch (c)
 			{
@@ -246,7 +245,7 @@ namespace Ju.Hjson
 			}
 		}
 
-		static bool needsEscape(char c)
+		static bool NeedsEscape(char c)
 		{
 			switch (c)
 			{
@@ -254,11 +253,11 @@ namespace Ju.Hjson
 				case '\\':
 					return true;
 				default:
-					return needsQuotes(c);
+					return NeedsQuotes(c);
 			}
 		}
 
-		static bool needsEscapeML(char c)
+		static bool NeedsEscapeML(char c)
 		{
 			switch (c)
 			{
@@ -267,7 +266,7 @@ namespace Ju.Hjson
 				case '\t':
 					return false;
 				default:
-					return needsQuotes(c);
+					return NeedsQuotes(c);
 			}
 		}
 	}

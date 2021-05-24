@@ -10,7 +10,11 @@ indent_style = tab
 indent_size = 4
 charset = utf-8
 
-; Code analysis - Ignore rules (Unity3D project)
+; Code analysis - Ignore rules (NET native project & Unity3D project)
+[**bin/**.cs]
+generated_code = true
+[**obj/**.cs]
+generated_code = true
 [**PackageCache/**.cs]
 generated_code = true
 [Assets/Plugins/**.cs]

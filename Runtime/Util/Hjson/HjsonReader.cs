@@ -16,8 +16,8 @@ namespace Ju.Hjson
 
 	internal class HjsonReader : BaseReader
 	{
-		StringBuilder sb = new StringBuilder();
-		IEnumerable<IHjsonDsfProvider> dsfProviders = Enumerable.Empty<IHjsonDsfProvider>();
+		readonly StringBuilder sb = new StringBuilder();
+		readonly IEnumerable<IHjsonDsfProvider> dsfProviders = Enumerable.Empty<IHjsonDsfProvider>();
 
 		public HjsonReader(TextReader reader, IJsonReader jsonReader, HjsonOptions options)
 		  : base(reader, jsonReader)
@@ -38,32 +38,32 @@ namespace Ju.Hjson
 			{
 				case '[':
 				case '{':
-					return checkTrailing(ReadCore());
+					return CheckTrailing(ReadCore());
 				default:
 					try
 					{
 						// assume we have a root object without braces
-						return checkTrailing(ReadCore(true));
+						return CheckTrailing(ReadCore(true));
 					}
 					catch (Exception)
 					{
 						// test if we are dealing with a single JSON value instead (true/false/null/num/"")
 						Reset();
-						try { return checkTrailing(ReadCore()); }
+						try { return CheckTrailing(ReadCore()); }
 						catch (Exception) { }
 						throw; // throw original error
 					}
 			}
 		}
 
-		JsonValue checkTrailing(JsonValue v)
+		JsonValue CheckTrailing(JsonValue v)
 		{
-			skipWhite2();
+			SkipWhite2();
 			if (ReadChar() >= 0) throw ParseError("Extra characters in input");
 			return v;
 		}
 
-		void skipWhite2()
+		void SkipWhite2()
 		{
 			while (PeekChar() >= 0)
 			{
@@ -112,7 +112,7 @@ namespace Ju.Hjson
 
 		public override int SkipPeekChar()
 		{
-			skipWhite2();
+			SkipWhite2();
 			return PeekChar();
 		}
 
@@ -159,10 +159,10 @@ namespace Ju.Hjson
 					{
 						if (objectWithoutBraces) { if (SkipPeekChar() < 0) break; }
 						else if (SkipPeekChar() == '}') { ReadChar(); break; }
-						string name = readKeyName();
-						skipWhite2();
+						string name = ReadKeyName();
+						SkipWhite2();
 						Expect(':');
-						skipWhite2();
+						SkipWhite2();
 						if (HasReader) Reader.Key(name);
 						var value = ReadCore();
 						if (HasReader) Reader.Value(value);
@@ -173,12 +173,12 @@ namespace Ju.Hjson
 					}
 					return obj;
 				case '\'':
-				case '"': return ReadStringLiteral(readMlString);
-				default: return readTfnns(c);
+				case '"': return ReadStringLiteral(ReadMlString);
+				default: return ReadTfnns(c);
 			}
 		}
 
-		string readKeyName()
+		string ReadKeyName()
 		{
 			// quotes for keys are optional in Hjson
 			// unless they include {}[],: or whitespace.
@@ -214,7 +214,7 @@ namespace Ju.Hjson
 			}
 		}
 
-		void skipIndent(int indent)
+		void SkipIndent(int indent)
 		{
 			while (indent-- > 0)
 			{
@@ -224,7 +224,7 @@ namespace Ju.Hjson
 			}
 		}
 
-		string readMlString()
+		string ReadMlString()
 		{
 			// Parse a multiline string value.
 			int triple = 0;
@@ -240,7 +240,7 @@ namespace Ju.Hjson
 				if (IsWhite(c) && c != '\n') ReadChar();
 				else break;
 			}
-			if (PeekChar() == '\n') { ReadChar(); skipIndent(indent); }
+			if (PeekChar() == '\n') { ReadChar(); SkipIndent(indent); }
 
 			// When parsing for string values, we must look for " and \ characters.
 			while (true)
@@ -270,7 +270,7 @@ namespace Ju.Hjson
 				{
 					sb.Append('\n');
 					ReadChar();
-					skipIndent(indent);
+					SkipIndent(indent);
 				}
 				else
 				{
@@ -397,7 +397,7 @@ namespace Ju.Hjson
 			return true;
 		}
 
-		JsonValue readTfnns(int c)
+		JsonValue ReadTfnns(int c)
 		{
 			if (HjsonValue.IsPunctuatorChar((char)c))
 				throw ParseError("Found a punctuator character '" + c + "' when expecting a quoteless string (check your syntax)");
@@ -422,8 +422,7 @@ namespace Ju.Hjson
 							default:
 								if (ch == '-' || ch >= '0' && ch <= '9')
 								{
-									JsonValue res;
-									if (TryParseNumericLiteral(sb.ToString(), false, out res)) return res;
+									if (TryParseNumericLiteral(sb.ToString(), false, out JsonValue res)) return res;
 								}
 								break;
 						}

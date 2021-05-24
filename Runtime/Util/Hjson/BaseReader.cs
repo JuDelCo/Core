@@ -13,12 +13,13 @@ namespace Ju.Hjson
 {
 	internal abstract class BaseReader
 	{
-		string buffer;
+		readonly string buffer;
 		TextReader r;
-		StringBuilder sb = new StringBuilder();
-		StringBuilder white = new StringBuilder();
+		readonly StringBuilder sb = new StringBuilder();
+		readonly StringBuilder white = new StringBuilder();
+
 		// peek could be removed since we now use a buffer
-		List<int> peek = new List<int>();
+		readonly List<int> peek = new List<int>();
 		bool prevLf;
 
 		public int Line { get; private set; }

@@ -14,13 +14,13 @@ namespace Ju.Hjson
 	/// <summary>Provides Json extension methods.</summary>
 	public static class JsonUtil
 	{
-		static Exception failQ(JsonValue forObject, string op)
+		static Exception FailQ(JsonValue forObject, string op)
 		{
 			string type = forObject != null ? forObject.JsonType.ToString().ToLower() : "null";
 			return new Exception("JsonUtil." + op + " not supported for type " + type + "!");
 		}
 
-		static Exception failM(Exception e, string key)
+		static Exception FailM(Exception e, string key)
 		{
 			string msg = e.Message;
 			if (msg.EndsWith("!")) msg = msg.Substring(0, msg.Length - 1);
@@ -32,7 +32,7 @@ namespace Ju.Hjson
 		public static bool Qb(this JsonValue json)
 		{
 			if (json != null && json.JsonType == JsonType.Boolean) return (bool)json.ToValue();
-			else throw failQ(json, "Qb");
+			else throw FailQ(json, "Qb");
 		}
 
 		/// <summary>Gets the value of the member specified by key, then calls <see cref="Qb(Hjson.JsonValue)"/>.
@@ -44,7 +44,7 @@ namespace Ju.Hjson
 				if (json.ContainsKey(key)) return json[key].Qb();
 				else return defaultValue;
 			}
-			catch (Exception e) { throw failM(e, key); }
+			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>For JsonValues with type number, this method will return its
@@ -52,7 +52,7 @@ namespace Ju.Hjson
 		public static int Qi(this JsonValue json)
 		{
 			if (json != null && json.JsonType == JsonType.Number) return Convert.ToInt32(json.ToValue());
-			else throw failQ(json, "Qi");
+			else throw FailQ(json, "Qi");
 		}
 
 		/// <summary>Gets the value of the member specified by key, then calls <see cref="Qi(Hjson.JsonValue)"/>.
@@ -64,7 +64,7 @@ namespace Ju.Hjson
 				if (json.ContainsKey(key)) return json[key].Qi();
 				else return defaultValue;
 			}
-			catch (Exception e) { throw failM(e, key); }
+			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>For JsonValues with type number, this method will return its
@@ -72,7 +72,7 @@ namespace Ju.Hjson
 		public static long Ql(this JsonValue json)
 		{
 			if (json != null && json.JsonType == JsonType.Number) return Convert.ToInt64(json.ToValue());
-			else throw failQ(json, "Ql");
+			else throw FailQ(json, "Ql");
 		}
 
 		/// <summary>Gets the value of the member specified by key, then calls <see cref="Ql(Hjson.JsonValue)"/>.
@@ -84,7 +84,7 @@ namespace Ju.Hjson
 				if (json.ContainsKey(key)) return json[key].Ql();
 				else return defaultValue;
 			}
-			catch (Exception e) { throw failM(e, key); }
+			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>For JsonValues with type number, this method will return its
@@ -92,7 +92,7 @@ namespace Ju.Hjson
 		public static double Qd(this JsonValue json)
 		{
 			if (json != null && json.JsonType == JsonType.Number) return Convert.ToDouble(json.ToValue());
-			else throw failQ(json, "Qd");
+			else throw FailQ(json, "Qd");
 		}
 
 		/// <summary>Gets the value of the member specified by key, then calls <see cref="Qd(Hjson.JsonValue)"/>.
@@ -104,7 +104,7 @@ namespace Ju.Hjson
 				if (json.ContainsKey(key)) return json[key].Qd();
 				else return defaultValue;
 			}
-			catch (Exception e) { throw failM(e, key); }
+			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>For JsonValues with type string, this method will return its
@@ -114,7 +114,7 @@ namespace Ju.Hjson
 		{
 			if (json == null) return null;
 			else if (json.JsonType == JsonType.String) return (string)json;
-			else throw failQ(json, "Qs");
+			else throw FailQ(json, "Qs");
 		}
 
 		/// <summary>Gets the value of the member specified by key, then calls <see cref="Qs(Hjson.JsonValue)"/>.
@@ -126,7 +126,7 @@ namespace Ju.Hjson
 				if (json.ContainsKey(key)) return json[key].Qs();
 				else return defaultValue;
 			}
-			catch (Exception e) { throw failM(e, key); }
+			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>For JsonValues with type string, number or boolean, this method will return
@@ -136,7 +136,7 @@ namespace Ju.Hjson
 			if (json == null) return null;
 			else if (json.JsonType == JsonType.String) return (string)json;
 			else if (json.JsonType == JsonType.Boolean || json.JsonType == JsonType.Number) return json.ToString();
-			else throw failQ(json, "Qstr");
+			else throw FailQ(json, "Qstr");
 		}
 
 		/// <summary>Gets the value of the member specified by key, then,
@@ -149,7 +149,7 @@ namespace Ju.Hjson
 				if (json.ContainsKey(key)) return json[key].Qstr();
 				else return defaultValue;
 			}
-			catch (Exception e) { throw failM(e, key); }
+			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>Gets the JsonValue of the member specified by key.</summary>
@@ -163,28 +163,28 @@ namespace Ju.Hjson
 		public static JsonObject Qo(this JsonObject json, string key)
 		{
 			try { return (JsonObject)json.Qv(key); }
-			catch (Exception e) { throw failM(e, key); }
+			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>Gets the JsonObject from a JsonValue.</summary>
 		public static JsonObject Qo(this JsonValue json)
 		{
 			try { return (JsonObject)json; }
-			catch { throw failQ(json, "Qo"); }
+			catch { throw FailQ(json, "Qo"); }
 		}
 
 		/// <summary>Gets a JsonArray from a JsonObject.</summary>
 		public static JsonArray Qa(this JsonObject json, string key)
 		{
 			try { return (JsonArray)json.Qv(key); }
-			catch (Exception e) { throw failM(e, key); }
+			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>Gets the JsonArray from a JsonValue.</summary>
 		public static JsonArray Qa(this JsonValue json)
 		{
 			try { return (JsonArray)json; }
-			catch { throw failQ(json, "Qo"); }
+			catch { throw FailQ(json, "Qo"); }
 		}
 
 		/// <summary>Enumerates JsonObjects from a JsonObject.</summary>

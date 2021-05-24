@@ -1,6 +1,24 @@
 
 # Changelog
 
+## [1.37.0] - 2021-05-24
+
+### Added
+
+- Add csproj file to allow compiling and using the library for native NET projects.
+
+### Fixed
+
+- Remove all NET Reflection usage.
+
+### Improved
+
+- Remove usage of NET Reflection (Activator.CreateInstance) in ServiceContainer and CacheService classes.
+- Improve Hjson coding convention.
+- Update VSCode settings.json file to handle generated folders by dotnet compiler.
+- Update .editorconfig to include generated folders by dotnet compiler.
+- Update .gitignore to exclude generated folders by dotnet compiler.
+
 ## [1.36.0] - 2021-05-21
 
 ### Added
@@ -60,6 +78,7 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.37.0]: https://github.com/JuDelCo/Core/compare/v1.36.0...v1.37.0
 [1.36.0]: https://github.com/JuDelCo/Core/compare/v1.35.0...v1.36.0
 [1.35.0]: https://github.com/JuDelCo/Core/compare/v1.34.0...v1.35.0
 [1.34.0]: https://github.com/JuDelCo/Core/compare/v1.33.0...v1.34.0

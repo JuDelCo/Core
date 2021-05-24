@@ -38,7 +38,7 @@ namespace Ju.Hjson
 		/// <summary>Returns a date DSF provider.</summary>
 		public static IHjsonDsfProvider Date() { return new DsfDate(); }
 
-		static bool isInvalidDsfChar(char c)
+		static bool IsInvalidDsfChar(char c)
 		{
 			return c == '{' || c == '}' || c == '[' || c == ']' || c == ',';
 		}
@@ -69,7 +69,7 @@ namespace Ju.Hjson
 					var text = dsf.Stringify(value);
 					if (text != null)
 					{
-						if (text.Length == 0 || text.FirstOrDefault() == '"' || text.Any(c => isInvalidDsfChar(c)))
+						if (text.Length == 0 || text.FirstOrDefault() == '"' || text.Any(c => IsInvalidDsfChar(c)))
 							throw new Exception("value may not be empty, start with a quote or contain a punctuator character except colon: " + text);
 						return text;
 					}
@@ -91,7 +91,7 @@ namespace Ju.Hjson
 
 		static readonly long NegativeZeroBits = BitConverter.DoubleToInt64Bits(-0.0);
 
-		static bool isNegativeZero(double x)
+		static bool IsNegativeZero(double x)
 		{
 			return BitConverter.DoubleToInt64Bits(x) == NegativeZeroBits;
 		}
@@ -123,15 +123,15 @@ namespace Ju.Hjson
 			if (double.IsPositiveInfinity(val)) return "Inf";
 			else if (double.IsNegativeInfinity(val)) return "-Inf";
 			else if (double.IsNaN(val)) return "NaN";
-			else if (isNegativeZero(val)) return "-0";
+			else if (IsNegativeZero(val)) return "-0";
 			else return null;
 		}
 	}
 
 	class DsfHex : IHjsonDsfProvider
 	{
-		bool stringify;
-		static Regex isHex = new Regex(@"^0x[0-9A-Fa-f]+$");
+		readonly bool stringify;
+		static readonly Regex isHex = new Regex(@"^0x[0-9A-Fa-f]+$");
 
 		public DsfHex(bool stringify) { this.stringify = stringify; }
 
@@ -163,8 +163,8 @@ namespace Ju.Hjson
 
 	class DsfDate : IHjsonDsfProvider
 	{
-		static Regex isDate = new Regex(@"^\d{4}-\d{2}-\d{2}$");
-		static Regex isDateTime = new Regex(@"^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}(?:.\d+)(?:Z|[+-]\d{2}:\d{2})$");
+		static readonly Regex isDate = new Regex(@"^\d{4}-\d{2}-\d{2}$");
+		static readonly Regex isDateTime = new Regex(@"^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}(?:.\d+)(?:Z|[+-]\d{2}:\d{2})$");
 
 		public string Name { get { return "date"; } }
 		public string Description { get { return "support ISO dates"; } }

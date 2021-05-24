@@ -14,64 +14,64 @@ namespace Ju.Hjson
 		/// <summary>Loads Hjson/JSON from a file.</summary>
 		public static JsonValue Load(string path)
 		{
-			return load(path, null, null);
+			return Load(path, null, null);
 		}
 
 		/// <summary>Loads Hjson/JSON from a file, optionally preserving whitespace and comments.</summary>
 		public static JsonValue Load(string path, HjsonOptions options)
 		{
-			return load(path, null, options);
+			return Load(path, null, options);
 		}
 
 		/// <summary>Loads Hjson/JSON from a stream.</summary>
 		public static JsonValue Load(Stream stream)
 		{
-			return load(stream, null, null);
+			return Load(stream, null, null);
 		}
 
 		/// <summary>Loads Hjson/JSON from a stream, optionally preserving whitespace and comments.</summary>
 		public static JsonValue Load(Stream stream, HjsonOptions options)
 		{
-			return load(stream, null, options);
+			return Load(stream, null, options);
 		}
 
 		/// <summary>Loads Hjson/JSON from a TextReader.</summary>
 		public static JsonValue Load(TextReader textReader, IJsonReader jsonReader = null)
 		{
-			return load(textReader, jsonReader, null);
+			return Load(textReader, jsonReader, null);
 		}
 
 		/// <summary>Loads Hjson/JSON from a TextReader, optionally preserving whitespace and comments.</summary>
 		public static JsonValue Load(TextReader textReader, HjsonOptions options, IJsonReader jsonReader = null)
 		{
-			return load(textReader, jsonReader, options);
+			return Load(textReader, jsonReader, options);
 		}
 
 		/// <summary>Loads Hjson/JSON from a TextReader, preserving whitespace and comments.</summary>
 		[Obsolete("Use Load", true)]
 		public static JsonValue LoadWsc(TextReader textReader)
 		{
-			return load(textReader, null, new HjsonOptions { KeepWsc = true });
+			return Load(textReader, null, new HjsonOptions { KeepWsc = true });
 		}
 
-		static JsonValue load(string path, IJsonReader jsonReader, HjsonOptions options)
+		static JsonValue Load(string path, IJsonReader jsonReader, HjsonOptions options)
 		{
 			if (Path.GetExtension(path).ToLower() == ".json") return JsonValue.Load(path);
 			try
 			{
 				using (var s = File.OpenRead(path))
-					return load(s, jsonReader, options);
+					return Load(s, jsonReader, options);
 			}
 			catch (Exception e) { throw new Exception(e.Message + " (in " + path + ")", e); }
 		}
 
-		static JsonValue load(Stream stream, IJsonReader jsonReader, HjsonOptions options)
+		static JsonValue Load(Stream stream, IJsonReader jsonReader, HjsonOptions options)
 		{
 			if (stream == null) throw new ArgumentNullException("stream");
-			return load(new StreamReader(stream, true), jsonReader, options);
+			return Load(new StreamReader(stream, true), jsonReader, options);
 		}
 
-		static JsonValue load(TextReader textReader, IJsonReader jsonReader, HjsonOptions options)
+		static JsonValue Load(TextReader textReader, IJsonReader jsonReader, HjsonOptions options)
 		{
 			if (textReader == null) throw new ArgumentNullException("textReader");
 			return new HjsonReader(textReader, jsonReader, options).Read();
@@ -125,21 +125,21 @@ namespace Ju.Hjson
 		[Obsolete("Use HjsonOptions for preserveComments")]
 		public static JsonValue Load(string path, bool preserveComments)
 		{
-			return load(path, null, new HjsonOptions { KeepWsc = preserveComments });
+			return Load(path, null, new HjsonOptions { KeepWsc = preserveComments });
 		}
 
 		/// <summary>Loads Hjson/JSON from a stream, optionally preserving whitespace and comments.</summary>
 		[Obsolete("Use HjsonOptions for preserveComments")]
 		public static JsonValue Load(Stream stream, bool preserveComments)
 		{
-			return load(stream, null, new HjsonOptions { KeepWsc = preserveComments });
+			return Load(stream, null, new HjsonOptions { KeepWsc = preserveComments });
 		}
 
 		/// <summary>Loads Hjson/JSON from a TextReader, optionally preserving whitespace and comments.</summary>
 		[Obsolete("Use HjsonOptions for preserveComments")]
 		public static JsonValue Load(TextReader textReader, bool preserveComments, IJsonReader jsonReader = null)
 		{
-			return load(textReader, jsonReader, new HjsonOptions { KeepWsc = preserveComments });
+			return Load(textReader, jsonReader, new HjsonOptions { KeepWsc = preserveComments });
 		}
 
 		/// <summary>Parses the specified Hjson/JSON string, optionally preserving whitespace and comments.</summary>

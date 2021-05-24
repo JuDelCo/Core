@@ -95,7 +95,7 @@ namespace Ju.Services
 
 			if (!listItems[type].ContainsKey(id))
 			{
-				list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+				list = new List<T>();
 				listItems[type][id] = list;
 			}
 			else

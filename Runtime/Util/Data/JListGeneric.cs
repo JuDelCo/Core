@@ -20,11 +20,6 @@ namespace Ju.Data
 		{
 		}
 
-		public JList GetJList()
-		{
-			return this;
-		}
-
 		T IList<T>.this[int index]
 		{
 			get => this[index] as T;
