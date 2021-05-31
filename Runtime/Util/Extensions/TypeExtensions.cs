@@ -7,29 +7,6 @@ namespace Ju.Extensions
 {
 	public static class TypeExtensions
 	{
-		private static readonly string[] TypeAliases =
-		{
-			"void",     // 0
-			null,       // 1 (any other type)
-			"DBNull",   // 2
-			"bool",     // 3
-			"char",     // 4
-			"sbyte",    // 5
-			"byte",     // 6
-			"short",    // 7
-			"ushort",   // 8
-			"int",      // 9
-			"uint",     // 10
-			"long",     // 11
-			"ulong",    // 12
-			"float",    // 13
-			"double",   // 14
-			"decimal",  // 15
-			null,       // 16 (DateTime)
-			null,       // 17 (-undefined-)
-			"string",   // 18
-		};
-
 		public static string GetFriendlyName(this Type type, bool aliasNullable = true, bool includeSpaceAfterComma = true)
 		{
 			TryGetInnerElementType(ref type, out string arrayBrackets);
@@ -66,7 +43,7 @@ namespace Ju.Extensions
 
 		private static bool TryGetNameAliasNonArray(Type type, out string alias)
 		{
-			return (alias = TypeAliases[(int)Type.GetTypeCode(type)]) != null && !type.IsEnum;
+			return (alias = typeAliases[(int)Type.GetTypeCode(type)]) != null && !type.IsEnum;
 		}
 
 		private static bool TryGetInnerElementType(ref Type type, out string arrayBrackets)
@@ -87,5 +64,28 @@ namespace Ju.Extensions
 
 			return true;
 		}
+
+		private static readonly string[] typeAliases =
+		{
+			"void",     // 0
+			null,       // 1 (any other type)
+			"DBNull",   // 2
+			"bool",     // 3
+			"char",     // 4
+			"sbyte",    // 5
+			"byte",     // 6
+			"short",    // 7
+			"ushort",   // 8
+			"int",      // 9
+			"uint",     // 10
+			"long",     // 11
+			"ulong",    // 12
+			"float",    // 13
+			"double",   // 14
+			"decimal",  // 15
+			null,       // 16 (DateTime)
+			null,       // 17 (-undefined-)
+			"string",   // 18
+		};
 	}
 }

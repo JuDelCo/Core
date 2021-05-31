@@ -18,10 +18,11 @@ namespace Ju.Data
 		{
 			"Path", "Children", "Count", "IsReadOnly", "Keys", "Values"
 		};
-		private static DisposableLinkHandler internalLinkHandler = null;
+		private JNodeLinkHandler internalLinkHandler = null;
 		private readonly Dictionary<string, JNode> dictionary;
 		private readonly bool reseteable;
 		private readonly bool subscribeToChildren;
+		private readonly Action<JNode, JNodeEvent> cachedTriggerDict;
 		private bool autoSubscribeToChildren = false;
 		private bool isRemoving = false;
 		protected bool initialized = false;
@@ -39,6 +40,7 @@ namespace Ju.Data
 			dictionary = new Dictionary<string, JNode>(capacity);
 			this.reseteable = reseteable;
 			this.subscribeToChildren = subscribeToChildren;
+			this.cachedTriggerDict = TriggerDict;
 
 			foreach (var property in this.GetType().GetProperties())
 			{
@@ -71,7 +73,7 @@ namespace Ju.Data
 			}
 		}
 
-		public override void Subscribe(ILinkHandler handle, Action<JNode> action)
+		public override void Subscribe(ILinkHandler handle, Action<JNode, JNodeEvent> action)
 		{
 			base.Subscribe(handle, action);
 
@@ -79,12 +81,15 @@ namespace Ju.Data
 			{
 				if (internalLinkHandler == null)
 				{
-					internalLinkHandler = new DisposableLinkHandler(false);
+					internalLinkHandler = new JNodeLinkHandler(this, false);
 				}
 
 				foreach (var kvp in dictionary)
 				{
-					kvp.Value.Subscribe(internalLinkHandler, Trigger);
+					if (!kvp.Value.IsSubscribed(this))
+					{
+						kvp.Value.Subscribe(internalLinkHandler, cachedTriggerDict);
+					}
 				}
 
 				autoSubscribeToChildren = true;
@@ -135,15 +140,19 @@ namespace Ju.Data
 			get => dictionary.Values;
 		}
 
+		private void TriggerDict(JNode node, JNodeEvent eventType)
+		{
+			Trigger(node, eventType);
+
+			if (node != this)
+			{
+				Trigger(this, eventType);
+			}
+		}
+
 		protected override void OnSubscribersEmpty()
 		{
 			autoSubscribeToChildren = false;
-
-			if (internalLinkHandler != null && !internalLinkHandler.IsDestroyed)
-			{
-				internalLinkHandler.Dispose();
-				internalLinkHandler = null;
-			}
 		}
 
 		public bool IsReseteable()
@@ -172,10 +181,10 @@ namespace Ju.Data
 
 				if (autoSubscribeToChildren)
 				{
-					value.Subscribe(internalLinkHandler, Trigger);
+					value.Subscribe(internalLinkHandler, cachedTriggerDict);
 				}
 
-				Trigger(this);
+				value.Trigger(value, JNodeEvent.OnAdd);
 			}
 		}
 
@@ -203,10 +212,10 @@ namespace Ju.Data
 
 			if (autoSubscribeToChildren)
 			{
-				node.Subscribe(internalLinkHandler, Trigger);
+				node.Subscribe(internalLinkHandler, cachedTriggerDict);
 			}
 
-			Trigger(this);
+			node.Trigger(node, JNodeEvent.OnAdd);
 		}
 
 		public void Add(KeyValuePair<string, JNode> kvp)
@@ -218,17 +227,8 @@ namespace Ju.Data
 		{
 			foreach (var kvp in kvps)
 			{
-				var node = kvp.Value;
-				dictionary.Add(kvp.Key, node);
-				node.Parent = this;
-
-				if (autoSubscribeToChildren)
-				{
-					node.Subscribe(internalLinkHandler, Trigger);
-				}
+				Add(kvp.Key, kvp.Value);
 			}
-
-			Trigger(this);
 		}
 
 		public string GetKey(JNode node)
@@ -292,8 +292,21 @@ namespace Ju.Data
 		{
 			var node = this[oldKey];
 			dictionary.Remove(oldKey);
+			Remove(newKey);
 			dictionary[newKey] = node;
-			Trigger(this);
+			node.Trigger(node, JNodeEvent.OnMove);
+		}
+
+		public void Swap(string firstKey, string secondKey)
+		{
+			var firstNode = this[firstKey];
+			var secondNode = this[secondKey];
+
+			dictionary[firstKey] = secondNode;
+			dictionary[secondKey] = firstNode;
+
+			firstNode.Trigger(firstNode, JNodeEvent.OnMove);
+			secondNode.Trigger(secondNode, JNodeEvent.OnMove);
 		}
 
 		public bool Remove(string key)
@@ -309,16 +322,13 @@ namespace Ju.Data
 			{
 				isRemoving = true;
 
-				dictionary[key].Parent = null;
+				var node = dictionary[key];
+				node.Trigger(node, JNodeEvent.OnRemove);
+				node.Parent = null;
 
 				result = dictionary.Remove(key);
 
 				isRemoving = false;
-
-				if (result)
-				{
-					Trigger(this);
-				}
 			}
 
 			return result;
@@ -362,7 +372,7 @@ namespace Ju.Data
 
 			if (triggerOnlyOnce)
 			{
-				Trigger(this);
+				this.Trigger(this, JNodeEvent.OnClear);
 			}
 		}
 

@@ -3,14 +3,14 @@
 
 namespace Ju.Extensions
 {
-	public static class FloatExtensions
+	public static class IntExtensions
 	{
-		public static bool IsWithin(this float value, float min, float max)
+		public static bool IsWithin(this int value, float min, float max)
 		{
 			return (value >= min && value <= max);
 		}
 
-		public static bool IsBetween(this float value, float min, float max)
+		public static bool IsBetween(this int value, float min, float max)
 		{
 			return (value > min && value < max);
 		}

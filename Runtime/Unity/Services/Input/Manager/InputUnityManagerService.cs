@@ -401,37 +401,37 @@ namespace Ju.Services
 				case GamepadButton.Button_9:
 					result = GamepadButtonRaw.Button_9;
 					break;
-				case GamepadButton.Start:
+				case GamepadButton.Button_10: // Start
 					result = GamepadButtonRaw.Button_10;
 					break;
-				case GamepadButton.Select:
+				case GamepadButton.Button_11: // Select
 					result = GamepadButtonRaw.Button_11;
 					break;
-				case GamepadButton.L_Stick:
+				case GamepadButton.Button_12: // L_Stick
 					result = GamepadButtonRaw.Button_12;
 					break;
-				case GamepadButton.R_Stick:
+				case GamepadButton.Button_13: // R_Stick
 					result = GamepadButtonRaw.Button_13;
 					break;
-				case GamepadButton.L:
+				case GamepadButton.Button_14: // L
 					result = GamepadButtonRaw.Button_14;
 					break;
-				case GamepadButton.R:
+				case GamepadButton.Button_15: // R
 					result = GamepadButtonRaw.Button_15;
 					break;
 				case GamepadButton.Button_16:
 					result = GamepadButtonRaw.Button_16;
 					break;
-				case GamepadButton.A:
+				case GamepadButton.Button_17: // A
 					result = GamepadButtonRaw.Button_17;
 					break;
-				case GamepadButton.B:
+				case GamepadButton.Button_18: // B
 					result = GamepadButtonRaw.Button_18;
 					break;
-				case GamepadButton.X:
+				case GamepadButton.Button_19: // X
 					result = GamepadButtonRaw.Button_19;
 					break;
-				case GamepadButton.Y:
+				case GamepadButton.Button_20: // Y
 					result = GamepadButtonRaw.Button_20;
 					break;
 			}

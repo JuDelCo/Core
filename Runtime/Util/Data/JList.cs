@@ -10,10 +10,11 @@ namespace Ju.Data
 {
 	public class JList : JNode, IList<JNode>
 	{
-		private static DisposableLinkHandler internalLinkHandler = null;
+		private JNodeLinkHandler internalLinkHandler = null;
 		private readonly List<JNode> list;
 		private readonly bool reseteable;
 		private readonly bool subscribeToChildren;
+		private readonly Action<JNode, JNodeEvent> cachedTriggerList;
 		private bool autoSubscribeToChildren = false;
 		private bool isRemoving = false;
 
@@ -30,6 +31,7 @@ namespace Ju.Data
 			list = new List<JNode>(capacity);
 			this.reseteable = reseteable;
 			this.subscribeToChildren = subscribeToChildren;
+			this.cachedTriggerList = TriggerList;
 		}
 
 		public override void Reset()
@@ -40,14 +42,14 @@ namespace Ju.Data
 			}
 			else
 			{
-				foreach (var node in list)
+				for (int i = 0; i < list.Count; ++i)
 				{
-					node.Reset();
+					list[i].Reset();
 				}
 			}
 		}
 
-		public override void Subscribe(ILinkHandler handle, Action<JNode> action)
+		public override void Subscribe(ILinkHandler handle, Action<JNode, JNodeEvent> action)
 		{
 			base.Subscribe(handle, action);
 
@@ -55,12 +57,15 @@ namespace Ju.Data
 			{
 				if (internalLinkHandler == null)
 				{
-					internalLinkHandler = new DisposableLinkHandler(false);
+					internalLinkHandler = new JNodeLinkHandler(this, false);
 				}
 
-				foreach (var node in list)
+				for (int i = 0; i < list.Count; ++i)
 				{
-					node.Subscribe(internalLinkHandler, Trigger);
+					if (!list[i].IsSubscribed(this))
+					{
+						list[i].Subscribe(internalLinkHandler, cachedTriggerList);
+					}
 				}
 
 				autoSubscribeToChildren = true;
@@ -71,9 +76,9 @@ namespace Ju.Data
 		{
 			var newList = new JList(reseteable, list.Count, subscribeToChildren);
 
-			foreach (var item in list)
+			for (int i = 0; i < list.Count; ++i)
 			{
-				newList.Add(item.Clone());
+				newList.Add(list[i].Clone());
 			}
 
 			return newList;
@@ -95,10 +100,10 @@ namespace Ju.Data
 					internalLinkHandler.Dispose();
 				}
 
-				list.ForEachReverse(node =>
+				for (int i = (list.Count - 1); i >= 0; --i)
 				{
-					node.Dispose();
-				});
+					list[i].Dispose();
+				}
 
 				list.Clear();
 			}
@@ -111,15 +116,19 @@ namespace Ju.Data
 			get => list.AsReadOnly();
 		}
 
+		private void TriggerList(JNode node, JNodeEvent eventType)
+		{
+			Trigger(node, eventType);
+
+			if (node != this)
+			{
+				Trigger(this, eventType);
+			}
+		}
+
 		protected override void OnSubscribersEmpty()
 		{
 			autoSubscribeToChildren = false;
-
-			if (internalLinkHandler != null && !internalLinkHandler.IsDestroyed)
-			{
-				internalLinkHandler.Dispose();
-				internalLinkHandler = null;
-			}
 		}
 
 		public bool IsReseteable()
@@ -145,10 +154,10 @@ namespace Ju.Data
 
 				if (autoSubscribeToChildren)
 				{
-					value.Subscribe(internalLinkHandler, Trigger);
+					value.Subscribe(internalLinkHandler, cachedTriggerList);
 				}
 
-				Trigger(this);
+				value.Trigger(value, JNodeEvent.OnAdd);
 			}
 		}
 
@@ -176,10 +185,10 @@ namespace Ju.Data
 
 			if (autoSubscribeToChildren)
 			{
-				node.Subscribe(internalLinkHandler, Trigger);
+				node.Subscribe(internalLinkHandler, cachedTriggerList);
 			}
 
-			Trigger(this);
+			node.Trigger(node, JNodeEvent.OnAdd);
 		}
 
 		public void Add<T>(IEnumerable<T> values)
@@ -191,41 +200,16 @@ namespace Ju.Data
 		{
 			foreach (var value in values)
 			{
-				if (value is JNode node)
-				{
-					list.Add(node);
-				}
-				else
-				{
-					node = (new JData<T>(value, defaultValue));
-					list.Add(node);
-				}
-
-				node.Parent = this;
-
-				if (autoSubscribeToChildren)
-				{
-					node.Subscribe(internalLinkHandler, Trigger);
-				}
+				Add(value, defaultValue);
 			}
-
-			Trigger(this);
 		}
 
 		public void Add(IEnumerable<JNode> nodes)
 		{
 			foreach (var node in nodes)
 			{
-				list.Add(node);
-				node.Parent = this;
-
-				if (autoSubscribeToChildren)
-				{
-					node.Subscribe(internalLinkHandler, Trigger);
-				}
+				Add(node);
 			}
-
-			Trigger(this);
 		}
 
 		public void Insert<T>(int index, T value)
@@ -252,18 +236,20 @@ namespace Ju.Data
 
 			if (autoSubscribeToChildren)
 			{
-				node.Subscribe(internalLinkHandler, Trigger);
+				node.Subscribe(internalLinkHandler, cachedTriggerList);
 			}
 
-			Trigger(this);
+			node.Trigger(node, JNodeEvent.OnAdd);
 		}
 
 		public bool Contains<T>(T value)
 		{
 			var equalityComparer = EqualityComparer<T>.Default;
 
-			foreach (var node in list)
+			for (int i = 0; i < list.Count; ++i)
 			{
+				var node = list[i];
+
 				if (node.IsData() && node.GetDataType() == typeof(T))
 				{
 					if (equalityComparer.Equals(node.AsData<T>().Value, value))
@@ -321,7 +307,19 @@ namespace Ju.Data
 			var node = this[oldIndex];
 			list.RemoveAt(oldIndex);
 			list.Insert(newIndex, node);
-			Trigger(this);
+			node.Trigger(node, JNodeEvent.OnMove);
+		}
+
+		public void Swap(int firstIndex, int secondIndex)
+		{
+			var firstNode = this[firstIndex];
+			var secondNode = this[secondIndex];
+
+			list[firstIndex] = secondNode;
+			list[secondIndex] = firstNode;
+
+			firstNode.Trigger(firstNode, JNodeEvent.OnMove);
+			secondNode.Trigger(secondNode, JNodeEvent.OnMove);
 		}
 
 		public bool Remove<T>(T value)
@@ -350,16 +348,12 @@ namespace Ju.Data
 			{
 				isRemoving = true;
 
+				node.Trigger(node, JNodeEvent.OnRemove);
 				node.Parent = null;
 
 				result = list.Remove(node);
 
 				isRemoving = false;
-
-				if (result)
-				{
-					Trigger(this);
-				}
 			}
 
 			return result;
@@ -387,10 +381,10 @@ namespace Ju.Data
 				isRemoving = true;
 			}
 
-			list.ForEachReverse(node =>
+			for (int i = (list.Count - 1); i >= 0; --i)
 			{
-				node.Parent = null;
-			});
+				list[i].Parent = null;
+			}
 
 			isRemoving = false;
 
@@ -398,7 +392,7 @@ namespace Ju.Data
 
 			if (triggerOnlyOnce)
 			{
-				Trigger(this);
+				this.Trigger(this, JNodeEvent.OnClear);
 			}
 		}
 

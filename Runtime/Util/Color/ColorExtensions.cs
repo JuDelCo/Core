@@ -36,9 +36,9 @@ namespace Ju.Color
 
 		public Color(float brightness)
 		{
-			rValue = Clamp01(brightness);
-			gValue = Clamp01(brightness);
-			bValue = Clamp01(brightness);
+			rValue = brightness;
+			gValue = brightness;
+			bValue = brightness;
 			aValue = 1f;
 		}
 
@@ -135,7 +135,7 @@ namespace Ju.Color
 
 		public static Color Lerp(Color a, Color b, float alpha, bool extrapolate = false)
 		{
-			alpha = extrapolate ? alpha : Clamp01(alpha);
+			alpha = extrapolate ? alpha : ColorExtensions.Clamp01(alpha);
 
 			return a * (1f - alpha) + b * alpha;
 		}
@@ -232,6 +232,16 @@ namespace Ju.Color
 			}
 
 			return saturation;
+		}
+
+		public static Color Clamp01(this Color color)
+		{
+			return new Color(Clamp01(color.r), Clamp01(color.g), Clamp01(color.b), Clamp01(color.a));
+		}
+
+		internal static float Clamp01(float value)
+		{
+			return Math.Min(1f, Math.Max(0f, value));
 		}
 
 		private static float Min(float a, float b, float c)

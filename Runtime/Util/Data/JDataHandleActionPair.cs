@@ -6,19 +6,19 @@ using Ju.Handlers;
 
 namespace Ju.Data
 {
-	internal class JDataHandleActionPair
+	internal struct JDataHandleActionPair
 	{
 		public ILinkHandler handle;
-		public Action<JNode> action;
+		public Action<JNode, JNodeEvent> action;
 
-		public JDataHandleActionPair(ILinkHandler handle, Action<JNode> action)
+		public JDataHandleActionPair(ILinkHandler handle, Action<JNode, JNodeEvent> action)
 		{
 			this.handle = handle;
 			this.action = action;
 		}
 	}
 
-	internal class JDataHandleActionPair<T>
+	internal struct JDataHandleActionPair<T>
 	{
 		public ILinkHandler handle;
 		public Action<T> action;

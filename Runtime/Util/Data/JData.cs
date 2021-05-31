@@ -227,7 +227,7 @@ namespace Ju.Data
 				{
 					this.value = value;
 					TriggerValue();
-					Trigger(this);
+					Trigger(this, JNodeEvent.OnValueChange);
 				}
 			}
 		}
@@ -239,6 +239,11 @@ namespace Ju.Data
 			{
 				this.value = value;
 			}
+		}
+
+		public static implicit operator T(JData<T> node)
+		{
+			return node.value;
 		}
 
 		public override string ToString()

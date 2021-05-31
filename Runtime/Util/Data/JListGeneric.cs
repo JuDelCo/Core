@@ -20,10 +20,10 @@ namespace Ju.Data
 		{
 		}
 
-		T IList<T>.this[int index]
+		public new T this[int index]
 		{
-			get => this[index] as T;
-			set => this[index] = value;
+			get => base[index] as T;
+			set => base[index] = value;
 		}
 
 		public void Add(T node)
@@ -51,7 +51,7 @@ namespace Ju.Data
 			this.CopyTo(array.Map(n => n as JNode).ToArray(), arrayIndex);
 		}
 
-		IEnumerator<T> IEnumerable<T>.GetEnumerator()
+		public new IEnumerator<T> GetEnumerator()
 		{
 			return ((JList)this).Map(n => n as T).GetEnumerator();
 		}

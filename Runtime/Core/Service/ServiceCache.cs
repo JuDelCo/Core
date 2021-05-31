@@ -6,6 +6,7 @@ namespace Ju.Services.Internal
 		private static IEventBusService eventBusService = null;
 		private static ITaskService taskService = null;
 		private static ICoroutineService coroutineService = null;
+		private static ITimeService timeService = null;
 
 		internal static IEventBusService EventBus
 		{
@@ -46,11 +47,25 @@ namespace Ju.Services.Internal
 			}
 		}
 
+		internal static ITimeService Time
+		{
+			get
+			{
+				if (timeService is null)
+				{
+					timeService = ServiceContainer.Get<ITimeService>();
+				}
+
+				return timeService;
+			}
+		}
+
 		internal static void Dispose()
 		{
 			eventBusService = null;
 			taskService = null;
 			coroutineService = null;
+			timeService = null;
 		}
 	}
 }

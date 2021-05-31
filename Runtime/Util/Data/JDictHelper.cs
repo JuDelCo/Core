@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
+using System;
 using System.Collections.Generic;
 
 namespace Ju.Data
@@ -62,7 +63,7 @@ namespace Ju.Data
 			return GetList<T>(key, true, capacity);
 		}
 
-		protected JData<T> GetData<T>(string key, T defaultValue = default(T))
+		protected JData<T> GetData<T>(string key, T defaultValue = default(T)) where T : struct
 		{
 			if (!initialized)
 			{
@@ -72,10 +73,36 @@ namespace Ju.Data
 			return this[key].AsData<T>();
 		}
 
-		protected JData<T> GetData<T>(string key, T defaultValue, T value = default(T))
+		protected JData<T> GetData<T>(string key, T defaultValue, T value = default(T)) where T : struct
 		{
 			if (!initialized)
 			{
+				this[key] = new JData<T>(value, defaultValue);
+			}
+
+			return this[key].AsData<T>();
+		}
+
+		protected JData<T> GetDataClass<T>(string key, Func<T> defaultValueFactory = null) where T : class
+		{
+			if (!initialized)
+			{
+				T value = (defaultValueFactory != null ? defaultValueFactory() : null);
+				T defaultValue = (defaultValueFactory != null ? defaultValueFactory() : null);
+
+				this[key] = new JData<T>(value, defaultValue);
+			}
+
+			return this[key].AsData<T>();
+		}
+
+		protected JData<T> GetDataClass<T>(string key, Func<T> defaultValueFactory, Func<T> valueFactory = null) where T : class
+		{
+			if (!initialized)
+			{
+				T value = (valueFactory != null ? valueFactory() : null);
+				T defaultValue = (defaultValueFactory != null ? defaultValueFactory() : null);
+
 				this[key] = new JData<T>(value, defaultValue);
 			}
 

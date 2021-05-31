@@ -14,6 +14,14 @@ namespace Ju.Util
 			pool = new Stack<T>();
 		}
 
+		public ObjectPool(int capacity) : this()
+		{
+			for (int i = 0; i < capacity; ++i)
+			{
+				Push(new T());
+			}
+		}
+
 		public T Get()
 		{
 			if (pool.Count != 0)

@@ -5,7 +5,7 @@ using System;
 
 namespace Ju.Color
 {
-	public partial struct Color
+	public partial struct Color : IEquatable<Color>
 	{
 		private float rValue;
 		private float gValue;
@@ -14,18 +14,18 @@ namespace Ju.Color
 
 		public Color(float r, float g, float b)
 		{
-			rValue = Clamp01(r);
-			gValue = Clamp01(g);
-			bValue = Clamp01(b);
+			rValue = r;
+			gValue = g;
+			bValue = b;
 			aValue = 1f;
 		}
 
 		public Color(float r, float g, float b, float a)
 		{
-			rValue = Clamp01(r);
-			gValue = Clamp01(g);
-			bValue = Clamp01(b);
-			aValue = Clamp01(a);
+			rValue = r;
+			gValue = g;
+			bValue = b;
+			aValue = a;
 		}
 
 #pragma warning disable IDE1006
@@ -33,25 +33,25 @@ namespace Ju.Color
 		public float r
 		{
 			get { return rValue; }
-			set { rValue = Clamp01(value); }
+			set { rValue = value; }
 		}
 
 		public float g
 		{
 			get { return gValue; }
-			set { gValue = Clamp01(value); }
+			set { gValue = value; }
 		}
 
 		public float b
 		{
 			get { return bValue; }
-			set { bValue = Clamp01(value); }
+			set { bValue = value; }
 		}
 
 		public float a
 		{
 			get { return aValue; }
-			set { aValue = Clamp01(value); }
+			set { aValue = value; }
 		}
 
 #pragma warning restore IDE1006
@@ -129,6 +129,11 @@ namespace Ju.Color
 			}
 		}
 
+		public bool Equals(Color other)
+		{
+			return (this == other);
+		}
+
 		public override bool Equals(object obj)
 		{
 			return (obj is Color color && (this == color));
@@ -147,11 +152,6 @@ namespace Ju.Color
 		public override string ToString()
 		{
 			return $"[ {r} , {g} , {b} , {a} ]";
-		}
-
-		private static float Clamp01(float value)
-		{
-			return Math.Min(1f, Math.Max(0f, value));
 		}
 	}
 }

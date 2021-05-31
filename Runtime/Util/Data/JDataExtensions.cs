@@ -13,7 +13,7 @@ public static class JDataExtensions
 
 		return (value) =>
 		{
-			if (!jData.IsDisposed())
+			if (jData != null && !jData.IsDisposed())
 			{
 				jData.Value = value;
 			}
@@ -26,7 +26,7 @@ public static class JDataExtensions
 
 		return (value) =>
 		{
-			if (!jData.IsDisposed())
+			if (jData != null && !jData.IsDisposed())
 			{
 				jData.Value = converter(value);
 			}

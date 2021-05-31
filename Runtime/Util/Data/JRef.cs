@@ -10,12 +10,14 @@ namespace Ju.Data
 	public class JRef : JNode
 	{
 		private readonly bool subscribeToRef;
-		private DisposableLinkHandler internalLinkHandler = null;
+		private readonly Action<JNode, JNodeEvent> cachedTrigger;
+		private JNodeLinkHandler internalLinkHandler = null;
 		private JNode reference = null;
 
 		public JRef(JNode reference = null, bool subscribeToRef = false)
 		{
 			this.subscribeToRef = subscribeToRef;
+			this.cachedTrigger = Trigger;
 
 			if (reference != null)
 			{
@@ -28,14 +30,14 @@ namespace Ju.Data
 			reference.Reset();
 		}
 
-		public override void Subscribe(ILinkHandler handle, Action<JNode> action)
+		public override void Subscribe(ILinkHandler handle, Action<JNode, JNodeEvent> action)
 		{
 			base.Subscribe(handle, action);
 
 			if (subscribeToRef && internalLinkHandler == null)
 			{
-				internalLinkHandler = new DisposableLinkHandler(false);
-				reference.Subscribe(internalLinkHandler, Trigger);
+				internalLinkHandler = new JNodeLinkHandler(this, false);
+				reference.Subscribe(internalLinkHandler, cachedTrigger);
 			}
 		}
 
@@ -99,7 +101,7 @@ namespace Ju.Data
 
 				if (subscribeToRef && this.GetSubscriberCount() > 0)
 				{
-					internalLinkHandler = new DisposableLinkHandler(false);
+					internalLinkHandler = new JNodeLinkHandler(this, false);
 					reference.Subscribe(internalLinkHandler, Trigger);
 				}
 			}

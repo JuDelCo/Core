@@ -49,6 +49,7 @@ Contents
 - [Clocks](https://github.com/JuDelCo/Core/wiki/API.Util.Clocks)
 - [Color](https://github.com/JuDelCo/Core/wiki/API.Util.Color)
 - [Conversion](https://github.com/JuDelCo/Core/wiki/API.Util.Conversion)
+- [Crypt](https://github.com/JuDelCo/Core/wiki/API.Util.Crypt)
 - [Data](https://github.com/JuDelCo/Core/wiki/API.Util.Data)
 - [FSM](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
 - [Hjson/Json](https://github.com/JuDelCo/Core/wiki/API.Util.Hjson)

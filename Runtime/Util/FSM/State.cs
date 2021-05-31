@@ -12,7 +12,7 @@ namespace Ju.FSM
 
 		public virtual bool Condition()
 		{
-			return true;
+			return false;
 		}
 
 		public virtual void OnEnter()

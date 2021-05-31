@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
+using System;
 using Microseconds = System.Int64;
 
 namespace Ju.Time
 {
-	public struct Span
+	public struct Span : IEquatable<Span>
 	{
 		private readonly Microseconds value;
 
@@ -128,6 +129,11 @@ namespace Ju.Time
 				hash = hash * 23 + value.GetHashCode();
 				return hash;
 			}
+		}
+
+		public bool Equals(Span other)
+		{
+			return (this == other);
 		}
 
 		public override bool Equals(object obj)

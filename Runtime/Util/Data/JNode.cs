@@ -19,14 +19,33 @@ namespace Ju.Data
 
 		public abstract void Reset();
 
-		public virtual void Subscribe(ILinkHandler handle, Action<JNode> action)
+		public virtual void Subscribe(ILinkHandler handle, Action<JNode, JNodeEvent> action)
 		{
 			if (actions == null)
 			{
-				actions = new List<JDataHandleActionPair>();
+				actions = new List<JDataHandleActionPair>(2);
 			}
 
 			actions.Add(new JDataHandleActionPair(handle, action));
+		}
+
+		internal bool IsSubscribed(JNode node)
+		{
+			if (actions != null)
+			{
+				for (int i = (actions.Count - 1); i >= 0; --i)
+				{
+					if (actions[i].handle is JNodeLinkHandler handler)
+					{
+						if (handler.Node == node)
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
 		}
 
 		public virtual int GetSubscriberCount()
@@ -55,6 +74,27 @@ namespace Ju.Data
 					parent.AsList().Remove(this);
 					isDetaching = false;
 				}
+
+				if (actions != null)
+				{
+					for (int i = (actions.Count - 1); i >= 0; --i)
+					{
+						if (actions[i].handle is JNodeLinkHandler handler)
+						{
+							if (handler.Node == parent)
+							{
+								actions.RemoveAt(i);
+
+								if (actions.Count <= 0)
+								{
+									OnSubscribersEmpty();
+								}
+
+								break;
+							}
+						}
+					}
+				}
 			}
 
 			parent = null;
@@ -82,13 +122,13 @@ namespace Ju.Data
 
 			if (disposing)
 			{
+				Detach();
+
 				if (actions != null)
 				{
 					actions.Clear();
 					OnSubscribersEmpty();
 				}
-
-				Detach();
 			}
 
 			disposedValue = true;
@@ -146,7 +186,7 @@ namespace Ju.Data
 			}
 		}
 
-		protected void Trigger(JNode node)
+		internal void Trigger(JNode node, JNodeEvent eventType)
 		{
 			if (actions == null || actions.Count == 0)
 			{
@@ -186,7 +226,7 @@ namespace Ju.Data
 
 				++callStackCounter;
 
-				cachedActions[i].action(node);
+				cachedActions[i].action(node, eventType);
 
 				--callStackCounter;
 			}

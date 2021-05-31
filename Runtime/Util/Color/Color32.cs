@@ -5,7 +5,7 @@ using System;
 
 namespace Ju.Color
 {
-	public partial struct Color32
+	public partial struct Color32 : IEquatable<Color32>
 	{
 		private byte rValue;
 		private byte gValue;
@@ -135,6 +135,11 @@ namespace Ju.Color
 				hash = hash * 23 + aValue.GetHashCode();
 				return hash;
 			}
+		}
+
+		public bool Equals(Color32 other)
+		{
+			return (this == other);
 		}
 
 		public override bool Equals(object obj)

@@ -1,6 +1,44 @@
 
 # Changelog
 
+## [1.38.0] - 2021-05-31
+
+### Added
+
+- Add new TimeSince, TimeSinceUnscaled, TimeUntil and TimeUntilUnscaled structs.
+- Add new string extension method to remove invisible characters.
+- Add new string extension method to sanitize paths removing path/file invalid characters.
+- Add new extension methods for Int values (IsWithin and IsBetween).
+- Add new Base64 extension methods for string.
+- Add new MD5 extension methods for string and byte arrays.
+- Add new Clamp01 extension method to Color.
+- Add new Cast method to get a formatted size string.
+- Add new Cast methods to get a formatted time from int or long values.
+- Add new constructor to ObjectPool with desired capacity.
+- Add new Swap method to JDict and JList classes.
+- Add new JNode related extension methods for IService, State and Behaviour.
+- Add new helper GetDataClass methods to initialize class based JData nodes in JDict nodes.
+- Add new JNodeLinkHandler class.
+
+### Changed
+
+- Change State default Condition return value to false.
+- Remove default clamping to Color struct to allow HDR colors.
+
+### Fixed
+
+- Fix Unity Input Manager service provider error on MacOS.
+- Fix JData Bind methods when node ref is null.
+- Fix JNode missing events on Detach.
+
+### Improved
+
+- Add IEquatable interface to all structs.
+- JNode subscribe events now have event type info (Add, ValueChange, Move, Remove, Clear).
+- Remove the need to use the Value property when using JData nodes as values.
+- Improve usage of generic JList nodes on foreach iterations or when using the indexer operator.
+- Reduced (or removed in some scenarios) the GC allocations when using JNodes.
+
 ## [1.37.0] - 2021-05-24
 
 ### Added
@@ -78,6 +116,7 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.38.0]: https://github.com/JuDelCo/Core/compare/v1.37.0...v1.38.0
 [1.37.0]: https://github.com/JuDelCo/Core/compare/v1.36.0...v1.37.0
 [1.36.0]: https://github.com/JuDelCo/Core/compare/v1.35.0...v1.36.0
 [1.35.0]: https://github.com/JuDelCo/Core/compare/v1.34.0...v1.35.0
