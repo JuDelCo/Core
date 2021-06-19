@@ -35,7 +35,7 @@ namespace Ju.Promises
 
 		public IPromise Then(Action onResolved, Action<Exception> onRejected)
 		{
-			if (!(onResolved is null))
+			if (onResolved != null)
 			{
 				if (CurrentState == PromiseState.Resolved)
 				{
@@ -47,7 +47,7 @@ namespace Ju.Promises
 				}
 			}
 
-			if (!(onRejected is null))
+			if (onRejected != null)
 			{
 				Catch(onRejected);
 			}
@@ -68,7 +68,7 @@ namespace Ju.Promises
 
 			var resultPromise = new Promise();
 
-			if (!(onResolved is null))
+			if (onResolved != null)
 			{
 				void resolveAction()
 				{
@@ -82,7 +82,7 @@ namespace Ju.Promises
 
 			Action<Exception> rejectAction;
 
-			if (!(onRejected is null))
+			if (onRejected != null)
 			{
 				rejectAction = (e) =>
 				{
@@ -113,7 +113,7 @@ namespace Ju.Promises
 
 			var resultPromise = new Promise<T>();
 
-			if (!(onResolved is null))
+			if (onResolved != null)
 			{
 				void resolveAction()
 				{
@@ -127,7 +127,7 @@ namespace Ju.Promises
 
 			Action<Exception> rejectAction;
 
-			if (!(onRejected is null))
+			if (onRejected != null)
 			{
 				rejectAction = (e) =>
 				{

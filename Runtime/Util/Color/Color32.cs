@@ -5,11 +5,24 @@ using System;
 
 namespace Ju.Color
 {
+	[Serializable]
 	public partial struct Color32 : IEquatable<Color32>
 	{
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private byte rValue;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private byte gValue;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private byte bValue;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private byte aValue;
 
 		public Color32(byte r, byte g, byte b)

@@ -11,7 +11,8 @@ namespace Ju.FSM
 		int StateFrameCounter { get; }
 		float StateTimer { get; }
 
-		void SetState(string stateId);
+		void SetState(int stateId);
+		void SetState(string stateName);
 	}
 
 	public class FSM : IFiniteStateMachine
@@ -75,9 +76,9 @@ namespace Ju.FSM
 
 		private void SetState(State state)
 		{
-			if (!(state is null) && CurrentState != state && states.Contains(state))
+			if (state != null && CurrentState != state && states.Contains(state))
 			{
-				if (!(CurrentState is null))
+				if (CurrentState != null)
 				{
 					CurrentState.OnExit();
 				}
@@ -105,7 +106,7 @@ namespace Ju.FSM
 			++StateFrameCounter;
 			StateTimer += deltaTime;
 
-			if (!(CurrentState is null))
+			if (CurrentState != null)
 			{
 				CurrentState.OnTick();
 			}
@@ -124,7 +125,7 @@ namespace Ju.FSM
 
 		public void FixedTick()
 		{
-			if (!(CurrentState is null))
+			if (CurrentState != null)
 			{
 				CurrentState.OnFixedTick();
 			}

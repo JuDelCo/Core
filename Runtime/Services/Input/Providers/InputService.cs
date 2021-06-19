@@ -18,19 +18,16 @@ namespace Ju.Services
 		public IEnumerable<IGamepadController> Gamepads => gamepads;
 		public IEnumerable<IGamepadController> CustomControllers => customControllers;
 
-		protected List<IInputPlayer> players;
+		protected List<IInputPlayer> players = new List<IInputPlayer>();
 		protected IMouseController mouse;
 		protected IKeyboardController keyboard;
-		protected List<IGamepadController> gamepads;
-		protected List<IGamepadController> customControllers;
+		protected List<IGamepadController> gamepads = new List<IGamepadController>();
+		protected List<IGamepadController> customControllers = new List<IGamepadController>();
 
 		public void Load()
 		{
-			players = new List<IInputPlayer>();
 			mouse = new MouseController(this);
 			keyboard = new KeyboardController(this);
-			gamepads = new List<IGamepadController>();
-			customControllers = new List<IGamepadController>();
 
 			Initialize();
 
@@ -102,7 +99,7 @@ namespace Ju.Services
 				}
 			}
 
-			if (result is null)
+			if (result == null)
 			{
 				result = new InputPlayer(playerId);
 				players.Add(result);

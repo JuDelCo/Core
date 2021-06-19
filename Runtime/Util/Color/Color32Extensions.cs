@@ -174,6 +174,26 @@ namespace Ju.Color
 
 	public static class Color32Extensions
 	{
+		public static Color32 WithRed(this Color32 color, int red)
+		{
+			return new Color32(red, color.g, color.b, color.a);
+		}
+
+		public static Color32 WithGreen(this Color32 color, int green)
+		{
+			return new Color32(color.r, green, color.b, color.a);
+		}
+
+		public static Color32 WithBlue(this Color32 color, int blue)
+		{
+			return new Color32(color.r, color.g, blue, color.a);
+		}
+
+		public static Color32 WithAlpha(this Color32 color, int alpha)
+		{
+			return new Color32(color.r, color.g, color.b, alpha);
+		}
+
 		public static float Brightness(this Color32 color)
 		{
 			float red = color.r;

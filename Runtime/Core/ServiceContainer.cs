@@ -2,22 +2,46 @@
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
 using System;
-using System.Collections.Generic;
 using Ju.Extensions;
 using Identifier = System.String;
 
 namespace Ju.Services
 {
 	using Ju.Services.Internal;
+	using Ju.Util;
 
+	[Serializable]
 	public class ServiceContainer
 	{
-		private static readonly Identifier DEFAULT_ID = "base";
-		private static ServiceContainer instance;
+		public static event Action OnDisposed = delegate { };
 
-		private readonly Dictionary<Type, Dictionary<Identifier, object>> servicesRegistered = new Dictionary<Type, Dictionary<Identifier, object>>();
-		private readonly Dictionary<Type, Dictionary<Identifier, Type>> servicesLoaded = new Dictionary<Type, Dictionary<Identifier, Type>>();
-		private readonly Container container = new Container();
+		private static readonly Identifier DEFAULT_ID = "base";
+		internal static ServiceContainer instance;
+
+		[Serializable] internal class DictIdObj : SerializableDictionary<Identifier, object> { }
+		[Serializable] internal class DictIdType : SerializableDictionaryClassStruct<Identifier, SerializableType> { }
+		[Serializable] internal class ServicesRegistered : SerializableDictionaryStructClass<SerializableType, DictIdObj> { }
+		[Serializable] internal class ServicesLoaded : SerializableDictionaryStructClass<SerializableType, DictIdType> { }
+
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeReference]
+#endif
+		internal ServicesRegistered servicesRegistered;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeReference]
+#endif
+		internal ServicesLoaded servicesLoaded;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeReference]
+#endif
+		internal Container container;
+
+		public ServiceContainer()
+		{
+			servicesRegistered = new ServicesRegistered();
+			servicesLoaded = new ServicesLoaded();
+			container = new Container();
+		}
 
 		public static void RegisterFactory<T>(Func<T> classConstructor)
 		{
@@ -171,7 +195,7 @@ namespace Ju.Services
 
 		private static ServiceContainer InternalInstance()
 		{
-			if (instance is null)
+			if (instance == null)
 			{
 				instance = (new ServiceContainer());
 				RegisterService<IEventBusService, EventBusService>();
@@ -182,14 +206,18 @@ namespace Ju.Services
 
 		public static void Dispose()
 		{
-			if (!(instance is null))
+			if (instance != null)
 			{
+				ServiceCache.EventBus.StopCurrentEventPropagation();
 				instance.container.Dispose();
 				ServiceCache.Dispose();
 
 				instance.servicesRegistered.Clear();
 				instance.servicesLoaded.Clear();
 				instance = null;
+
+				OnDisposed();
+				OnDisposed = delegate { };
 			}
 		}
 	}

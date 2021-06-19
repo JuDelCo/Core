@@ -2,21 +2,33 @@
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
 using System;
-using System.Collections.Generic;
 using Ju.Extensions;
+using Ju.Util;
 using Identifier = System.String;
 
 namespace Ju.Services
 {
+	[Serializable]
 	public class Container : IDisposable
 	{
-		private readonly Dictionary<Type, Dictionary<Identifier, IService>> services = null;
-		private readonly Dictionary<Type, Dictionary<Identifier, Func<object>>> classFactories = null;
+		[Serializable] internal class DictIdService : SerializableDictionary<Identifier, IService> { }
+		[Serializable] internal class DictIdFactory : SerializableDictionary<Identifier, Func<object>> { }
+		[Serializable] internal class ServicesLoaded : SerializableDictionaryStructClass<SerializableType, DictIdService> { }
+		[Serializable] internal class FactoriesLoaded : SerializableDictionaryStructClass<SerializableType, DictIdFactory> { }
+
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeReference]
+#endif
+		internal ServicesLoaded services = null;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeReference]
+#endif
+		internal FactoriesLoaded classFactories = null;
 
 		public Container()
 		{
-			services = new Dictionary<Type, Dictionary<Identifier, IService>>();
-			classFactories = new Dictionary<Type, Dictionary<Identifier, Func<object>>>();
+			services = new ServicesLoaded();
+			classFactories = new FactoriesLoaded();
 		}
 
 		public void Dispose()
@@ -48,7 +60,7 @@ namespace Ju.Services
 				instance = services[type][id];
 			}
 
-			if (instance is null)
+			if (instance == null)
 			{
 				throw new NullReferenceException($"No class of type '{type.GetFriendlyName()}' with id '{id}' found");
 			}

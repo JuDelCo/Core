@@ -19,7 +19,7 @@ namespace Ju.Time
 
 			ServiceCache.EventBus.Subscribe<T>(linkHandler, e =>
 			{
-				if (!(updateCondition is null))
+				if (updateCondition != null)
 				{
 					if (!updateCondition())
 					{

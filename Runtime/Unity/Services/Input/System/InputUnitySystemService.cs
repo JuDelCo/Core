@@ -85,7 +85,7 @@ namespace Ju.Services
 			var result = false;
 			var control = GetMouseButtonMapping(button);
 
-			if (!(control is null))
+			if (control != null)
 			{
 				result = control.wasPressedThisFrame;
 			}
@@ -103,7 +103,7 @@ namespace Ju.Services
 			var result = false;
 			var control = GetMouseButtonMapping(button);
 
-			if (!(control is null))
+			if (control != null)
 			{
 				result = control.isPressed;
 			}
@@ -121,7 +121,7 @@ namespace Ju.Services
 			var result = false;
 			var control = GetMouseButtonMapping(button);
 
-			if (!(control is null))
+			if (control != null)
 			{
 				result = control.wasReleasedThisFrame;
 			}
@@ -647,7 +647,7 @@ namespace Ju.Services
 
 			var gamepadRaw = GetGamepad(gamepad);
 
-			if (gamepadRaw is null)
+			if (gamepadRaw == null)
 			{
 				return false;
 			}
@@ -669,7 +669,7 @@ namespace Ju.Services
 
 			var gamepadRaw = GetGamepad(gamepad);
 
-			if (gamepadRaw is null)
+			if (gamepadRaw == null)
 			{
 				return false;
 			}
@@ -691,7 +691,7 @@ namespace Ju.Services
 
 			var gamepadRaw = GetGamepad(gamepad);
 
-			if (gamepadRaw is null)
+			if (gamepadRaw == null)
 			{
 				return false;
 			}
@@ -797,7 +797,7 @@ namespace Ju.Services
 
 			var gamepadRaw = GetGamepad(gamepad);
 
-			if (!(gamepadRaw is null))
+			if (gamepadRaw != null)
 			{
 				switch (axis)
 				{

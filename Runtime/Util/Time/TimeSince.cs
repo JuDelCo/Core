@@ -6,8 +6,12 @@ using Ju.Services.Internal;
 
 namespace Ju.Time
 {
+	[Serializable]
 	public struct TimeSince : IEquatable<TimeSince>
 	{
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private float time;
 
 		public static implicit operator float(TimeSince timeSince)

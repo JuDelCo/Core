@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using Ju.Extensions;
+using Ju.Util;
 using UnityEngine;
 using Prefab = UnityEngine.GameObject;
 using GameObject = UnityEngine.GameObject;
@@ -13,16 +14,21 @@ namespace Ju.Services
 {
 	public class PrefabPoolService : IPrefabPoolService, IServiceLoad, IServiceUnload
 	{
+		[System.Serializable] internal class GameObjectList : List<GameObject> { }
+		[System.Serializable] internal class PrefabPools : SerializableDictionary<Prefab, GameObjectList> { }
+
 		private GameObject container;
-		private Dictionary<Prefab, List<GameObject>> pools;
+		[SerializeReference]
+		private PrefabPools pools = new PrefabPools();
 
 		public void Load()
 		{
-			pools = new Dictionary<Prefab, List<GameObject>>();
-
-			container = new GameObject("GameObjectPool");
-			container.hideFlags = HideFlags.NotEditable;
-			GameObject.DontDestroyOnLoad(container);
+			if (container == null)
+			{
+				container = new GameObject("GameObjectPool");
+				container.hideFlags = HideFlags.NotEditable;
+				GameObject.DontDestroyOnLoad(container);
+			}
 		}
 
 		public void Unload()
@@ -50,6 +56,12 @@ namespace Ju.Services
 			target.transform.SetParent(parent, true);
 			target.transform.position = position;
 			target.transform.rotation = rotation;
+
+			if (parent == null)
+			{
+				UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(target, UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+			}
+
 			target.SetActive(true);
 
 			return target;
@@ -70,7 +82,7 @@ namespace Ju.Services
 				}
 			}
 
-			if (!(pool is null))
+			if (pool != null)
 			{
 				target.SetActive(false);
 				target.transform.SetParent(container.transform, true);
@@ -169,7 +181,19 @@ namespace Ju.Services
 			{
 				if (clearSpawned || (!go.activeInHierarchy && !go.activeSelf))
 				{
-					GameObject.Destroy(go);
+#if UNITY_EDITOR
+					if (UnityEditor.EditorApplication.isPlaying)
+					{
+						GameObject.Destroy(go);
+					}
+					else
+					{
+						GameObject.DestroyImmediate(go);
+					}
+#else
+						GameObject.Destroy(go);
+#endif
+
 					pool.Remove(go);
 				}
 			});

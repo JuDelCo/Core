@@ -21,7 +21,7 @@ namespace Ju.Time
 
 			ServiceCache.EventBus.Subscribe<T>(linkHandler, e =>
 			{
-				if (!(updateCondition is null))
+				if (updateCondition != null)
 				{
 					if (!updateCondition())
 					{
@@ -35,7 +35,7 @@ namespace Ju.Time
 
 				if (!completed && elapsed >= duration)
 				{
-					if (!(onCompleted is null))
+					if (onCompleted != null)
 					{
 						onCompleted();
 					}

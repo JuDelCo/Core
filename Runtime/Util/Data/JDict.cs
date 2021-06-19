@@ -12,7 +12,7 @@ namespace Ju.Data
 	{
 	}
 
-	public partial class JDict : JNode, IDictionary<string, JNode>, IJDict
+	public partial class JDict : JNode, IJDict
 	{
 		private readonly static string[] ignoredProperties = new string[]
 		{

@@ -11,17 +11,14 @@ namespace Ju.Services
 {
 	public class UnityTimeService : TimeService, IServiceLoad
 	{
-		private List<float> deltaTimeHistory;
-		private List<float> unscaledDeltaTimeHistory;
+		private List<float> deltaTimeHistory = new List<float>(SMOOTH_AVERAGE_COUNT);
+		private List<float> unscaledDeltaTimeHistory = new List<float>(SMOOTH_AVERAGE_COUNT);
 
 		private const int SMOOTH_AVERAGE_COUNT = 10;
 		private float originalFixedDeltaTime;
 
 		public void Load()
 		{
-			deltaTimeHistory = new List<float>(SMOOTH_AVERAGE_COUNT);
-			unscaledDeltaTimeHistory = new List<float>(SMOOTH_AVERAGE_COUNT);
-
 			TimeScale = UnityEngine.Time.timeScale;
 
 			// Scaled time in seconds since the start of the first Update call. Returns fixedTime when in FixedUpdate.

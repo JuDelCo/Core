@@ -57,7 +57,6 @@ Contents
 - [Observables](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)
 - [Promises](https://github.com/JuDelCo/Core/wiki/API.Util.Promises)
 - [Random](https://github.com/JuDelCo/Core/wiki/API.Util.Random)
-- [SimpleFSM](https://github.com/JuDelCo/Core/wiki/API.Util.SimpleFSM)
 - [Span](https://github.com/JuDelCo/Core/wiki/API.Util.Span)
 - [Timers](https://github.com/JuDelCo/Core/wiki/API.Util.Timers)
 

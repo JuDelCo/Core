@@ -27,7 +27,7 @@ namespace Ju.Input
 		{
 			IInputAction result = GetAction(actionId);
 
-			if (result is null)
+			if (result == null)
 			{
 				result = new InputAction(this, actionId);
 				actions.Add(result);

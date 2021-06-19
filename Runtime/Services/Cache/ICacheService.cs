@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Ju.Services
 {
-	public interface ICacheService
+	public interface ICacheService : IService
 	{
 		void Set<T>(T obj, string id, bool overwrite = true);
 		T Get<T>(string id) where T : class;

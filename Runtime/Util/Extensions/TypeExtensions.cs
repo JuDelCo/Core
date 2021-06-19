@@ -43,7 +43,7 @@ namespace Ju.Extensions
 
 		private static bool TryGetNameAliasNonArray(Type type, out string alias)
 		{
-			return (alias = typeAliases[(int)Type.GetTypeCode(type)]) != null && !type.IsEnum;
+			return ((alias = typeAliases[(int)Type.GetTypeCode(type)]) != null) && !type.IsEnum;
 		}
 
 		private static bool TryGetInnerElementType(ref Type type, out string arrayBrackets)

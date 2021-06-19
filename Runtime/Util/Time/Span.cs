@@ -6,6 +6,7 @@ using Microseconds = System.Int64;
 
 namespace Ju.Time
 {
+	[Serializable]
 	public struct Span : IEquatable<Span>
 	{
 		private readonly Microseconds value;

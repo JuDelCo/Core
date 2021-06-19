@@ -12,16 +12,10 @@ namespace Ju.Services
 	using Ju.Log;
 	using Ju.Services.Internal;
 
-	public class CacheService : ICacheService, IServiceLoad
+	public class CacheService : ICacheService
 	{
-		private Dictionary<Type, Dictionary<Identifier, object>> sharedItems;
-		private Dictionary<Type, Dictionary<Identifier, object>> listItems;
-
-		public void Load()
-		{
-			sharedItems = new Dictionary<Type, Dictionary<Identifier, object>>();
-			listItems = new Dictionary<Type, Dictionary<Identifier, object>>();
-		}
+		private Dictionary<Type, Dictionary<Identifier, object>> sharedItems = new Dictionary<Type, Dictionary<Identifier, object>>();
+		private Dictionary<Type, Dictionary<Identifier, object>> listItems = new Dictionary<Type, Dictionary<Identifier, object>>();
 
 		public void Set<T>(T obj, string id, bool overwrite)
 		{

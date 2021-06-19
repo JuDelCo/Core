@@ -33,31 +33,22 @@ namespace Ju.Services
 
 	public class EventBusService : IEventBusService, IServiceLoad
 	{
-		private Dictionary<EventType, List<SubscriberData>>[] subscribers = null;
-		private List<SubscriberData>[] cachedSubscribers = null;
-		private List<Action> asyncEvents = null;
-		private List<Action> cachedAsyncEvents = null;
-		private bool[] cancelEventStatus = null;
-		private Dictionary<EventType, EventPayload> stickyData = null;
+		private Dictionary<EventType, List<SubscriberData>>[] subscribers = new Dictionary<EventType, List<SubscriberData>>[Byte.MaxValue];
+		private List<SubscriberData>[] cachedSubscribers = new List<SubscriberData>[MAX_EVENT_STACK_LIMIT];
+		private List<Action> asyncEvents = new List<Action>();
+		private List<Action> cachedAsyncEvents = new List<Action>();
+		private bool[] cancelEventStatus = new bool[MAX_EVENT_STACK_LIMIT];
+		private Dictionary<EventType, EventPayload> stickyData = new Dictionary<EventType, EventPayload>();
 
 		private uint callStackCounter = 0;
-		private Stack<EventType> stackEventTypes = null;
+		private Stack<EventType> stackEventTypes = new Stack<EventType>();
 		private const int MAX_EVENT_STACK_LIMIT = 128;
 		private Thread mainThread;
-		private EventType eventFiredEventType;
+		private EventType eventFiredEventType = typeof(EventFiredEvent);
 		private bool suppressDebugEvent;
 
 		public void Load()
 		{
-			subscribers = new Dictionary<EventType, List<SubscriberData>>[Byte.MaxValue];
-			cachedSubscribers = new List<SubscriberData>[MAX_EVENT_STACK_LIMIT];
-			asyncEvents = new List<Action>();
-			cachedAsyncEvents = new List<Action>();
-			stackEventTypes = new Stack<EventType>();
-			cancelEventStatus = new bool[MAX_EVENT_STACK_LIMIT];
-			stickyData = new Dictionary<EventType, EventPayload>();
-			eventFiredEventType = typeof(EventFiredEvent);
-
 			mainThread = Thread.CurrentThread;
 
 			this.EventSubscribe<TimePostUpdateEvent>(() =>
@@ -78,7 +69,7 @@ namespace Ju.Services
 		{
 			var type = typeof(T);
 
-			if (action is null)
+			if (action == null)
 			{
 				Log.Exception($"Subscriber action of event type {type.GetFriendlyName()} can't be null", new ArgumentNullException("action"));
 				return;
@@ -86,7 +77,7 @@ namespace Ju.Services
 
 			lock (subscribers)
 			{
-				if (subscribers[channel] is null)
+				if (subscribers[channel] == null)
 				{
 					subscribers[channel] = new Dictionary<EventType, List<SubscriberData>>();
 				}
@@ -138,7 +129,7 @@ namespace Ju.Services
 
 			var channelSubscribers = subscribers[channel];
 
-			if (channelSubscribers is null || !channelSubscribers.ContainsKey(type))
+			if (channelSubscribers == null || !channelSubscribers.ContainsKey(type))
 			{
 				FireDebugEvent(channel, type, data, 0);
 				return;
@@ -152,7 +143,7 @@ namespace Ju.Services
 				return;
 			}
 
-			if (cachedSubscribers[callStackCounter] is null)
+			if (cachedSubscribers[callStackCounter] == null)
 			{
 				cachedSubscribers[callStackCounter] = new List<SubscriberData>();
 			}
@@ -252,15 +243,18 @@ namespace Ju.Services
 
 		public void StopCurrentEventPropagation()
 		{
-			lock (stickyData)
+			lock (cancelEventStatus)
 			{
-				cancelEventStatus[callStackCounter] = true;
+				if (callStackCounter > 0)
+				{
+					cancelEventStatus[callStackCounter - 1] = true;
+				}
 			}
 		}
 
 		private void FireDebugEvent<T>(ChannelId channel, EventType type, T data, int subscribersCount)
 		{
-			if (!suppressDebugEvent && type != eventFiredEventType && !(subscribers[0] is null) && subscribers[0].ContainsKey(eventFiredEventType))
+			if (!suppressDebugEvent && type != eventFiredEventType && subscribers[0] != null && subscribers[0].ContainsKey(eventFiredEventType))
 			{
 				string serializedData = null;
 

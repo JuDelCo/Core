@@ -257,7 +257,7 @@ namespace Ju.Services
 			{
 				wantsToQuit = true;
 
-				ServiceCache.EventBus.Fire<UnityQuitRequestedEvent>();
+				ServiceCache.EventBus.Fire<AppQuitRequestedEvent>();
 
 				if (wantsToQuit)
 				{
@@ -273,7 +273,7 @@ namespace Ju.Services
 		{
 			quitting = true;
 
-			ServiceCache.EventBus.Fire<UnityQuitEvent>();
+			ServiceCache.EventBus.Fire<AppQuitEvent>();
 
 			foreach (var obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
 			{

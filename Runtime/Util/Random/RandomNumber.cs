@@ -18,7 +18,7 @@ namespace Ju.Random
 		// (>= 0)
 		public static int Int(System.Random random = null)
 		{
-			if (random is null)
+			if (random == null)
 			{
 				random = defaultRandom;
 			}
@@ -29,7 +29,7 @@ namespace Ju.Random
 		// (>= 0) && (< max)
 		public static int Int(int max, System.Random random = null)
 		{
-			if (random is null)
+			if (random == null)
 			{
 				random = defaultRandom;
 			}
@@ -40,7 +40,7 @@ namespace Ju.Random
 		// (>= min) && (< max)
 		public static int Int(int min, int max, System.Random random = null)
 		{
-			if (random is null)
+			if (random == null)
 			{
 				random = defaultRandom;
 			}
@@ -51,7 +51,7 @@ namespace Ju.Random
 		// (>= 0) && (< 1)
 		public static float Float01(System.Random random = null)
 		{
-			if (random is null)
+			if (random == null)
 			{
 				random = defaultRandom;
 			}
@@ -62,7 +62,7 @@ namespace Ju.Random
 		// (>= 0) && (< max)
 		public static float Float(float max, System.Random random = null)
 		{
-			if (random is null)
+			if (random == null)
 			{
 				random = defaultRandom;
 			}

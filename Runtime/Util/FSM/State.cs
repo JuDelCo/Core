@@ -38,12 +38,12 @@ namespace Ju.FSM
 
 		public bool IsAllow()
 		{
-			return Condition() && (extraCondition is null || extraCondition());
+			return Condition() && (extraCondition == null || extraCondition());
 		}
 
 		public bool IsCurrent()
 		{
-			return (!(fsm is null) && fsm.CurrentState == this);
+			return (fsm != null && fsm.CurrentState == this);
 		}
 	}
 }

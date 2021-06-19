@@ -26,8 +26,8 @@ namespace Ju.Services
 
 	public class CoroutineService : ICoroutineService, IServiceLoad
 	{
-		private readonly List<CoroutineHandlePair> coroutines = new List<CoroutineHandlePair>();
-		private readonly List<CoroutineHandlePair> coroutinesRunner = new List<CoroutineHandlePair>();
+		private List<CoroutineHandlePair> coroutines = new List<CoroutineHandlePair>();
+		private List<CoroutineHandlePair> coroutinesRunner = new List<CoroutineHandlePair>();
 
 		public void Load()
 		{

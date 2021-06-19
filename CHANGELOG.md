@@ -1,6 +1,34 @@
 
 # Changelog
 
+## [1.39.0] - 2021-06-19
+
+### Added
+
+- Add Unity Hot Reloading compatibility.
+- Add Unity custom property drawers for Color and Color32 structs.
+- Add Unity custom property drawers for TimeSince and TimeUntil structs.
+- Add new extension methods WithRed, WithGreen, WithBlue and WithAlpha to Color and Color32 structs.
+- Add new SerializableDictionary classes.
+- Add new SerializableType struct.
+
+### Changed
+
+- BehaviourLinkHandlers will now return true in IsDestroyed property if alwaysActive is false and the Behaviour is disabled.
+- Remove redundant extension methods for FSM class.
+- Move SimpleFSM to FSM folder.
+
+### Fixed
+
+- Fix StopCurrentEventPropagation method for EventBus service.
+
+### Improved
+
+- Rewrited SimpleFSM class.
+- Move UnityQuit and UnityQuitRequested events to native Core.
+- Make all Color structs serializable.
+- Make Span, TimeSince, TimeUntil structs serializable.
+
 ## [1.38.0] - 2021-05-31
 
 ### Added
@@ -116,6 +144,7 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.39.0]: https://github.com/JuDelCo/Core/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/JuDelCo/Core/compare/v1.37.0...v1.38.0
 [1.37.0]: https://github.com/JuDelCo/Core/compare/v1.36.0...v1.37.0
 [1.36.0]: https://github.com/JuDelCo/Core/compare/v1.35.0...v1.36.0

@@ -12,7 +12,7 @@ namespace Ju.Services.Internal
 		{
 			get
 			{
-				if (eventBusService is null)
+				if (eventBusService == null)
 				{
 					eventBusService = ServiceContainer.Get<IEventBusService>();
 				}
@@ -25,7 +25,7 @@ namespace Ju.Services.Internal
 		{
 			get
 			{
-				if (taskService is null)
+				if (taskService == null)
 				{
 					taskService = ServiceContainer.Get<ITaskService>();
 				}
@@ -38,7 +38,7 @@ namespace Ju.Services.Internal
 		{
 			get
 			{
-				if (coroutineService is null)
+				if (coroutineService == null)
 				{
 					coroutineService = ServiceContainer.Get<ICoroutineService>();
 				}
@@ -51,7 +51,7 @@ namespace Ju.Services.Internal
 		{
 			get
 			{
-				if (timeService is null)
+				if (timeService == null)
 				{
 					timeService = ServiceContainer.Get<ITimeService>();
 				}

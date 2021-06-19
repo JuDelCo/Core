@@ -14,12 +14,10 @@ namespace Ju.Services
 	{
 		private LogLevel minLogLevel = LogLevel.Debug;
 		private bool generateStackTraces = false;
-		private StringBuilder sb;
+		private StringBuilder sb = new StringBuilder();
 
 		public void Load()
 		{
-			sb = new StringBuilder();
-
 			this.EventSubscribe<LogEvent>(OnLogEvent);
 
 			SetLogLevel(minLogLevel);
@@ -60,7 +58,7 @@ namespace Ju.Services
 			var timeStamp = Application.isEditor ? null : GetCurrentTime() + " ";
 			var message = e.Message;
 
-			if (!(timeStamp is null) || !(e.Context is null))
+			if (timeStamp != null || e.Context != null)
 			{
 				message = $"{timeStamp}{e.Message}{e.Context}";
 			}
@@ -101,7 +99,7 @@ namespace Ju.Services
 					break;
 			}
 
-			if (!(e.Exception is null))
+			if (e.Exception != null)
 			{
 				UnityEngine.Debug.LogException(e.Exception);
 			}

@@ -5,11 +5,24 @@ using System;
 
 namespace Ju.Color
 {
+	[Serializable]
 	public partial struct Color : IEquatable<Color>
 	{
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private float rValue;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private float gValue;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private float bValue;
+#if UNITY_2019_3_OR_NEWER
+		[UnityEngine.SerializeField]
+#endif
 		private float aValue;
 
 		public Color(float r, float g, float b)
