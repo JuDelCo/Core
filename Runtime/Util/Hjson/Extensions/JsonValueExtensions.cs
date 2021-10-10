@@ -6,6 +6,8 @@ using Ju.Data.Conversion;
 
 namespace Ju.Hjson
 {
+	using Ju.Color;
+
 	public static class JsonValueExtensions
 	{
 		public static string GetValue(this JsonValue value, string defaultValue = default(string))
@@ -81,6 +83,26 @@ namespace Ju.Hjson
 		public static ulong GetValue(this JsonValue value, ulong defaultValue = default(ulong))
 		{
 			return Cast.This(value.Qstr()).AsULong(defaultValue);
+		}
+
+		public static DateTime GetValue(this JsonValue value, DateTime defaultValue = default(DateTime))
+		{
+			return Cast.This(value.Qstr()).AsDateTimeFromUnixTimeStamp(defaultValue);
+		}
+
+		public static Guid GetValue(this JsonValue value, Guid defaultValue = default(Guid))
+		{
+			return Cast.This(value.Qstr()).AsGuid(defaultValue);
+		}
+
+		public static Color GetValue(this JsonValue value, Color defaultValue = default(Color))
+		{
+			return Cast.This(value.Qstr()).AsColor(defaultValue);
+		}
+
+		public static Color32 GetValue(this JsonValue value, Color32 defaultValue = default(Color32))
+		{
+			return Cast.This(value.Qstr()).AsColor32(defaultValue);
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace Ju.Data.Conversion
 
 		public static string AsString(this CastSource<DateTime> source, string format = "yyyyMMdd_HHmmss")
 		{
-			return source.value.ToUniversalTime().ToString("yyyyMMdd_HHmmss");
+			return source.value.ToUniversalTime().ToString(format);
 		}
 
 		public static double AsUnixTimeStamp(this CastSource<DateTime> source)

@@ -10,7 +10,7 @@ namespace Ju.Data.Conversion
 {
 	public static class CastSourceUnityStringExtensions
 	{
-		public static UnityEngine.Color AsColor(this CastSource<string> source, UnityEngine.Color defaultValue = default(UnityEngine.Color))
+		public static UnityEngine.Color AsUnityColor(this CastSource<string> source, UnityEngine.Color defaultValue = default(UnityEngine.Color))
 		{
 			var value = source.value;
 
@@ -22,9 +22,9 @@ namespace Ju.Data.Conversion
 			return (ColorUtility.TryParseHtmlString(value, out UnityEngine.Color result)) ? result : defaultValue;
 		}
 
-		public static Color32 AsColor32(this CastSource<string> source, Color32 defaultValue = default(Color32))
+		public static Color32 AsUnityColor32(this CastSource<string> source, Color32 defaultValue = default(Color32))
 		{
-			return source.AsColor(defaultValue);
+			return source.AsUnityColor(defaultValue);
 		}
 
 		private static readonly char[] vectorStringDelimiters = new char[] { '(', ',', ')' };

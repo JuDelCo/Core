@@ -5,6 +5,8 @@ using System;
 
 namespace Ju.Data.Conversion
 {
+	using Ju.Color;
+
 	public static class JDataStringExtensions
 	{
 		public static T AsEnum<T>(this JData<string> data, T defaultValue = default(T)) where T : struct, Enum
@@ -122,9 +124,24 @@ namespace Ju.Data.Conversion
 			return Cast.This(data.Value).AsUInt64(defaultValue);
 		}
 
-		public static DateTime AsDateTimeFromUnixTimeStamp(this JData<string> data)
+		public static DateTime AsDateTimeFromUnixTimeStamp(this JData<string> data, DateTime defaultValue = default(DateTime))
 		{
-			return Cast.This(data.Value).AsDateTimeFromUnixTimeStamp();
+			return Cast.This(data.Value).AsDateTimeFromUnixTimeStamp(defaultValue);
+		}
+
+		public static Guid AsGuid(this JData<string> data, Guid defaultValue = default(Guid))
+		{
+			return Cast.This(data.Value).AsGuid(defaultValue);
+		}
+
+		public static Color AsColor(this JData<string> data, Color defaultValue = default(Color))
+		{
+			return Cast.This(data.Value).AsColor(defaultValue);
+		}
+
+		public static Color32 AsColor32(this JData<string> data, Color32 defaultValue = default(Color32))
+		{
+			return Cast.This(data.Value).AsColor32(defaultValue);
 		}
 
 		public static void Set<T>(this JData<string> data, T value) where T : Enum

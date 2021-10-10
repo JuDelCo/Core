@@ -2,9 +2,12 @@
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
 using System;
+using System.Globalization;
 
 namespace Ju.Data.Conversion
 {
+	using Ju.Color;
+
 	public static class CastSourceStringExtensions
 	{
 		public static bool AsBool(this CastSource<string> source, bool defaultValue = default(bool))
@@ -122,9 +125,99 @@ namespace Ju.Data.Conversion
 			return (Enum.TryParse(source.value, true, out T result)) ? result : defaultValue;
 		}
 
-		public static DateTime AsDateTimeFromUnixTimeStamp(this CastSource<string> source)
+		public static DateTime AsDateTimeFromUnixTimeStamp(this CastSource<string> source, DateTime defaultValue = default(DateTime))
 		{
-			return Cast.This(source.AsDouble()).AsDateTimeFromUnixTimeStamp();
+			var defaultValueDouble = Cast.This(defaultValue).AsUnixTimeStamp();
+
+			return Cast.This(source.AsDouble(defaultValueDouble)).AsDateTimeFromUnixTimeStamp();
+		}
+
+		public static Guid AsGuid(this CastSource<string> source, Guid defaultValue = default(Guid))
+		{
+			var result = defaultValue;
+
+			try
+			{
+				result = new Guid(source.value);
+			}
+			catch
+			{
+			}
+
+			return result;
+		}
+
+		public static Color AsColor(this CastSource<string> source, Color defaultValue = default(Color))
+		{
+			var value = source.value;
+
+			if (source.value.Length <= 8 && !source.value.StartsWith("#"))
+			{
+				value = "#" + source.value;
+			}
+
+			return (TryParseColor(value, out Color result)) ? result : defaultValue;
+		}
+
+		public static Color32 AsColor32(this CastSource<string> source, Color32 defaultValue = default(Color32))
+		{
+			return source.AsColor(defaultValue);
+		}
+
+		private static bool TryParseColor(string value, out Color result)
+		{
+			result = default(Color);
+
+			if (string.IsNullOrEmpty(value))
+			{
+				return false;
+			}
+
+			value = value.Trim();
+
+			if (value.StartsWith("#"))
+			{
+				value.TrimStart('#');
+			}
+
+			var parseResult = true;
+			var numberStyle = NumberStyles.HexNumber;
+			var formatProvider = CultureInfo.InvariantCulture;
+
+			if (value.Length == 6 || value.Length == 8)
+			{
+				parseResult &= byte.TryParse(value.Substring(0, 2), numberStyle, formatProvider, out byte r);
+				parseResult &= byte.TryParse(value.Substring(2, 2), numberStyle, formatProvider, out byte g);
+				parseResult &= byte.TryParse(value.Substring(4, 2), numberStyle, formatProvider, out byte b);
+				byte a = 255;
+
+				if (value.Length == 8)
+				{
+					parseResult &= byte.TryParse(value.Substring(6, 2), numberStyle, formatProvider, out a);
+				}
+
+				if (parseResult)
+				{
+					result = new Color32(r, g, b, a);
+
+					return true;
+				}
+			}
+			else if (value.Length == 3)
+			{
+				parseResult &= byte.TryParse(new string(value.Substring(0, 1)[0], 2), numberStyle, formatProvider, out byte r);
+				parseResult &= byte.TryParse(new string(value.Substring(1, 1)[0], 2), numberStyle, formatProvider, out byte g);
+				parseResult &= byte.TryParse(new string(value.Substring(2, 1)[0], 2), numberStyle, formatProvider, out byte b);
+
+				if (parseResult)
+				{
+					result = new Color32(r, g, b);
+
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

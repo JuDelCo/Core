@@ -20,7 +20,7 @@ namespace Ju.Handlers
 		}
 
 		public bool IsActive => !IsDestroyed && (alwaysActive || ((Behaviour)behaviourRef.Target).isActiveAndEnabled);
-		public bool IsDestroyed => !behaviourRef.IsAlive || ((Behaviour)behaviourRef.Target) == null || (!alwaysActive && !((Behaviour)behaviourRef.Target).isActiveAndEnabled);
+		public bool IsDestroyed => !behaviourRef.IsAlive || ((Behaviour)behaviourRef.Target) == null;
 	}
 }
 

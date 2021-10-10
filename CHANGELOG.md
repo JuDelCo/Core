@@ -1,6 +1,31 @@
 
 # Changelog
 
+## [1.40.0] - 2021-10-10
+
+### Added
+
+- Add ValueGradient and ColorGradient classes.
+- Add Unity inspector ReadOnly attribute.
+- Add Color and Color32 cast support.
+- Add DateTime cast helper extension methods.
+- Add HasValue helper method to JsonObject class.
+- Add Guid and DateTime (from unix timestamp) casting from string.
+- Add JSON GetValue helper methods for Guid and DateTime (from unix timestamp).
+- Add JSON GetValue helper methods for Color and Color32.
+- Add IsValidHjson helper extension method for string.
+- Add JData cast helper methods for Guid, Color and Color32.
+
+### Fixed
+
+- Revert BehaviourLinkHandlers will now return true in IsDestroyed property if alwaysActive is false and the Behaviour is disabled.
+- Fix DateTime cast to string method ignoring format parameter.
+
+### Improved
+
+- Check if key exists when getting values in JSON objects.
+- Allow default fallback value for DateTime casting from unix timestamp strings.
+
 ## [1.39.0] - 2021-06-19
 
 ### Added
@@ -144,6 +169,7 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.40.0]: https://github.com/JuDelCo/Core/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/JuDelCo/Core/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/JuDelCo/Core/compare/v1.37.0...v1.38.0
 [1.37.0]: https://github.com/JuDelCo/Core/compare/v1.36.0...v1.37.0

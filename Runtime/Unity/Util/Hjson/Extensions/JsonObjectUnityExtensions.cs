@@ -11,37 +11,37 @@ namespace Ju.Hjson
 	{
 		public static UnityEngine.Color GetValue(this JsonObject obj, string key, UnityEngine.Color defaultValue = default(UnityEngine.Color))
 		{
-			return obj[key].GetValue(defaultValue);
+			return obj.ContainsKey(key) ? obj[key].GetValue(defaultValue) : defaultValue;
 		}
 
 		public static Color32 GetValue(this JsonObject obj, string key, Color32 defaultValue = default(Color32))
 		{
-			return obj[key].GetValue(defaultValue);
+			return obj.ContainsKey(key) ? obj[key].GetValue(defaultValue) : defaultValue;
 		}
 
 		public static Vector2 GetValue(this JsonObject obj, string key, Vector2 defaultValue = default(Vector2))
 		{
-			return obj[key].GetValue(defaultValue);
+			return obj.ContainsKey(key) ? obj[key].GetValue(defaultValue) : defaultValue;
 		}
 
 		public static Vector2Int GetValue(this JsonObject obj, string key, Vector2Int defaultValue = default(Vector2Int))
 		{
-			return obj[key].GetValue(defaultValue);
+			return obj.ContainsKey(key) ? obj[key].GetValue(defaultValue) : defaultValue;
 		}
 
 		public static Vector3 GetValue(this JsonObject obj, string key, Vector3 defaultValue = default(Vector3))
 		{
-			return obj[key].GetValue(defaultValue);
+			return obj.ContainsKey(key) ? obj[key].GetValue(defaultValue) : defaultValue;
 		}
 
 		public static Vector3Int GetValue(this JsonObject obj, string key, Vector3Int defaultValue = default(Vector3Int))
 		{
-			return obj[key].GetValue(defaultValue);
+			return obj.ContainsKey(key) ? obj[key].GetValue(defaultValue) : defaultValue;
 		}
 
 		public static Vector4 GetValue(this JsonObject obj, string key, Vector4 defaultValue = default(Vector4))
 		{
-			return obj[key].GetValue(defaultValue);
+			return obj.ContainsKey(key) ? obj[key].GetValue(defaultValue) : defaultValue;
 		}
 	}
 }
