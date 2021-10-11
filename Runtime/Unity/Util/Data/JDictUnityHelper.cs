@@ -10,12 +10,12 @@ namespace Ju.Data
 {
 	public partial class JDict : JNode, IDictionary<string, JNode>
 	{
-		protected JData<UnityEngine.Color> GetDataColor(string key)
+		protected JData<UnityEngine.Color> GetDataUnityColor(string key)
 		{
 			return GetData<UnityEngine.Color>(key);
 		}
 
-		protected JData<Color32> GetDataColor32(string key)
+		protected JData<Color32> GetDataUnityColor32(string key)
 		{
 			return GetData<Color32>(key);
 		}

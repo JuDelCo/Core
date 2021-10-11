@@ -1,6 +1,24 @@
 
 # Changelog
 
+## [1.41.0] - 2021-10-11
+
+### Added
+
+- Add cast from Guid to string.
+- Add Guid, Color and Color32 casting for JNode.
+- Add DateTime, Guid, Color and Color32 casting for JDict.
+- Add missing cast support for DateTime, Guid, Color, Color32 types in DataTypeConverter.
+
+### Changed
+
+- Rename some Unity Color related casting methods.
+
+### Improved
+
+- Add Gradient generic class as base for ColorGradient and ValueGradient.
+- Update README.
+
 ## [1.40.0] - 2021-10-10
 
 ### Added
@@ -169,6 +187,7 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.41.0]: https://github.com/JuDelCo/Core/compare/v1.40.0...v1.41.0
 [1.40.0]: https://github.com/JuDelCo/Core/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/JuDelCo/Core/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/JuDelCo/Core/compare/v1.37.0...v1.38.0

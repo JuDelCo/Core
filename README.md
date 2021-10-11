@@ -52,6 +52,7 @@ Contents
 - [Crypt](https://github.com/JuDelCo/Core/wiki/API.Util.Crypt)
 - [Data](https://github.com/JuDelCo/Core/wiki/API.Util.Data)
 - [FSM](https://github.com/JuDelCo/Core/wiki/API.Util.FSM)
+- [Gradient](https://github.com/JuDelCo/Core/wiki/API.Util.Gradient)
 - [Hjson/Json](https://github.com/JuDelCo/Core/wiki/API.Util.Hjson)
 - [ObjectPool](https://github.com/JuDelCo/Core/wiki/API.Util.ObjectPool)
 - [Observables](https://github.com/JuDelCo/Core/wiki/API.Util.Observables)

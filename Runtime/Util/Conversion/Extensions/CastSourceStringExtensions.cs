@@ -164,7 +164,7 @@ namespace Ju.Data.Conversion
 			return source.AsColor(defaultValue);
 		}
 
-		private static bool TryParseColor(string value, out Color result)
+		internal static bool TryParseColor(string value, out Color result)
 		{
 			result = default(Color);
 

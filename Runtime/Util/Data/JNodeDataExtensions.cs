@@ -2,6 +2,7 @@
 // Copyright (c) 2016-2021 Juan Delgado (@JuDelCo)
 
 using System;
+using Ju.Color;
 using Ju.Data;
 
 public static class JNodeDataExtensions
@@ -129,5 +130,20 @@ public static class JNodeDataExtensions
 	public static JData<DateTime> AsDataDateTime(this JNode node)
 	{
 		return node.AsData<DateTime>();
+	}
+
+	public static JData<Guid> AsDataGuid(this JNode node)
+	{
+		return node.AsData<Guid>();
+	}
+
+	public static JData<Color> AsDataColor(this JNode node)
+	{
+		return node.AsData<Color>();
+	}
+
+	public static JData<Color32> AsDataColor32(this JNode node)
+	{
+		return node.AsData<Color32>();
 	}
 }

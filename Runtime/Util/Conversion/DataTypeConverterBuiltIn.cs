@@ -86,6 +86,7 @@ namespace Ju.Data.Conversion
 			AddConverter(ConversionType.Between<double, ushort>(), o => (double)o >= ushort.MinValue && (double)o <= ushort.MaxValue && (double)o == (ushort)(double)o ? (ushort)(double)o : throw new Exception(GetExceptionMsgBetween<double, ushort>()));
 			AddConverter(ConversionType.Between<double, uint>(), o => (double)o >= uint.MinValue && (double)o <= uint.MaxValue && (double)o == (uint)(double)o ? (uint)(double)o : throw new Exception(GetExceptionMsgBetween<double, uint>()));
 			AddConverter(ConversionType.Between<double, ulong>(), o => (double)o >= ulong.MinValue && (double)o <= ulong.MaxValue && (double)o == (ulong)(double)o ? (ulong)(double)o : throw new Exception(GetExceptionMsgBetween<double, ulong>()));
+			AddConverter(ConversionType.Between<double, DateTime>(), o => Cast.This((double)o).AsDateTimeFromUnixTimeStamp());
 
 			AddConverter(ConversionType.Between<decimal, bool>(), o => ((decimal)o > 0));
 			AddConverter(ConversionType.Between<decimal, byte>(), o => (decimal)o >= byte.MinValue && (decimal)o <= byte.MaxValue && (decimal)o == (byte)(decimal)o ? (byte)(decimal)o : throw new Exception(GetExceptionMsgBetween<decimal, byte>()));
@@ -198,8 +199,22 @@ namespace Ju.Data.Conversion
 			AddConverter(ConversionType.Between<string, uint>(), o => uint.TryParse((string)o, out uint result) ? result : throw new Exception(GetExceptionMsgBetween<string, uint>()));
 			AddConverter(ConversionType.Between<string, ulong>(), o => ulong.TryParse((string)o, out ulong result) ? result : throw new Exception(GetExceptionMsgBetween<string, ulong>()));
 			AddConverter(ConversionType.Between<string, char>(), o => char.TryParse((string)o, out char result) ? result : throw new Exception(GetExceptionMsgBetween<string, char>()));
+			AddConverter(ConversionType.Between<string, Guid>(), o => { var result = default(Guid); try { result = new Guid((string)o); } catch { throw new Exception(GetExceptionMsgBetween<string, Guid>()); } return result; });
+			AddConverter(ConversionType.Between<string, Ju.Color.Color>(), o => (CastSourceStringExtensions.TryParseColor((string)o, out Ju.Color.Color result)) ? result : throw new Exception(GetExceptionMsgBetween<string, Ju.Color.Color>()));
+			AddConverter(ConversionType.Between<string, Ju.Color.Color32>(), o => (CastSourceStringExtensions.TryParseColor((string)o, out Ju.Color.Color result)) ? result : throw new Exception(GetExceptionMsgBetween<string, Ju.Color.Color32>()));
+
+			AddConverter(ConversionType.Between<DateTime, double>(), o => Cast.This((DateTime)o).AsUnixTimeStamp());
+			AddConverter(ConversionType.Between<Guid, string>(), o => Cast.This((Guid)o).AsString());
+
+			AddConverter(ConversionType.Between<Ju.Color.Color, string>(), o => Cast.This((Ju.Color.Color)o).AsString());
+			AddConverter(ConversionType.Between<Ju.Color.Color32, string>(), o => Cast.This((Ju.Color.Color32)o).AsString());
 
 #if UNITY_2019_3_OR_NEWER
+
+			AddConverter(ConversionType.Between<UnityEngine.Color, Ju.Color.Color>(), o => (Ju.Color.Color)o);
+			AddConverter(ConversionType.Between<UnityEngine.Color, Ju.Color.Color32>(), o => (Ju.Color.Color32)o);
+			AddConverter(ConversionType.Between<UnityEngine.Color32, Ju.Color.Color>(), o => (Ju.Color.Color)o);
+			AddConverter(ConversionType.Between<UnityEngine.Color32, Ju.Color.Color32>(), o => (Ju.Color.Color32)o);
 
 			AddConverter(ConversionType.Between<UnityEngine.Color, UnityEngine.Color32>(), o => (UnityEngine.Color32)(UnityEngine.Color)o);
 			AddConverter(ConversionType.Between<UnityEngine.Color32, UnityEngine.Color>(), o => (UnityEngine.Color)(UnityEngine.Color32)o);

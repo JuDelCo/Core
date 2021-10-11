@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 namespace Ju.Data
 {
+	using Ju.Color;
+
 	public partial class JDict : JNode, IDictionary<string, JNode>
 	{
 		protected T GetDict<T>(string key) where T : JDict, new()
@@ -222,6 +224,26 @@ namespace Ju.Data
 		protected JData<ulong> GetDataUInt64(string key)
 		{
 			return GetData<ulong>(key);
+		}
+
+		protected JData<DateTime> GetDataDateTime(string key)
+		{
+			return GetData<DateTime>(key);
+		}
+
+		protected JData<Guid> GetDataGuid(string key)
+		{
+			return GetData<Guid>(key);
+		}
+
+		protected JData<Color> GetDataColor(string key)
+		{
+			return GetData<Color>(key);
+		}
+
+		protected JData<Color32> GetDataColor32(string key)
+		{
+			return GetData<Color32>(key);
 		}
 
 		private JData<T> GetData<T>(string key)

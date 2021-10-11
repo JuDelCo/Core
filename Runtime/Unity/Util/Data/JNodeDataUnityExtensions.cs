@@ -8,12 +8,12 @@ using UnityEngine;
 
 public static class JNodeDataUnityExtensions
 {
-	public static JData<Color> AsDataColor(this JNode node)
+	public static JData<Color> AsDataUnityColor(this JNode node)
 	{
 		return node.AsData<Color>();
 	}
 
-	public static JData<Color32> AsDataColor32(this JNode node)
+	public static JData<Color32> AsDataUnityColor32(this JNode node)
 	{
 		return node.AsData<Color32>();
 	}

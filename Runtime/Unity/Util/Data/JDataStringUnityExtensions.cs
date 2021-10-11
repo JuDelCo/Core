@@ -9,14 +9,14 @@ namespace Ju.Data.Conversion
 {
 	public static class JDataStringUnityExtensions
 	{
-		public static UnityEngine.Color AsColor(this JData<string> data, UnityEngine.Color defaultValue = default(UnityEngine.Color))
+		public static UnityEngine.Color AsUnityColor(this JData<string> data, UnityEngine.Color defaultValue = default(UnityEngine.Color))
 		{
-			return Cast.This(data.Value).AsColor(defaultValue);
+			return Cast.This(data.Value).AsUnityColor(defaultValue);
 		}
 
-		public static Color32 AsColor32(this JData<string> data, Color32 defaultValue = default(Color32))
+		public static Color32 AsUnityColor32(this JData<string> data, Color32 defaultValue = default(Color32))
 		{
-			return Cast.This(data.Value).AsColor32(defaultValue);
+			return Cast.This(data.Value).AsUnityColor32(defaultValue);
 		}
 
 		public static Vector2 AsVector2(this JData<string> data, Vector2 defaultValue = default(Vector2))
