@@ -119,9 +119,12 @@ namespace Ju.Services
 		{
 			if (Thread.CurrentThread != mainThread)
 			{
-				suppressDebugEvent = true;
-				Log.Exception("Synchronous event Fire method can't be called from outside of the Main Thread", new InvalidOperationException());
-				suppressDebugEvent = false;
+				if (!suppressDebugEvent)
+				{
+					suppressDebugEvent = true;
+					Log.Exception("Synchronous event Fire method can't be called from outside of the Main Thread", new InvalidOperationException());
+					suppressDebugEvent = false;
+				}
 				return;
 			}
 
@@ -137,9 +140,12 @@ namespace Ju.Services
 
 			if (callStackCounter > MAX_EVENT_STACK_LIMIT)
 			{
-				suppressDebugEvent = true;
-				Log.Exception($"Max eventbus stack reached, ignoring firing of an event of type {type.GetFriendlyName()}", new StackOverflowException());
-				suppressDebugEvent = false;
+				if (!suppressDebugEvent)
+				{
+					suppressDebugEvent = true;
+					Log.Exception($"Max eventbus stack reached, ignoring firing of an event of type {type.GetFriendlyName()}", new StackOverflowException());
+					suppressDebugEvent = false;
+				}
 				return;
 			}
 
@@ -275,7 +281,7 @@ namespace Ju.Services
 
 		private void DispatchEvent<T>(EventType type, Action<T> action, T data)
 		{
-			if (stackEventTypes.Contains(type))
+			if (!suppressDebugEvent && stackEventTypes.Contains(type))
 			{
 				suppressDebugEvent = true;
 				Log.Warning($"An event subscriber of type {type.GetFriendlyName()} has fired another event of the same type. This can lead to stackoverflow issues.");
@@ -291,9 +297,12 @@ namespace Ju.Services
 			}
 			catch (Exception e)
 			{
-				suppressDebugEvent = true;
-				Log.Exception($"Uncaught event exception (Event type: {type.GetFriendlyName()})", e);
-				suppressDebugEvent = false;
+				if (!suppressDebugEvent)
+				{
+					suppressDebugEvent = true;
+					Log.Exception($"Uncaught event exception (Event type: {type.GetFriendlyName()})", e);
+					suppressDebugEvent = false;
+				}
 			}
 
 			--callStackCounter;

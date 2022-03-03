@@ -177,7 +177,7 @@ namespace Ju.Data.Conversion
 
 			if (value.StartsWith("#"))
 			{
-				value.TrimStart('#');
+				value = value.TrimStart('#');
 			}
 
 			var parseResult = true;

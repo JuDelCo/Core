@@ -1,6 +1,13 @@
 
 # Changelog
 
+## [1.42.0] - 2022-03-03
+
+### Fixed
+
+- Fix stack overflow when throwing exceptions inside an event callback in the EventBus service.
+- Fix hexadecimal string conversion to Color when the string starts with the hash character.
+
 ## [1.41.0] - 2021-10-11
 
 ### Added
@@ -187,6 +194,7 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.42.0]: https://github.com/JuDelCo/Core/compare/v1.41.0...v1.42.0
 [1.41.0]: https://github.com/JuDelCo/Core/compare/v1.40.0...v1.41.0
 [1.40.0]: https://github.com/JuDelCo/Core/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/JuDelCo/Core/compare/v1.38.0...v1.39.0
