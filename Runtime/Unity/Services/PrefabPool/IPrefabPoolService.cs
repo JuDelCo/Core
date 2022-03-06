@@ -14,10 +14,11 @@ namespace Ju.Services
 		GameObject Spawn(Prefab prefab, Transform parent, Vector3 position, Quaternion rotation);
 		void Recycle(GameObject target);
 
-		int Count(Prefab prefab);
-		int CountAll();
+		int Count(Prefab prefab, bool includeActive = false);
+		int CountAll(bool includeActive = false);
 
 		void SetCapacity(Prefab prefab, int capacity);
+		void WarmupCapacity(Prefab prefab);
 		void Shrink(Prefab prefab, int maxSize, bool clearSpawned = false);
 		void Clear(Prefab prefab, bool clearSpawned = false);
 		void ClearAll(bool clearSpawned = false);

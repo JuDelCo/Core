@@ -27,6 +27,7 @@ namespace Ju.Services
 			{
 				container = new GameObject("GameObjectPool");
 				container.hideFlags = HideFlags.NotEditable;
+				container.SetActive(false);
 				GameObject.DontDestroyOnLoad(container);
 			}
 		}
@@ -42,6 +43,19 @@ namespace Ju.Services
 			pools.GetOrInsertNew(prefab).Capacity = capacity;
 		}
 
+		public void WarmupCapacity(Prefab prefab)
+		{
+			var pool = pools.GetOrInsertNew(prefab);
+			var capacity = pool.Capacity;
+
+			for (int i = pool.Count; i < capacity; ++i)
+			{
+				var target = Object.Instantiate(prefab, container.transform, false);
+				target.SetActive(false);
+				pool.Add(target);
+			}
+		}
+
 		public GameObject Spawn(Prefab prefab, Transform parent, Vector3 position, Quaternion rotation)
 		{
 			var pool = pools.GetOrInsertNew(prefab);
@@ -53,7 +67,7 @@ namespace Ju.Services
 				pool.Add(target);
 			}
 
-			target.transform.SetParent(parent, true);
+			target.transform.SetParent(parent, false);
 			target.transform.position = position;
 			target.transform.rotation = rotation;
 
@@ -85,7 +99,7 @@ namespace Ju.Services
 			if (pool != null)
 			{
 				target.SetActive(false);
-				target.transform.SetParent(container.transform, true);
+				target.transform.SetParent(container.transform, false);
 			}
 			else
 			{
@@ -93,7 +107,7 @@ namespace Ju.Services
 			}
 		}
 
-		public int Count(Prefab prefab)
+		public int Count(Prefab prefab, bool includeActive = false)
 		{
 			var total = 0;
 
@@ -103,7 +117,7 @@ namespace Ju.Services
 
 				foreach (var go in pool)
 				{
-					if (!go.activeInHierarchy && !go.activeSelf)
+					if (includeActive || (!go.activeInHierarchy && !go.activeSelf))
 					{
 						++total;
 					}
@@ -115,13 +129,13 @@ namespace Ju.Services
 			return total;
 		}
 
-		public int CountAll()
+		public int CountAll(bool includeActive = false)
 		{
 			var total = 0;
 
 			foreach (var kvp in pools)
 			{
-				total += Count(kvp.Key);
+				total += Count(kvp.Key, includeActive);
 			}
 
 			return total;

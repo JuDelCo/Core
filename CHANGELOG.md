@@ -1,6 +1,22 @@
 
 # Changelog
 
+## [1.43.0] - 2022-03-06
+
+### Added
+
+- Add warmup capacity method to the prefab pool service.
+- Add more prefab pool service helper extension methods.
+
+### Changed
+
+- Remove transform parent-relative position when Spawning or Recycling prefabs.
+
+### Improved
+
+- Allow to count filtering active prefabs in the prefab pool service.
+- Disable prefab gameobject container on prefab pool service start.
+
 ## [1.42.0] - 2022-03-03
 
 ### Fixed
@@ -194,6 +210,7 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.43.0]: https://github.com/JuDelCo/Core/compare/v1.42.0...v1.43.0
 [1.42.0]: https://github.com/JuDelCo/Core/compare/v1.41.0...v1.42.0
 [1.41.0]: https://github.com/JuDelCo/Core/compare/v1.40.0...v1.41.0
 [1.40.0]: https://github.com/JuDelCo/Core/compare/v1.39.0...v1.40.0

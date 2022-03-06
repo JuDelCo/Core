@@ -70,6 +70,31 @@ namespace Ju.Services
 		{
 			service.Recycle(targetComponent.gameObject);
 		}
+
+		public static int Count<T>(this IPrefabPoolService service, T prefabComponent, bool includeActive = false) where T : Component
+		{
+			return service.Count(prefabComponent.gameObject, includeActive);
+		}
+
+		public static void SetCapacity<T>(this IPrefabPoolService service, T prefabComponent, int capacity) where T : Component
+		{
+			service.SetCapacity(prefabComponent.gameObject, capacity);
+		}
+
+		public static void WarmupCapacity<T>(this IPrefabPoolService service, T prefabComponent) where T : Component
+		{
+			service.WarmupCapacity(prefabComponent.gameObject);
+		}
+
+		public static void Shrink<T>(this IPrefabPoolService service, T prefabComponent, int maxSize, bool clearSpawned = false) where T : Component
+		{
+			service.Shrink(prefabComponent.gameObject, maxSize, clearSpawned);
+		}
+
+		public static void Clear<T>(this IPrefabPoolService service, T prefabComponent, bool clearSpawned = false) where T : Component
+		{
+			service.Clear(prefabComponent.gameObject, clearSpawned);
+		}
 	}
 }
 
