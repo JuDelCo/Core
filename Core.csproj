@@ -1,20 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.44.0</Version>
+    <Version>1.45.0</Version>
     <Authors>Juan Delgado (@JuDelCo)</Authors>
     <Title>JuCore</Title>
     <AssemblyName>JuCore</AssemblyName>
     <Description>Service locator (IoC Container), object factory, util classes and lots of services to ease the development of C# applications and games</Description>
     <RepositoryType>git</RepositoryType>
     <PackageId>JuDelCo.Lib.Core</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/JuDelCo/Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JuDelCo/Core</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
   <PropertyGroup>
-  	<OutputType>Library</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>

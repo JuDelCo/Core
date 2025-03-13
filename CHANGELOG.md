@@ -1,6 +1,13 @@
 
 # Changelog
 
+## [1.45.0] - 2025-03-13
+
+### Improved
+
+- Include README.md in the nuget package.
+- Update README.md with instructions to install the package.
+
 ## [1.44.0] - 2025-03-13
 
 ### Improved
@@ -217,6 +224,8 @@
 
 - Add new internal service cache for all internal service usage.
 
+[1.45.0]: https://github.com/JuDelCo/Core/compare/v1.44.0...v1.45.0
+[1.44.0]: https://github.com/JuDelCo/Core/compare/v1.43.0...v1.44.0
 [1.43.0]: https://github.com/JuDelCo/Core/compare/v1.42.0...v1.43.0
 [1.42.0]: https://github.com/JuDelCo/Core/compare/v1.41.0...v1.42.0
 [1.41.0]: https://github.com/JuDelCo/Core/compare/v1.40.0...v1.41.0

@@ -13,6 +13,24 @@ See also
 - [JuCore ECS](https://github.com/JuDelCo/CoreECS) - Deterministic lightweight ECS framework
 
 
+Install
+=====================
+
+The Wiki explains [**how to install**](https://github.com/JuDelCo/Core/wiki/Usage.Getting-Started) the library for your specific case. Below is a quick summary:
+
+- For **Unity**, update the dependencies in the ```/Packages/manifest.json``` file in your project folder by adding:
+
+```json
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.45.0",
+```
+
+- For native **.NET projects**, **Godot**, etc... run the following command in the console of your .NET project to add the package:
+
+```bash
+	dotnet add package JuDelCo.Lib.Core
+```
+
+
 Documentation
 =====================
 
