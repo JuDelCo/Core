@@ -56,7 +56,7 @@ namespace Ju.Time
 		{
 			var elapsedTime = elapsed;
 
-			elapsed = Math.Max(elapsedFrames, 0);
+			elapsed = System.Math.Max(elapsedFrames, 0);
 
 			return elapsedTime;
 		}

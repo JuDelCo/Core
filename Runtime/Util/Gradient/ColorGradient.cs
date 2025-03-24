@@ -24,7 +24,7 @@ namespace Ju.Gradient
 
 		private static float Clamp01(float value)
 		{
-			return Math.Min(1f, Math.Max(0f, value));
+			return System.Math.Min(1f, System.Math.Max(0f, value));
 		}
 	}
 }

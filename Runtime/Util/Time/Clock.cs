@@ -56,7 +56,7 @@ namespace Ju.Time
 		{
 			var elapsedTime = elapsed;
 
-			elapsed = Span.Seconds(Math.Max(elapsedSeconds, 0f));
+			elapsed = Span.Seconds(System.Math.Max(elapsedSeconds, 0f));
 
 			return elapsedTime;
 		}

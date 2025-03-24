@@ -44,18 +44,18 @@ namespace Ju.Color
 
 		public Color32(int r, int g, int b, int a)
 		{
-			rValue = Clamp((byte)r);
-			gValue = Clamp((byte)g);
-			bValue = Clamp((byte)b);
-			aValue = Clamp((byte)a);
+			rValue = Clamp((byte) r);
+			gValue = Clamp((byte) g);
+			bValue = Clamp((byte) b);
+			aValue = Clamp((byte) a);
 		}
 
 		public Color32(float r, float g, float b, float a)
 		{
-			rValue = Clamp((byte)(r * 255f));
-			gValue = Clamp((byte)(g * 255f));
-			bValue = Clamp((byte)(b * 255f));
-			aValue = Clamp((byte)(a * 255f));
+			rValue = Clamp((byte) (r * 255f));
+			gValue = Clamp((byte) (g * 255f));
+			bValue = Clamp((byte) (b * 255f));
+			aValue = Clamp((byte) (a * 255f));
 		}
 
 		// Do not use max saturation or value
@@ -106,7 +106,7 @@ namespace Ju.Color
 
 		public static implicit operator Color32(Color color)
 		{
-			return new Color32((byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255), (byte)(color.a * 255));
+			return new Color32((byte) (color.r * 255), (byte) (color.g * 255), (byte) (color.b * 255), (byte) (color.a * 255));
 		}
 
 		public static implicit operator Color(Color32 color)
@@ -118,7 +118,7 @@ namespace Ju.Color
 
 		private static byte HexToByte(char c)
 		{
-			return (byte)hexCharacters.IndexOf(char.ToUpper(c));
+			return (byte) hexCharacters.IndexOf(char.ToUpper(c));
 		}
 
 		public static Color32 HexToColor(string hex)
@@ -210,7 +210,7 @@ namespace Ju.Color
 			// return (color.r * 0.2126f + color.g * 0.7152f + color.b * 0.0722f);
 
 			// HSP Color model
-			// return Math.Sqrt(Math.Pow(color.r, 2) * 0.299f + Math.Pow(color.g, 2) * 0.587f + Math.Pow(color.b, 2) * 0.114f);
+			// return System.Math.Sqrt(System.Math.Pow(color.r, 2) * 0.299f + System.Math.Pow(color.g, 2) * 0.587f + System.Math.Pow(color.b, 2) * 0.114f);
 
 			// Digital ITU BT.601
 			return (color.r * 0.299f + color.g * 0.587f + color.b * 0.114f);
@@ -287,12 +287,12 @@ namespace Ju.Color
 
 		private static float Min(float a, float b, float c)
 		{
-			return Math.Min(a, Math.Min(b, c));
+			return System.Math.Min(a, System.Math.Min(b, c));
 		}
 
 		private static float Max(float a, float b, float c)
 		{
-			return Math.Max(a, Math.Max(b, c));
+			return System.Math.Max(a, System.Math.Max(b, c));
 		}
 	}
 }

@@ -77,7 +77,7 @@ namespace Ju.Hjson
 			}
 			else v = r.Read();
 
-			if (ReadWsc && v != '\r') white.Append((char)v);
+			if (ReadWsc && v != '\r') white.Append((char) v);
 
 			if (prevLf)
 			{
@@ -112,7 +112,7 @@ namespace Ju.Hjson
 		{
 			for (; ; )
 			{
-				if (IsWhite((char)PeekChar())) ReadChar();
+				if (IsWhite((char) PeekChar())) ReadChar();
 				else break;
 			}
 		}
@@ -195,21 +195,21 @@ namespace Ju.Hjson
 				}
 
 				if (exp != 0)
-					val *= Math.Pow(10, exp * expSign);
+					val *= System.Math.Pow(10, exp * expSign);
 			}
 
 			if (negative) val *= -1;
 
-			long lval = (long)val;
+			long lval = (long) val;
 			if (lval == val)
 			{
 				if (lval > int.MaxValue) return lval;
-				else return (int)lval;
+				else return (int) lval;
 			}
 			else
 			{
 				if (val > float.MaxValue) return val;
-				else return (float)val;
+				else return (float) val;
 			}
 		}
 
@@ -239,7 +239,7 @@ namespace Ju.Hjson
 				}
 				else if (c != '\\')
 				{
-					sb.Append((char)c);
+					sb.Append((char) c);
 					continue;
 				}
 
@@ -252,7 +252,7 @@ namespace Ju.Hjson
 					case '"':
 					case '\'':
 					case '\\':
-					case '/': sb.Append((char)c); break;
+					case '/': sb.Append((char) c); break;
 					case 'b': sb.Append('\x8'); break;
 					case 'f': sb.Append('\f'); break;
 					case 'n': sb.Append('\n'); break;
@@ -265,12 +265,12 @@ namespace Ju.Hjson
 							cp <<= 4;
 							if ((c = ReadChar()) < 0)
 								throw ParseError("Incomplete unicode character escape literal");
-							if (c >= '0' && c <= '9') cp += (ushort)(c - '0');
-							else if (c >= 'A' && c <= 'F') cp += (ushort)(c - 'A' + 10);
-							else if (c >= 'a' && c <= 'f') cp += (ushort)(c - 'a' + 10);
-							else throw ParseError("Bad \\u char " + (char)c);
+							if (c >= '0' && c <= '9') cp += (ushort) (c - '0');
+							else if (c >= 'A' && c <= 'F') cp += (ushort) (c - 'A' + 10);
+							else if (c >= 'a' && c <= 'f') cp += (ushort) (c - 'a' + 10);
+							else throw ParseError("Bad \\u char " + (char) c);
 						}
-						sb.Append((char)cp);
+						sb.Append((char) cp);
 						break;
 					default:
 						throw ParseError("Invalid JSON string literal; unexpected escape character");
@@ -282,7 +282,7 @@ namespace Ju.Hjson
 		{
 			int c;
 			if ((c = ReadChar()) != expected)
-				throw ParseError(String.Format("Expected '{0}', got '{1}'", expected, (char)c));
+				throw ParseError(String.Format("Expected '{0}', got '{1}'", expected, (char) c));
 		}
 
 		public void Expect(string expected)

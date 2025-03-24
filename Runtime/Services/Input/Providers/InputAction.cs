@@ -129,7 +129,7 @@ namespace Ju.Input
 			var positive = 0f;
 			var negative = 0f;
 
-			var controllers = (List<IController>)Player.Controllers;
+			var controllers = (List<IController>) Player.Controllers;
 
 			foreach (var controller in controllers)
 			{
@@ -224,7 +224,7 @@ namespace Ju.Input
 
 			if (Enabled)
 			{
-				var controllers = (List<IController>)Player.Controllers;
+				var controllers = (List<IController>) Player.Controllers;
 
 				foreach (var controller in controllers)
 				{
@@ -259,7 +259,7 @@ namespace Ju.Input
 
 			if (Enabled)
 			{
-				var controllers = (List<IController>)Player.Controllers;
+				var controllers = (List<IController>) Player.Controllers;
 
 				foreach (var controller in controllers)
 				{
@@ -269,12 +269,12 @@ namespace Ju.Input
 						{
 							gamepad.GetAxisRaw(axis, out float axisValueX, out float axisValueY);
 
-							if (Math.Abs(axisValueX) >= gamepad.Deadzone)
+							if (System.Math.Abs(axisValueX) >= gamepad.Deadzone)
 							{
 								axisX = axisValueX;
 							}
 
-							if (Math.Abs(axisValueY) >= gamepad.Deadzone)
+							if (System.Math.Abs(axisValueY) >= gamepad.Deadzone)
 							{
 								axisY = axisValueY;
 							}

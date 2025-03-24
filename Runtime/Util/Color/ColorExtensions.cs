@@ -92,7 +92,7 @@ namespace Ju.Color
 
 		private static byte HexToByte(char c)
 		{
-			return (byte)hexCharacters.IndexOf(char.ToUpper(c));
+			return (byte) hexCharacters.IndexOf(char.ToUpper(c));
 		}
 
 		public static Color HexToColor(string hex)
@@ -179,7 +179,7 @@ namespace Ju.Color
 			// return (color.r * 0.2126f + color.g * 0.7152f + color.b * 0.0722f);
 
 			// HSP Color model
-			// return Math.Sqrt(Math.Pow(color.r, 2) * 0.299f + Math.Pow(color.g, 2) * 0.587f + Math.Pow(color.b, 2) * 0.114f);
+			// return System.Math.Sqrt(System.Math.Pow(color.r, 2) * 0.299f + System.Math.Pow(color.g, 2) * 0.587f + System.Math.Pow(color.b, 2) * 0.114f);
 
 			// Digital ITU BT.601
 			return (color.r * 0.299f + color.g * 0.587f + color.b * 0.114f);
@@ -261,17 +261,17 @@ namespace Ju.Color
 
 		internal static float Clamp01(float value)
 		{
-			return Math.Min(1f, Math.Max(0f, value));
+			return System.Math.Min(1f, System.Math.Max(0f, value));
 		}
 
 		private static float Min(float a, float b, float c)
 		{
-			return Math.Min(a, Math.Min(b, c));
+			return System.Math.Min(a, System.Math.Min(b, c));
 		}
 
 		private static float Max(float a, float b, float c)
 		{
-			return Math.Max(a, Math.Max(b, c));
+			return System.Math.Max(a, System.Math.Max(b, c));
 		}
 	}
 }

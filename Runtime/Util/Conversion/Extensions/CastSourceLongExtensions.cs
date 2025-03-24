@@ -15,10 +15,10 @@ namespace Ju.Data.Conversion
 		public static string AsTimeStringFromSeconds(this CastSource<long> source)
 		{
 			var s = source.value;
-			var m = Math.Floor((float)s / 60);
-			var h = Math.Floor((float)m / 60);
-			var d = Math.Floor((float)h / 24);
-			var w = Math.Floor((float)d / 7);
+			var m = System.Math.Floor((float) s / 60);
+			var h = System.Math.Floor((float) m / 60);
+			var d = System.Math.Floor((float) h / 24);
+			var w = System.Math.Floor((float) d / 7);
 
 			string result;
 
@@ -49,10 +49,10 @@ namespace Ju.Data.Conversion
 		public static string AsTimeStringFromSecondsShort(this CastSource<long> source)
 		{
 			var s = source.value;
-			var m = Math.Floor((float)s / 60);
-			var h = Math.Floor((float)m / 60);
-			var d = Math.Floor((float)h / 24);
-			var w = Math.Floor((float)d / 7);
+			var m = System.Math.Floor((float) s / 60);
+			var h = System.Math.Floor((float) m / 60);
+			var d = System.Math.Floor((float) h / 24);
+			var w = System.Math.Floor((float) d / 7);
 
 			string result;
 

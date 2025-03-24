@@ -16,7 +16,7 @@ namespace Ju.Data.Conversion
 
 		public static double AsUnixTimeStamp(this CastSource<DateTime> source)
 		{
-			return Math.Truncate((source.value.ToUniversalTime() - unixEpoch).TotalSeconds);
+			return System.Math.Truncate((source.value.ToUniversalTime() - unixEpoch).TotalSeconds);
 		}
 
 		public static string AsUnixTimeStampString(this CastSource<DateTime> source)

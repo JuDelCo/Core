@@ -1,6 +1,12 @@
 
 # Changelog
 
+## [1.47.0] - 2025-03-24
+
+### Fixed
+
+- Fix collisions between System.Math functions and the Ju.CoreMath package when used together in NET native or Godot projects.
+
 ## [1.46.0] - 2025-03-24.
 
 ### Added

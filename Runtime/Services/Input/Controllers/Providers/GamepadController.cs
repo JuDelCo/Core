@@ -149,7 +149,7 @@ namespace Ju.Input
 					continue;
 				}
 
-				if (Math.Abs(input.GetGamepadAxisRaw(this, axis)) - Deadzone > 0f)
+				if (System.Math.Abs(input.GetGamepadAxisRaw(this, axis)) - Deadzone > 0f)
 				{
 					return true;
 				}

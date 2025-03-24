@@ -67,7 +67,7 @@ namespace Ju.Hjson
 		{
 			while (PeekChar() >= 0)
 			{
-				while (IsWhite((char)PeekChar())) ReadChar();
+				while (IsWhite((char) PeekChar())) ReadChar();
 				int p = PeekChar();
 				if (p == '#' || p == '/' && PeekChar(1) == '/')
 				{
@@ -192,7 +192,7 @@ namespace Ju.Hjson
 			{
 				c = PeekChar();
 				if (c < 0) throw ParseError("Name is not closed");
-				char ch = (char)c;
+				char ch = (char) c;
 				if (ch == ':')
 				{
 					if (sb.Length == 0) throw ParseError("Found ':' but no key name (for an empty key name use quotes)");
@@ -218,7 +218,7 @@ namespace Ju.Hjson
 		{
 			while (indent-- > 0)
 			{
-				char c = (char)PeekChar();
+				char c = (char) PeekChar();
 				if (IsWhite(c) && c != '\n') ReadChar();
 				else break;
 			}
@@ -236,7 +236,7 @@ namespace Ju.Hjson
 			// skip white/to (newline)
 			for (; ; )
 			{
-				char c = (char)PeekChar();
+				char c = (char) PeekChar();
 				if (IsWhite(c) && c != '\n') ReadChar();
 				else break;
 			}
@@ -274,7 +274,7 @@ namespace Ju.Hjson
 				}
 				else
 				{
-					if (ch != '\r') sb.Append((char)ch);
+					if (ch != '\r') sb.Append((char) ch);
 					ReadChar();
 				}
 			}
@@ -360,7 +360,7 @@ namespace Ju.Hjson
 				}
 
 				if (exp != 0)
-					val *= Math.Pow(10, exp * expSign);
+					val *= System.Math.Pow(10, exp * expSign);
 			}
 
 			while (p < text.Length && IsWhite(text[p])) p++;
@@ -382,16 +382,16 @@ namespace Ju.Hjson
 				val *= -1;
 			}
 
-			long lval = (long)val;
+			long lval = (long) val;
 			if (lval == val)
 			{
 				if (lval > int.MaxValue) value = lval;
-				else value = (int)lval;
+				else value = (int) lval;
 			}
 			else
 			{
 				if (val > float.MaxValue) value = val;
-				else value = (float)val;
+				else value = (float) val;
 			}
 
 			return true;
@@ -399,7 +399,7 @@ namespace Ju.Hjson
 
 		JsonValue ReadTfnns(int c)
 		{
-			if (HjsonValue.IsPunctuatorChar((char)c))
+			if (HjsonValue.IsPunctuatorChar((char) c))
 				throw ParseError("Found a punctuator character '" + c + "' when expecting a quoteless string (check your syntax)");
 
 			sb.Length = 0;
@@ -434,7 +434,7 @@ namespace Ju.Hjson
 					}
 				}
 				ReadChar();
-				if (c != '\r') sb.Append((char)c);
+				if (c != '\r') sb.Append((char) c);
 				c = PeekChar();
 			}
 		}
