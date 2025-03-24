@@ -1,0 +1,30 @@
+<!--
+  This file (Directory.Build.props) is intended solely for local development purposes.
+  It is used to enhance the development experience (e.g., by adding specific defines for Godot integration)
+  when building projects with MSBuild in your local environment (such as in VSCode with OmniSharp).
+
+  IMPORTANT:
+  - To disable this when creating a new NuGet package (to target netstandard2.0) use 'dotnet pack -p:DisableGodotReferences=true'.
+  - Unity's Package Manager (UPM) ignores this file when importing packages from a Git repository.
+
+  In summary, any settings or defines specified here are only applied during local development
+  and will not affect the build process in consumer environments like Unity or in published packages.
+-->
+<Project>
+  <PropertyGroup>
+    <GodotInstallationPath Condition="'$(GodotInstallationPath)'==''">/opt/Godot/GodotSharp/</GodotInstallationPath>
+    <DefineConstants Condition="'$(DisableGodotReferences)' != 'true'">$(DefineConstants);GODOT4;GODOT4_3_OR_GREATER</DefineConstants>
+    <!--<DefineConstants Condition="'$(DisableGodotReferences)' != 'true'">$(DefineConstants);GODOT4;GODOT4_3_OR_GREATER;GODOT_EDITOR</DefineConstants>-->
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DisableGodotReferences)' != 'true' and $(DefineConstants.Contains('GODOT4_3_OR_GREATER'))">
+    <Reference Include="GodotSharp">
+      <HintPath>$(GodotInstallationPath)Api/Release/GodotSharp.dll</HintPath>
+    </Reference>
+    <!--<Reference Include="GodotSharpEditor">
+      <HintPath>$(GodotInstallationPath)Api/Release/GodotSharpEditor.dll</HintPath>
+    </Reference>-->
+    <!--<Reference Include="GodotPlugins">
+      <HintPath>$(GodotInstallationPath)Api/Release/GodotPlugins.dll</HintPath>
+    </Reference>-->
+  </ItemGroup>
+</Project>

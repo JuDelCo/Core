@@ -66,7 +66,7 @@ namespace Ju.Log
 #endif
 		}
 
-		internal static bool contextEnabled = true;
+		internal static bool contextEnabled = false;
 		internal static bool folderTrim = false;
 	}
 }

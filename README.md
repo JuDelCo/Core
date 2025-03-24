@@ -21,7 +21,7 @@ The Wiki explains [**how to install**](https://github.com/JuDelCo/Core/wiki/Usag
 - For **Unity**, update the dependencies in the ```/Packages/manifest.json``` file in your project folder by adding:
 
 ```json
-	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.45.0",
+	"com.judelco.core": "https://github.com/JuDelCo/Core.git#v1.46.0",
 ```
 
 - For native **.NET projects**, **Godot**, etc... run the following command in the console of your .NET project to add the package:

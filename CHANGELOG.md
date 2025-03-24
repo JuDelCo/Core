@@ -1,6 +1,28 @@
 
 # Changelog
 
+## [1.46.0] - 2025-03-24.
+
+### Added
+
+- Add new Godot integration to the new Runtime/Integrations folder.
+- Add a .targets file to automatically include and compile the source files in consumer projects for seamless source-only package integration.
+
+### Changed
+
+- Disable context in logs by default.
+- Move Unity integration to a new Runtime/Integrations folder.
+- Change the NuGet package type to a source-only package.
+- Add a new Directory.Build.props file to improve local development for Godot.
+- Configure local development to target net8.0 when working with Godot.
+
+### Improved
+
+- Include LICENSE.md and CHANGELOG.md files in the final NuGet package.
+- Update tags in package.json.
+- Update the .editorconfig file.
+- Update VSCode settings.json.
+
 ## [1.45.0] - 2025-03-13
 
 ### Improved
@@ -223,16 +245,3 @@
 ### Improved
 
 - Add new internal service cache for all internal service usage.
-
-[1.45.0]: https://github.com/JuDelCo/Core/compare/v1.44.0...v1.45.0
-[1.44.0]: https://github.com/JuDelCo/Core/compare/v1.43.0...v1.44.0
-[1.43.0]: https://github.com/JuDelCo/Core/compare/v1.42.0...v1.43.0
-[1.42.0]: https://github.com/JuDelCo/Core/compare/v1.41.0...v1.42.0
-[1.41.0]: https://github.com/JuDelCo/Core/compare/v1.40.0...v1.41.0
-[1.40.0]: https://github.com/JuDelCo/Core/compare/v1.39.0...v1.40.0
-[1.39.0]: https://github.com/JuDelCo/Core/compare/v1.38.0...v1.39.0
-[1.38.0]: https://github.com/JuDelCo/Core/compare/v1.37.0...v1.38.0
-[1.37.0]: https://github.com/JuDelCo/Core/compare/v1.36.0...v1.37.0
-[1.36.0]: https://github.com/JuDelCo/Core/compare/v1.35.0...v1.36.0
-[1.35.0]: https://github.com/JuDelCo/Core/compare/v1.34.0...v1.35.0
-[1.34.0]: https://github.com/JuDelCo/Core/compare/v1.33.0...v1.34.0

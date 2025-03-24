@@ -1,32 +1,49 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.45.0</Version>
-    <Authors>Juan Delgado (@JuDelCo)</Authors>
     <Title>JuCore</Title>
+    <Version>1.46.0</Version>
     <AssemblyName>JuCore</AssemblyName>
+    <Authors>Juan Delgado (@JuDelCo)</Authors>
+	<Copyright>Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)</Copyright>
     <Description>Service locator (IoC Container), object factory, util classes and lots of services to ease the development of C# applications and games</Description>
-    <RepositoryType>git</RepositoryType>
     <PackageId>JuDelCo.Lib.Core</PackageId>
+	<PackageTags>Core;JuCore;IOC;Container;ServiceLocator;DependencyInjection;Utilities;Service;Factory;Event;Eventbus;Log;Promise;Timer;Coroutine;Task;Cache;Data;Sync;Async;Pool;FSM;Time;Color;Util</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/JuDelCo/Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JuDelCo/Core</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="/"/>
+    <None Include="CHANGELOG.md" Pack="true" PackagePath="/"/>
+    <None Include="LICENSE.md" Pack="true" PackagePath="/"/>
+    <None Include="build/JuDelCo.Lib.Core.targets" Pack="true" PackagePath="build" />
+    <Content Include="**/*.cs" Exclude="bin/**;obj/**" Pack="true" PackagePath="contentFiles/cs/any/" />
   </ItemGroup>
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
 
+  <PropertyGroup>
     <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
     <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
     <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+    <IsGodotBuild Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(DefineConstants), 'GODOT'))">true</IsGodotBuild>
+  </PropertyGroup>
 
-    <InvariantGlobalization>true</InvariantGlobalization>
+  <PropertyGroup Condition="'$(IsGodotBuild)'!='true'">
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsGodotBuild)'=='true'">
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(IsLinux)'=='true'">

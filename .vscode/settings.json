@@ -1,24 +1,38 @@
 {
 	"files.exclude": {
+		// -------------------------------
+		// System / Git / Editor
+		// -------------------------------
 		"**/.DS_Store": true,
 		"**/.hidden": true,
+		"*.lnk": true,
 		"**/.git": true,
 		"**/.gitignore": true,
 		"**/.gitattributes": true,
 		"**/.gitmodules": true,
 		"**/.editorconfig": true,
+		".vscode/": true,
+		".vs/": true,
+		// -------------------------------
+		// Visual Studio & Build Artifacts
+		// -------------------------------
 		"**/*.booproj": true,
 		"**/*.pidb": true,
 		"**/*.suo": true,
 		"**/*.user": true,
 		"**/*.userprefs": true,
 		"**/*.dll": true,
-		"**/*.pdb": true,
 		"**/*.exe": true,
-		"**/*.pdf": true,
-		"**/*.mid": true,
-		"**/*.midi": true,
-		"**/*.wav": true,
+		"**/*.pdb": true,
+		"**/bin/": true,
+		"**/Bin/": true,
+		"**/obj/": true,
+		"**/Obj/": true,
+		"**/nuget.config": true,
+		"**/runtimes/": true,
+		// -------------------------------
+		// Media Files
+		// -------------------------------
 		"**/*.gif": true,
 		"**/*.ico": true,
 		"**/*.jpg": true,
@@ -28,6 +42,9 @@
 		"**/*.tga": true,
 		"**/*.tif": true,
 		"**/*.tiff": true,
+		"**/*.mid": true,
+		"**/*.midi": true,
+		"**/*.wav": true,
 		"**/*.3ds": true,
 		"**/*.3DS": true,
 		"**/*.fbx": true,
@@ -38,33 +55,26 @@
 		"**/*.MA": true,
 		"**/*.obj": true,
 		"**/*.OBJ": true,
-		// ----------------
-		".vs/": true,
-		".vscode/": true,
-		".gradle/": true,
-		"*.lnk": true,
-		"**/bin/": true,
-		"**/Bin/": true,
-		"**/obj/": true,
-		"**/Obj/": true,
-		"**/LICENSE": true,
-		"**/LICENSE.md": true,
-		//"**/*.csproj": true,
-		"**/nuget.config": true,
-		"**/runtimes/": true,
-		// ----------------
+		"**/*.pdf": true,
+		// -------------------------------
+		// Unity & Game Assets
+		// -------------------------------
+		"Library/": true,
 		"**/*.asset": true,
 		"**/*.asmdef": true,
-		"**/*.unityproj": true,
+		"**/*.anim": true,
 		"**/*.cubemap": true,
+		"**/*.controller": true,
 		"**/*.flare": true,
 		"**/*.mat": true,
 		"**/*.meta": true,
 		"**/*.prefab": true,
-		"**/*.unity": true,
-		"**/*.anim": true,
-		"**/*.controller": true,
 		"**/*.physicsMaterial2D": true,
+		"**/*.unity": true,
+		"**/*.unityproj": true,
+		"**/LICENSE": true,
+		"**/LICENSE.md": true,
+		".gradle/": true,
 	},
 	"files.watcherExclude": {
 		"**/.git/objects/**": true,

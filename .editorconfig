@@ -1,20 +1,33 @@
-
-; ---------------------------
-; 2021 Juan Delgado (JuDelCo)
-; ---------------------------
+; This .editorconfig file is used to enforce code style and formatting standards
+; across the project. Please adhere to these settings to ensure consistency.
+; - Juan Delgado (@JuDelCo)
 
 ; Basic text editor config
 ; Reference: http://editorconfig.org
+[*]
+charset = utf-8
+end_of_line = lf
+
+; .NET CSharp files
 [*.cs]
 indent_style = tab
 indent_size = 4
-charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
 
-; Code analysis - Ignore rules (NET native project & Unity3D project)
+; Code analysis - Ignore rules (.NET native)
 [**bin/**.cs]
 generated_code = true
 [**obj/**.cs]
 generated_code = true
+
+; Code analysis - Ignore rules (Unity3D)
+; Extra:
+; 	1- Create a new file in: %UnityEditor_Folder%/Editor/Data/Resources/PackageManager/.editorconfig
+; 	2- Add this to the file to prevent Unity built-in packages to be analyzed:
+;		[**.cs]
+;		generated_code = true
+;	3- You need to repeat it for each Unity installation
 [**PackageCache/**.cs]
 generated_code = true
 [Assets/Plugins/**.cs]
@@ -29,6 +42,11 @@ csharp_prefer_simple_using_statement = false:none
 csharp_style_prefer_switch_expression = false:none
 csharp_style_conditional_delegate_call = false:none
 csharp_style_implicit_object_creation_when_type_is_apparent = false:none
+csharp_space_after_cast = true
+csharp_space_between_parentheses = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+dotnet_sort_system_directives_first = true
 dotnet_code_quality_unused_parameters = non_public:none
 dotnet_style_object_initializer = false:silent
 dotnet_style_collection_initializer = false:silent
