@@ -107,7 +107,7 @@ namespace Ju.Random
 				throw new System.IndexOutOfRangeException("Dictionary is empty, cannot select a random item");
 			}
 
-			var values = dictionary.Values.ToList();
+			var values = IEnumerableExtensions.ToList(dictionary.Values);
 			var count = dictionary.Count;
 
 			return values[Int(count, random)];
@@ -120,7 +120,7 @@ namespace Ju.Random
 				throw new System.IndexOutOfRangeException("Dictionary is empty, cannot select a random item");
 			}
 
-			var values = dictionary.Values.ToList();
+			var values = IEnumerableExtensions.ToList(dictionary.Values);
 			var count = dictionary.Count;
 
 			for (int i = 0; i < iterations; ++i)
@@ -140,7 +140,7 @@ namespace Ju.Random
 
 			for (int i = tempDictionary.Count; i > 0; --i)
 			{
-				var key = tempDictionary.Keys.ElementAt(Int(i, random));
+				var key = IEnumerableExtensions.ElementAt(tempDictionary.Keys, Int(i, random));
 				var value = tempDictionary[key];
 				tempDictionary.Remove(key);
 
@@ -163,7 +163,7 @@ namespace Ju.Random
 
 			for (int i = count; i > minIndex; --i)
 			{
-				var key = tempDictionary.Keys.ElementAt(Int(i, random));
+				var key = IEnumerableExtensions.ElementAt(tempDictionary.Keys, Int(i, random));
 				var value = tempDictionary[key];
 				tempDictionary.Remove(key);
 
@@ -178,7 +178,7 @@ namespace Ju.Random
 				throw new System.IndexOutOfRangeException("Dictionary is empty, cannot remove a random item");
 			}
 
-			var keys = dictionary.Keys.ToList();
+			var keys = IEnumerableExtensions.ToList(dictionary.Keys);
 			var randomKey = keys[Int(dictionary.Count, random)];
 			var value = dictionary[randomKey];
 			dictionary.Remove(randomKey);

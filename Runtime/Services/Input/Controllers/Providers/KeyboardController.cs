@@ -20,7 +20,7 @@ namespace Ju.Input
 
 		public bool IsAnyKeyPressed()
 		{
-			var keys = Enum.GetValues(typeof(KeyboardKey)).Cast<KeyboardKey>();
+			var keys = IEnumerableExtensions.Cast<KeyboardKey>(Enum.GetValues(typeof(KeyboardKey)));
 
 			foreach (var key in keys)
 			{
@@ -55,7 +55,7 @@ namespace Ju.Input
 
 		public KeyboardKey FirstPressedKey()
 		{
-			var keys = Enum.GetValues(typeof(KeyboardKey)).Cast<KeyboardKey>();
+			var keys = IEnumerableExtensions.Cast<KeyboardKey>(Enum.GetValues(typeof(KeyboardKey)));
 
 			foreach (var key in keys)
 			{

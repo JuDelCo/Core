@@ -166,7 +166,7 @@ namespace Ju.Services
 
 			foreach (var gamepad in gamepads)
 			{
-				if (!Godot.Input.GetConnectedJoypads().Any(deviceId => GetUniqueGamepadId(deviceId) == gamepad.Id))
+				if (!IEnumerableExtensions.Any(Godot.Input.GetConnectedJoypads(), deviceId => GetUniqueGamepadId(deviceId) == gamepad.Id))
 				{
 					DisconnectGamepad(gamepad.Id);
 				}
@@ -373,7 +373,7 @@ namespace Ju.Services
 			}
 
 			// TODO: Ignored location (https://github.com/godotengine/godot/pull/80231)
-			return pressedKeyboardKeys.Any(k => k.key == keyCode);
+			return IEnumerableExtensions.Any(pressedKeyboardKeys, k => k.key == keyCode);
 		}
 
 		public override bool GetKeyboardHeldRaw(KeyboardKey key)
@@ -409,7 +409,7 @@ namespace Ju.Services
 			}
 
 			// TODO: Ignored location (https://github.com/godotengine/godot/pull/80231)
-			return releasedKeyboardKeys.Any(k => k.key == keyCode);
+			return IEnumerableExtensions.Any(releasedKeyboardKeys, k => k.key == keyCode);
 		}
 
 		private Godot.Key GetKeyboardKeyMapping(KeyboardKey key)
@@ -791,7 +791,7 @@ namespace Ju.Services
 
 			var godotJoyButton = GetGamepadButtonMapping(button);
 
-			return pressedJoyButtons.Any(b => b.device == deviceId && b.button == godotJoyButton);
+			return IEnumerableExtensions.Any(pressedJoyButtons, b => b.device == deviceId && b.button == godotJoyButton);
 		}
 
 		public override bool GetGamepadButtonHeldRaw(IGamepadController gamepad, GamepadButton button)
@@ -837,7 +837,7 @@ namespace Ju.Services
 
 			var godotJoyButton = GetGamepadButtonMapping(button);
 
-			return releasedJoyButtons.Any(b => b.device == deviceId && b.button == godotJoyButton);
+			return IEnumerableExtensions.Any(releasedJoyButtons, b => b.device == deviceId && b.button == godotJoyButton);
 		}
 
 		private int GetGamepadDeviceId(IGamepadController gamepad)

@@ -35,7 +35,7 @@ namespace Ju.Services
 			{
 				foreach (var player in players)
 				{
-					var actions = (List<IInputAction>)player.Actions;
+					var actions = (List<IInputAction>) player.Actions;
 
 					foreach (InputAction action in actions)
 					{
@@ -54,7 +54,7 @@ namespace Ju.Services
 				return;
 			}
 
-			if (!gamepads.Any(g => g.Id == gamepadId))
+			if (!IEnumerableExtensions.Any(gamepads, g => g.Id == gamepadId))
 			{
 				var gamepad = new GamepadController(gamepadId, this);
 				gamepads.Add(gamepad);
@@ -128,7 +128,7 @@ namespace Ju.Services
 
 		public bool IsAnyPressed()
 		{
-			return mouse.IsAnyButtonPressed() || keyboard.IsAnyKeyPressed() || gamepads.Any(g => g.IsAnyButtonPressed());
+			return mouse.IsAnyButtonPressed() || keyboard.IsAnyKeyPressed() || IEnumerableExtensions.Any(gamepads, g => g.IsAnyButtonPressed());
 		}
 	}
 }

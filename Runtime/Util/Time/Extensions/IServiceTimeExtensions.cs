@@ -21,7 +21,7 @@ namespace Ju.Services.Extensions
 			return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 		}
 
-		public static ITimer NewTimer<T>(this IService service, float seconds, Action onCompleted) where T : ITimeDeltaEvent
+		public static Time.ITimer NewTimer<T>(this IService service, float seconds, Action onCompleted) where T : ITimeDeltaEvent
 		{
 			var linkHandler = new ObjectLinkHandler<IService>(service);
 			return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);

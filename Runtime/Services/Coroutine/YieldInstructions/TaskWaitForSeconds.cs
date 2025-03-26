@@ -9,7 +9,7 @@ namespace Ju.Services
 	{
 		public override bool KeepWaiting { get { return timer.GetTimeLeft().seconds > 0f; } }
 
-		private readonly ITimer timer;
+		private readonly Time.ITimer timer;
 
 		public TaskWaitForSeconds(float seconds)
 		{

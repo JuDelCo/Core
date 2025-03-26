@@ -1,6 +1,14 @@
 
 # Changelog
 
+## [1.48.0] - 2025-03-26
+
+### Fixed
+
+- Fix compilation issues when the 'Implicit Usings' NET project property is enabled.
+- Fix warnings when the 'Nullable' NET project property is enabled.
+- Add missing .meta files for Unity.
+
 ## [1.47.0] - 2025-03-24
 
 ### Fixed

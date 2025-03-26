@@ -22,7 +22,7 @@ namespace Ju.Input
 
 		public bool IsAnyButtonPressed()
 		{
-			var buttons = Enum.GetValues(typeof(MouseButton)).Cast<MouseButton>();
+			var buttons = IEnumerableExtensions.Cast<MouseButton>(Enum.GetValues(typeof(MouseButton)));
 
 			foreach (var button in buttons)
 			{
@@ -57,7 +57,7 @@ namespace Ju.Input
 
 		public MouseButton FirstPressedButton()
 		{
-			var buttons = Enum.GetValues(typeof(MouseButton)).Cast<MouseButton>();
+			var buttons = IEnumerableExtensions.Cast<MouseButton>(Enum.GetValues(typeof(MouseButton)));
 
 			foreach (var button in buttons)
 			{

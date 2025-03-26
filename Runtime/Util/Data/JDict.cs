@@ -44,7 +44,7 @@ namespace Ju.Data
 
 			foreach (var property in this.GetType().GetProperties())
 			{
-				if (ignoredProperties.Contains(property.Name))
+				if (IEnumerableExtensions.Contains(ignoredProperties, property.Name))
 				{
 					continue;
 				}
@@ -201,7 +201,7 @@ namespace Ju.Data
 			}
 			else
 			{
-				Add(key, (JNode)new JData<T>(value, defaultValue));
+				Add(key, (JNode) new JData<T>(value, defaultValue));
 			}
 		}
 
@@ -254,7 +254,7 @@ namespace Ju.Data
 
 		public bool Contains(KeyValuePair<string, JNode> kvp)
 		{
-			return dictionary.Contains(kvp);
+			return IEnumerableExtensions.Contains(dictionary, kvp);
 		}
 
 		public void CopyTo(KeyValuePair<string, JNode>[] array, int arrayIndex)

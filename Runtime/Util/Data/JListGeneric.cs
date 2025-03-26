@@ -28,7 +28,7 @@ namespace Ju.Data
 
 		public void Add(T node)
 		{
-			this.Add((JNode)node);
+			this.Add((JNode) node);
 		}
 
 		public void Add(IEnumerable<T> nodes)
@@ -38,32 +38,32 @@ namespace Ju.Data
 
 		public void Insert(int index, T node)
 		{
-			this.Insert(index, (JNode)node);
+			this.Insert(index, (JNode) node);
 		}
 
 		public bool Contains(T node)
 		{
-			return this.Contains((JNode)node);
+			return this.Contains((JNode) node);
 		}
 
 		public void CopyTo(T[] array, int arrayIndex)
 		{
-			this.CopyTo(array.Map(n => n as JNode).ToArray(), arrayIndex);
+			this.CopyTo(IEnumerableExtensions.ToArray(array.Map(n => n as JNode)), arrayIndex);
 		}
 
 		public new IEnumerator<T> GetEnumerator()
 		{
-			return ((JList)this).Map(n => n as T).GetEnumerator();
+			return ((JList) this).Map(n => n as T).GetEnumerator();
 		}
 
 		public int IndexOf(T node)
 		{
-			return this.IndexOf((JNode)node);
+			return this.IndexOf((JNode) node);
 		}
 
 		public bool Remove(T node)
 		{
-			return this.Remove((JNode)node);
+			return this.Remove((JNode) node);
 		}
 	}
 }

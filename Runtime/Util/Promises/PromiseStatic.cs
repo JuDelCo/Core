@@ -48,7 +48,7 @@ namespace Ju.Promises
 
 		public static IPromise All(IEnumerable<IPromise> promises)
 		{
-			var promiseList = promises.ToList();
+			var promiseList = IEnumerableExtensions.ToList(promises);
 			var counter = promiseList.Count;
 
 			if (counter == 0)
@@ -87,7 +87,7 @@ namespace Ju.Promises
 		public static IPromise Sequence(IEnumerable<Func<IPromise>> functions)
 		{
 			var resultPromise = new Promise();
-			var startValue = (IPromise)Promise.Resolved();
+			var startValue = (IPromise) Promise.Resolved();
 
 			functions.Reduce(startValue, (previousPromise, function) =>
 			{
@@ -106,7 +106,7 @@ namespace Ju.Promises
 
 		public static IPromise Race(IEnumerable<IPromise> promises)
 		{
-			var promiseList = promises.ToList();
+			var promiseList = IEnumerableExtensions.ToList(promises);
 
 			if (promiseList.Count == 0)
 			{
@@ -143,7 +143,7 @@ namespace Ju.Promises
 
 		public static IPromise<T> Race<T>(IEnumerable<IPromise<T>> promises)
 		{
-			var promiseList = promises.ToList();
+			var promiseList = IEnumerableExtensions.ToList(promises);
 
 			if (promiseList.Count == 0)
 			{

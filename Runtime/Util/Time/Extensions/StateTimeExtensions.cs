@@ -19,7 +19,7 @@ public static class StateTimeExtensions
 		return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 	}
 
-	public static ITimer NewTimer<T>(this State state, float seconds, Action onCompleted) where T : ITimeDeltaEvent
+	public static Ju.Time.ITimer NewTimer<T>(this State state, float seconds, Action onCompleted) where T : ITimeDeltaEvent
 	{
 		var linkHandler = new StateLinkHandler(state);
 		return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);

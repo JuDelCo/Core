@@ -30,7 +30,7 @@ namespace Ju.Input
 				return false;
 			}
 
-			var buttons = Enum.GetValues(typeof(GamepadButtonRaw)).Cast<GamepadButtonRaw>();
+			var buttons = IEnumerableExtensions.Cast<GamepadButtonRaw>(Enum.GetValues(typeof(GamepadButtonRaw)));
 
 			foreach (var button in buttons)
 			{
@@ -115,7 +115,7 @@ namespace Ju.Input
 				return GamepadButton.None;
 			}
 
-			var buttons = Enum.GetValues(typeof(GamepadButton)).Cast<GamepadButton>();
+			var buttons = IEnumerableExtensions.Cast<GamepadButton>(Enum.GetValues(typeof(GamepadButton)));
 
 			foreach (var button in buttons)
 			{
@@ -140,7 +140,7 @@ namespace Ju.Input
 				return false;
 			}
 
-			var gamepadAxis = Enum.GetValues(typeof(GamepadAxisRaw)).Cast<GamepadAxisRaw>();
+			var gamepadAxis = IEnumerableExtensions.Cast<GamepadAxisRaw>(Enum.GetValues(typeof(GamepadAxisRaw)));
 
 			foreach (var axis in gamepadAxis)
 			{
@@ -198,7 +198,7 @@ namespace Ju.Input
 				return GamepadAxis.None;
 			}
 
-			var gamepadAxis = Enum.GetValues(typeof(GamepadAxis)).Cast<GamepadAxis>();
+			var gamepadAxis = IEnumerableExtensions.Cast<GamepadAxis>(Enum.GetValues(typeof(GamepadAxis)));
 
 			foreach (var axis in gamepadAxis)
 			{

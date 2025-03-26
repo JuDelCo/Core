@@ -24,7 +24,7 @@ namespace Ju.Extensions
 			return new Clock<T>(elapsedSeconds, () => linkHandler.IsActive);
 		}
 
-		public static ITimer NewTimer<T>(this Node node, float seconds, Action onCompleted, bool alwaysActive = false) where T : ITimeDeltaEvent
+		public static Time.ITimer NewTimer<T>(this Node node, float seconds, Action onCompleted, bool alwaysActive = false) where T : ITimeDeltaEvent
 		{
 			var linkHandler = new NodeLinkHandler(node, alwaysActive);
 			return new Timer<T>(seconds, onCompleted, () => linkHandler.IsActive);

@@ -182,7 +182,7 @@ public static class JNodeExtensions
 			var nodeDict = node.AsDict();
 			var dataDict = data.AsDict();
 
-			var kvps = dataDict.AsEnumerableDict().Reverse();
+			var kvps = IEnumerableExtensions.Reverse(dataDict.AsEnumerableDict());
 
 			kvps.ForEachReverse(kvp =>
 			{
@@ -212,7 +212,7 @@ public static class JNodeExtensions
 				nodeList.Clear();
 			}
 
-			var nodes = dataList.Reverse();
+			var nodes = IEnumerableExtensions.Reverse(dataList);
 
 			nodes.ForEachReverse(item =>
 			{
