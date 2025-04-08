@@ -59,7 +59,7 @@ namespace Ju.Services
 		public GameObject Spawn(Prefab prefab, Transform parent, Vector3 position, Quaternion rotation)
 		{
 			var pool = pools.GetOrInsertNew(prefab);
-			var target = pool.Find(go => !go.activeInHierarchy && !go.activeSelf);
+			var target = pool.Find(go => IsInPool(go));
 
 			if (target == null)
 			{
@@ -117,7 +117,7 @@ namespace Ju.Services
 
 				foreach (var go in pool)
 				{
-					if (includeActive || (!go.activeInHierarchy && !go.activeSelf))
+					if (includeActive || IsInPool(go))
 					{
 						++total;
 					}
@@ -158,7 +158,7 @@ namespace Ju.Services
 					return;
 				}
 
-				if (!go.activeInHierarchy && !go.activeSelf)
+				if (IsInPool(go))
 				{
 					GameObject.Destroy(go);
 					pool.Remove(go);
@@ -193,7 +193,7 @@ namespace Ju.Services
 
 			pool.ForEachReverse(go =>
 			{
-				if (clearSpawned || (!go.activeInHierarchy && !go.activeSelf))
+				if (clearSpawned || IsInPool(go))
 				{
 #if UNITY_EDITOR
 					if (UnityEditor.EditorApplication.isPlaying)
@@ -219,6 +219,11 @@ namespace Ju.Services
 			{
 				Clear(kvp.Key, clearSpawned);
 			}
+		}
+
+		private bool IsInPool(Prefab go)
+		{
+			return (go.transform.parent == container.transform);
 		}
 	}
 }

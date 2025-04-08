@@ -1,6 +1,13 @@
 
 # Changelog
 
+## [1.49.0] - 2025-04-08
+
+### Fixed
+
+- Fix Unity's PrefabPool service bug spawning cached prefab instances when they aren't active.
+- Remove .meta file for an empty old Unity folder.
+
 ## [1.48.0] - 2025-03-26
 
 ### Fixed

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Title>JuCore</Title>
-    <Version>1.48.0</Version>
+    <Version>1.49.0</Version>
     <AssemblyName>JuCore</AssemblyName>
     <Authors>Juan Delgado (@JuDelCo)</Authors>
 	<Copyright>Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)</Copyright>
