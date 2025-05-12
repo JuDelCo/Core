@@ -2,6 +2,10 @@
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
 using System;
+using System.Collections.Specialized;
+using Ju.Handlers;
+using Ju.FSM;
+using Ju.Services;
 
 namespace Ju.Hjson
 {
@@ -9,6 +13,16 @@ namespace Ju.Hjson
 
 	public static class JsonObjectExtensions
 	{
+		public static void Subscribe(this JsonObject obj, IService service, Action<NotifyCollectionChangedEventArgs> action)
+		{
+			obj.Subscribe(new ObjectLinkHandler<IService>(service), action);
+		}
+
+		public static void Subscribe(this JsonObject obj, State state, Action<NotifyCollectionChangedEventArgs> action)
+		{
+			obj.Subscribe(new StateLinkHandler(state), action);
+		}
+
 		public static bool HasValue(this JsonObject obj, string key)
 		{
 			return obj.ContainsKey(key);

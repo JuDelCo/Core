@@ -3,12 +3,20 @@
 
 #if UNITY_2019_3_OR_NEWER
 
+using System;
+using System.Collections.Specialized;
+using Ju.Handlers;
 using UnityEngine;
 
 namespace Ju.Hjson
 {
 	public static class JsonObjectUnityExtensions
 	{
+		public static void Subscribe(this JsonObject obj, Behaviour behaviour, Action<NotifyCollectionChangedEventArgs> action, bool alwaysActive = false)
+		{
+			obj.Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action);
+		}
+
 		public static UnityEngine.Color GetValue(this JsonObject obj, string key, UnityEngine.Color defaultValue = default(UnityEngine.Color))
 		{
 			return obj.ContainsKey(key) ? obj[key].GetValue(defaultValue) : defaultValue;

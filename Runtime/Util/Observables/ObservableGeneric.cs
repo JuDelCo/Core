@@ -49,9 +49,9 @@ namespace Ju.Observables
 			actions.Add(new ObservableHandleActionPair<T>(handle, action));
 		}
 
-		public bool HasSubscribers()
+		public int SubscribersCount()
 		{
-			return (actions.Count > 0);
+			return actions.Count;
 		}
 
 		public void Trigger()

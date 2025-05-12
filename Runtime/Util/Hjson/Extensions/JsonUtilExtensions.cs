@@ -1,4 +1,5 @@
 ﻿// SPDX-License-Identifier: MIT
+// Copyright (c) 2021-2025 Juan Delgado (@JuDelCo)
 // Copyright (c) 2014-2016 Christian Zangl
 // Copyright (c) 2001-2003 Ximian, Inc
 // Based on System.Json from https://github.com/mono/mono (MIT X11)
@@ -12,12 +13,12 @@ using System.Text;
 namespace Ju.Hjson
 {
 	/// <summary>Provides Json extension methods.</summary>
-	public static class JsonUtil
+	public static class JsonUtilExtensions
 	{
 		static Exception FailQ(JsonValue forObject, string op)
 		{
 			string type = forObject != null ? forObject.JsonType.ToString().ToLower() : "null";
-			return new Exception("JsonUtil." + op + " not supported for type " + type + "!");
+			return new Exception("JsonUtilExtensions." + op + " not supported for type " + type + "!");
 		}
 
 		static Exception FailM(Exception e, string key)
@@ -31,7 +32,7 @@ namespace Ju.Hjson
 		/// value as bool, otherwise it will throw.</summary>
 		public static bool Qb(this JsonValue json)
 		{
-			if (json != null && json.JsonType == JsonType.Boolean) return (bool)json.ToValue();
+			if (json != null && json.JsonType == JsonType.Boolean) return (bool) json.ToValue();
 			else throw FailQ(json, "Qb");
 		}
 
@@ -113,7 +114,7 @@ namespace Ju.Hjson
 		public static string Qs(this JsonValue json)
 		{
 			if (json == null) return null;
-			else if (json.JsonType == JsonType.String) return (string)json;
+			else if (json.JsonType == JsonType.String) return (string) json;
 			else throw FailQ(json, "Qs");
 		}
 
@@ -134,7 +135,7 @@ namespace Ju.Hjson
 		public static string Qstr(this JsonValue json)
 		{
 			if (json == null) return null;
-			else if (json.JsonType == JsonType.String) return (string)json;
+			else if (json.JsonType == JsonType.String) return (string) json;
 			else if (json.JsonType == JsonType.Boolean || json.JsonType == JsonType.Number) return json.ToString();
 			else throw FailQ(json, "Qstr");
 		}
@@ -162,28 +163,28 @@ namespace Ju.Hjson
 		/// <summary>Gets a JsonObject from a JsonObject.</summary>
 		public static JsonObject Qo(this JsonObject json, string key)
 		{
-			try { return (JsonObject)json.Qv(key); }
+			try { return (JsonObject) json.Qv(key); }
 			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>Gets the JsonObject from a JsonValue.</summary>
 		public static JsonObject Qo(this JsonValue json)
 		{
-			try { return (JsonObject)json; }
+			try { return (JsonObject) json; }
 			catch { throw FailQ(json, "Qo"); }
 		}
 
 		/// <summary>Gets a JsonArray from a JsonObject.</summary>
 		public static JsonArray Qa(this JsonObject json, string key)
 		{
-			try { return (JsonArray)json.Qv(key); }
+			try { return (JsonArray) json.Qv(key); }
 			catch (Exception e) { throw FailM(e, key); }
 		}
 
 		/// <summary>Gets the JsonArray from a JsonValue.</summary>
 		public static JsonArray Qa(this JsonValue json)
 		{
-			try { return (JsonArray)json; }
+			try { return (JsonArray) json; }
 			catch { throw FailQ(json, "Qo"); }
 		}
 
@@ -199,7 +200,7 @@ namespace Ju.Hjson
 		public static long ToJsonDate(this DateTime dt)
 		{
 			if (dt == DateTime.MinValue) return 0;
-			else return (long)(dt.ToUniversalTime() - UnixEpochUtc).TotalMilliseconds;
+			else return (long) (dt.ToUniversalTime() - UnixEpochUtc).TotalMilliseconds;
 		}
 
 		/// <summary>Convert the json date (unix epoch date offset) to a DateTime.</summary>

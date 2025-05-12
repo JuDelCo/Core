@@ -1,6 +1,16 @@
 
 # Changelog
 
+## [1.50.0] - 2025-05-12
+
+### Add
+
+- Add INotifyCollectionChanged interface to JsonArray and JsonObject collections so they can be observables.
+
+### Changed
+
+- Replace HasSubscribers method with SubscriberCount in Observables.
+
 ## [1.49.0] - 2025-04-08
 
 ### Fixed
