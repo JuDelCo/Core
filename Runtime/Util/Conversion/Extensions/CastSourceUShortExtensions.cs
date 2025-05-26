@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
-namespace Ju.Data.Conversion
+using Ju.Data.Conversion;
+
+public static class CastSourceUShortExtensions
 {
-	public static class CastSourceUShortExtensions
+	public static string AsString(this CastSource<ushort> source)
 	{
-		public static string AsString(this CastSource<ushort> source)
-		{
-			return source.value.ToString();
-		}
+		return source.value.ToString();
 	}
 }

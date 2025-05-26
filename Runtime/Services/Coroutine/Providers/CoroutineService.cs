@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Ju.Handlers;
-using Ju.Services.Extensions;
 using Ju.Time;
 
 namespace Ju.Services

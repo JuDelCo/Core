@@ -4,7 +4,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Ju.Crypt
+namespace Ju.Extensions
 {
 	public static class MD5StringExtensions
 	{

@@ -3,16 +3,14 @@
 
 #if UNITY_2019_3_OR_NEWER
 
+using Ju.Data.Conversion;
 using UnityEngine;
 
-namespace Ju.Data.Conversion
+public static class CastSourceUnityVector4Extensions
 {
-	public static class CastSourceUnityVector4Extensions
+	public static string AsString(this CastSource<Vector4> source)
 	{
-		public static string AsString(this CastSource<Vector4> source)
-		{
-			return $"{Cast.This(source.value.x).AsString()}, {Cast.This(source.value.y).AsString()}, {Cast.This(source.value.z).AsString()}, {Cast.This(source.value.w).AsString()}";
-		}
+		return $"{Cast.This(source.value.x).AsString()}, {Cast.This(source.value.y).AsString()}, {Cast.This(source.value.z).AsString()}, {Cast.This(source.value.w).AsString()}";
 	}
 }
 

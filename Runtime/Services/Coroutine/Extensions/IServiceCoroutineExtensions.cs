@@ -3,15 +3,13 @@
 
 using System.Collections;
 using Ju.Handlers;
+using Ju.Services;
 using Ju.Services.Internal;
 
-namespace Ju.Services.Extensions
+public static class IServiceCoroutineExtensions
 {
-	public static class IServiceCoroutineExtensions
+	public static Coroutine CoroutineStart(this IService service, IEnumerator routine)
 	{
-		public static Coroutine CoroutineStart(this IService service, IEnumerator routine)
-		{
-			return ServiceCache.Coroutine.StartCoroutine(new ObjectLinkHandler<IService>(service), routine);
-		}
+		return ServiceCache.Coroutine.StartCoroutine(new ObjectLinkHandler<IService>(service), routine);
 	}
 }

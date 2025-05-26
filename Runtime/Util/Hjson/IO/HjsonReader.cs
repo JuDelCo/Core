@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace Ju.Hjson
@@ -17,7 +16,7 @@ namespace Ju.Hjson
 	internal class HjsonReader : BaseReader
 	{
 		readonly StringBuilder sb = new StringBuilder();
-		readonly IEnumerable<IHjsonDsfProvider> dsfProviders = Enumerable.Empty<IHjsonDsfProvider>();
+		readonly IEnumerable<IHjsonDsfProvider> dsfProviders = System.Linq.Enumerable.Empty<IHjsonDsfProvider>();
 
 		public HjsonReader(TextReader reader, IJsonReader jsonReader, HjsonOptions options)
 		  : base(reader, jsonReader)

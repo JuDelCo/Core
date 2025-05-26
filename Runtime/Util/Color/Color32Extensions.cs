@@ -2,6 +2,7 @@
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
 using System;
+using Ju.Color;
 
 namespace Ju.Color
 {
@@ -171,128 +172,128 @@ namespace Ju.Color
 			);
 		}
 	}
+}
 
-	public static class Color32Extensions
+public static class Color32Extensions
+{
+	public static Color32 WithRed(this Color32 color, int red)
 	{
-		public static Color32 WithRed(this Color32 color, int red)
+		return new Color32(red, color.g, color.b, color.a);
+	}
+
+	public static Color32 WithGreen(this Color32 color, int green)
+	{
+		return new Color32(color.r, green, color.b, color.a);
+	}
+
+	public static Color32 WithBlue(this Color32 color, int blue)
+	{
+		return new Color32(color.r, color.g, blue, color.a);
+	}
+
+	public static Color32 WithAlpha(this Color32 color, int alpha)
+	{
+		return new Color32(color.r, color.g, color.b, alpha);
+	}
+
+	public static float Brightness(this Color32 color)
+	{
+		float red = color.r;
+		float green = color.g;
+		float blue = color.b;
+		float max = Max(red, green, blue);
+
+		return max / 255f;
+	}
+
+	public static float BrightnessPerceived(this Color32 color)
+	{
+		// Photometric/digital ITU BT.709
+		// return (color.r * 0.2126f + color.g * 0.7152f + color.b * 0.0722f);
+
+		// HSP Color model
+		// return System.Math.Sqrt(System.Math.Pow(color.r, 2) * 0.299f + System.Math.Pow(color.g, 2) * 0.587f + System.Math.Pow(color.b, 2) * 0.114f);
+
+		// Digital ITU BT.601
+		return (color.r * 0.299f + color.g * 0.587f + color.b * 0.114f);
+	}
+
+	public static Color32 Grayscale(this Color32 color)
+	{
+		return new Color32(
+			(color.r * 0.299f + color.g * 0.587f + color.b * 0.114f),
+			(color.r * 0.299f + color.g * 0.587f + color.b * 0.114f),
+			(color.r * 0.299f + color.g * 0.587f + color.b * 0.114f),
+			color.a
+		);
+	}
+
+	public static float Hue(this Color32 color)
+	{
+		float hueValue = 0f;
+		float red = color.r / 255f;
+		float green = color.g / 255f;
+		float blue = color.b / 255f;
+		float min = Min(red, green, blue);
+		float max = Max(red, green, blue);
+
+		if (red == max && blue == min)
 		{
-			return new Color32(red, color.g, color.b, color.a);
+			hueValue = green / 6;
+		}
+		else if (green == max && blue == min)
+		{
+			hueValue = (red - 2) / -6;
+		}
+		else if (red == min && green == max)
+		{
+			hueValue = (blue + 2) / 6;
+		}
+		else if (red == min && blue == max)
+		{
+			hueValue = (green - 4) / -6;
+		}
+		else if (green == min && blue == max)
+		{
+			hueValue = (red + 4) / 6;
+		}
+		else if (red == max && green == min)
+		{
+			hueValue = (blue - 6) / -6;
 		}
 
-		public static Color32 WithGreen(this Color32 color, int green)
+		return hueValue;
+	}
+
+	public static Color32 Invert(this Color32 color)
+	{
+		return new Color32(255 - color.r, 255 - color.g, 255 - color.b, color.a);
+	}
+
+	public static float Saturation(this Color32 color)
+	{
+		float saturation = 0f;
+		float red = color.r / 255f;
+		float green = color.g / 255f;
+		float blue = color.b / 255f;
+		float min = Min(red, green, blue);
+		float max = Max(red, green, blue);
+
+		if (max > 0)
 		{
-			return new Color32(color.r, green, color.b, color.a);
+			saturation = (max - min) / max;
 		}
 
-		public static Color32 WithBlue(this Color32 color, int blue)
-		{
-			return new Color32(color.r, color.g, blue, color.a);
-		}
+		return saturation;
+	}
 
-		public static Color32 WithAlpha(this Color32 color, int alpha)
-		{
-			return new Color32(color.r, color.g, color.b, alpha);
-		}
+	private static float Min(float a, float b, float c)
+	{
+		return System.Math.Min(a, System.Math.Min(b, c));
+	}
 
-		public static float Brightness(this Color32 color)
-		{
-			float red = color.r;
-			float green = color.g;
-			float blue = color.b;
-			float max = Max(red, green, blue);
-
-			return max / 255f;
-		}
-
-		public static float BrightnessPerceived(this Color32 color)
-		{
-			// Photometric/digital ITU BT.709
-			// return (color.r * 0.2126f + color.g * 0.7152f + color.b * 0.0722f);
-
-			// HSP Color model
-			// return System.Math.Sqrt(System.Math.Pow(color.r, 2) * 0.299f + System.Math.Pow(color.g, 2) * 0.587f + System.Math.Pow(color.b, 2) * 0.114f);
-
-			// Digital ITU BT.601
-			return (color.r * 0.299f + color.g * 0.587f + color.b * 0.114f);
-		}
-
-		public static Color32 Grayscale(this Color32 color)
-		{
-			return new Color32(
-				(color.r * 0.299f + color.g * 0.587f + color.b * 0.114f),
-				(color.r * 0.299f + color.g * 0.587f + color.b * 0.114f),
-				(color.r * 0.299f + color.g * 0.587f + color.b * 0.114f),
-				color.a
-			);
-		}
-
-		public static float Hue(this Color32 color)
-		{
-			float hueValue = 0f;
-			float red = color.r / 255f;
-			float green = color.g / 255f;
-			float blue = color.b / 255f;
-			float min = Min(red, green, blue);
-			float max = Max(red, green, blue);
-
-			if (red == max && blue == min)
-			{
-				hueValue = green / 6;
-			}
-			else if (green == max && blue == min)
-			{
-				hueValue = (red - 2) / -6;
-			}
-			else if (red == min && green == max)
-			{
-				hueValue = (blue + 2) / 6;
-			}
-			else if (red == min && blue == max)
-			{
-				hueValue = (green - 4) / -6;
-			}
-			else if (green == min && blue == max)
-			{
-				hueValue = (red + 4) / 6;
-			}
-			else if (red == max && green == min)
-			{
-				hueValue = (blue - 6) / -6;
-			}
-
-			return hueValue;
-		}
-
-		public static Color32 Invert(this Color32 color)
-		{
-			return new Color32(255 - color.r, 255 - color.g, 255 - color.b, color.a);
-		}
-
-		public static float Saturation(this Color32 color)
-		{
-			float saturation = 0f;
-			float red = color.r / 255f;
-			float green = color.g / 255f;
-			float blue = color.b / 255f;
-			float min = Min(red, green, blue);
-			float max = Max(red, green, blue);
-
-			if (max > 0)
-			{
-				saturation = (max - min) / max;
-			}
-
-			return saturation;
-		}
-
-		private static float Min(float a, float b, float c)
-		{
-			return System.Math.Min(a, System.Math.Min(b, c));
-		}
-
-		private static float Max(float a, float b, float c)
-		{
-			return System.Math.Max(a, System.Math.Max(b, c));
-		}
+	private static float Max(float a, float b, float c)
+	{
+		return System.Math.Max(a, System.Math.Max(b, c));
 	}
 }

@@ -7,15 +7,13 @@ using System;
 using System.Collections.Specialized;
 using Godot;
 using Ju.Handlers;
+using Ju.Hjson;
 
-namespace Ju.Hjson
+public static class JsonArrayGodotExtensions
 {
-	public static class JsonArrayGodotExtensions
+	public static void Subscribe(this JsonArray array, Node node, Action<NotifyCollectionChangedEventArgs> action, bool alwaysActive = false)
 	{
-		public static void Subscribe(this JsonArray array, Node node, Action<NotifyCollectionChangedEventArgs> action, bool alwaysActive = false)
-		{
-			array.Subscribe(new NodeLinkHandler(node, alwaysActive), action);
-		}
+		array.Subscribe(new NodeLinkHandler(node, alwaysActive), action);
 	}
 }
 

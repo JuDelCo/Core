@@ -7,194 +7,196 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
+using Ju.Hjson;
 
-namespace Ju.Hjson
+public static class JsonUtilExtensions
 {
-	/// <summary>Provides Json extension methods.</summary>
-	public static class JsonUtilExtensions
+	private static Exception FailQ(JsonValue forObject, string op)
 	{
-		static Exception FailQ(JsonValue forObject, string op)
-		{
-			string type = forObject != null ? forObject.JsonType.ToString().ToLower() : "null";
-			return new Exception("JsonUtilExtensions." + op + " not supported for type " + type + "!");
-		}
+		string type = forObject != null ? forObject.JsonType.ToString().ToLower() : "null";
+		return new Exception("JsonUtilExtensions." + op + " not supported for type " + type + "!");
+	}
 
-		static Exception FailM(Exception e, string key)
-		{
-			string msg = e.Message;
-			if (msg.EndsWith("!")) msg = msg.Substring(0, msg.Length - 1);
-			return new Exception(msg + " [key:" + key + "]!");
-		}
+	private static Exception FailM(Exception e, string key)
+	{
+		string msg = e.Message;
+		if (msg.EndsWith("!")) msg = msg.Substring(0, msg.Length - 1);
+		return new Exception(msg + " [key:" + key + "]!");
+	}
 
-		/// <summary>For JsonValues with type boolean, this method will return its
-		/// value as bool, otherwise it will throw.</summary>
-		public static bool Qb(this JsonValue json)
-		{
-			if (json != null && json.JsonType == JsonType.Boolean) return (bool) json.ToValue();
-			else throw FailQ(json, "Qb");
-		}
+	/// <summary>For JsonValues with type boolean, this method will return its
+	/// value as bool, otherwise it will throw.</summary>
+	public static bool Qb(this JsonValue json)
+	{
+		if (json != null && json.JsonType == JsonType.Boolean) return ((JsonPrimitive) json).AsBool();
+		else throw FailQ(json, "Qb");
+	}
 
-		/// <summary>Gets the value of the member specified by key, then calls <see cref="Qb(Hjson.JsonValue)"/>.
-		/// If the object does not contain the key, the defaultValue is returned.</summary>
-		public static bool Qb(this JsonObject json, string key, bool defaultValue = false)
+	/// <summary>Gets the value of the member specified by key, then calls <see cref="Qb(Hjson.JsonValue)"/>.
+	/// If the object does not contain the key, the defaultValue is returned.</summary>
+	public static bool Qb(this JsonObject json, string key, bool defaultValue = false)
+	{
+		try
 		{
-			try
-			{
-				if (json.ContainsKey(key)) return json[key].Qb();
-				else return defaultValue;
-			}
-			catch (Exception e) { throw FailM(e, key); }
+			if (json.ContainsKey(key)) return json[key].Qb();
+			else return defaultValue;
 		}
+		catch (Exception e) { throw FailM(e, key); }
+	}
 
-		/// <summary>For JsonValues with type number, this method will return its
-		/// value as int, otherwise it will throw.</summary>
-		public static int Qi(this JsonValue json)
+	/// <summary>For JsonValues with type number, this method will return its
+	/// value as int, otherwise it will throw.</summary>
+	public static int Qi(this JsonValue json)
+	{
+		if (json != null && json.JsonType == JsonType.Number) return ((JsonPrimitive) json).AsInt();
+		else throw FailQ(json, "Qi");
+	}
+
+	/// <summary>Gets the value of the member specified by key, then calls <see cref="Qi(Hjson.JsonValue)"/>.
+	/// If the object does not contain the key, the defaultValue is returned.</summary>
+	public static int Qi(this JsonObject json, string key, int defaultValue = 0)
+	{
+		try
 		{
-			if (json != null && json.JsonType == JsonType.Number) return Convert.ToInt32(json.ToValue());
-			else throw FailQ(json, "Qi");
+			if (json.ContainsKey(key)) return json[key].Qi();
+			else return defaultValue;
 		}
+		catch (Exception e) { throw FailM(e, key); }
+	}
 
-		/// <summary>Gets the value of the member specified by key, then calls <see cref="Qi(Hjson.JsonValue)"/>.
-		/// If the object does not contain the key, the defaultValue is returned.</summary>
-		public static int Qi(this JsonObject json, string key, int defaultValue = 0)
+	/// <summary>For JsonValues with type number, this method will return its
+	/// value as long, otherwise it will throw.</summary>
+	public static long Ql(this JsonValue json)
+	{
+		if (json != null && json.JsonType == JsonType.Number) return ((JsonPrimitive) json).AsLong();
+		else throw FailQ(json, "Ql");
+	}
+
+	/// <summary>Gets the value of the member specified by key, then calls <see cref="Ql(Hjson.JsonValue)"/>.
+	/// If the object does not contain the key, the defaultValue is returned.</summary>
+	public static long Ql(this JsonObject json, string key, long defaultValue = 0)
+	{
+		try
 		{
-			try
-			{
-				if (json.ContainsKey(key)) return json[key].Qi();
-				else return defaultValue;
-			}
-			catch (Exception e) { throw FailM(e, key); }
+			if (json.ContainsKey(key)) return json[key].Ql();
+			else return defaultValue;
 		}
+		catch (Exception e) { throw FailM(e, key); }
+	}
 
-		/// <summary>For JsonValues with type number, this method will return its
-		/// value as long, otherwise it will throw.</summary>
-		public static long Ql(this JsonValue json)
+	/// <summary>For JsonValues with type number, this method will return its
+	/// value as double, otherwise it will throw.</summary>
+	public static double Qd(this JsonValue json)
+	{
+		if (json != null && json.JsonType == JsonType.Number) return ((JsonPrimitive) json).AsDouble();
+		else throw FailQ(json, "Qd");
+	}
+
+	/// <summary>Gets the value of the member specified by key, then calls <see cref="Qd(Hjson.JsonValue)"/>.
+	/// If the object does not contain the key, the defaultValue is returned.</summary>
+	public static double Qd(this JsonObject json, string key, double defaultValue = 0)
+	{
+		try
 		{
-			if (json != null && json.JsonType == JsonType.Number) return Convert.ToInt64(json.ToValue());
-			else throw FailQ(json, "Ql");
+			if (json.ContainsKey(key)) return json[key].Qd();
+			else return defaultValue;
 		}
+		catch (Exception e) { throw FailM(e, key); }
+	}
 
-		/// <summary>Gets the value of the member specified by key, then calls <see cref="Ql(Hjson.JsonValue)"/>.
-		/// If the object does not contain the key, the defaultValue is returned.</summary>
-		public static long Ql(this JsonObject json, string key, long defaultValue = 0)
+	/// <summary>For JsonValues with type string, this method will return its
+	/// value as string, otherwise it will throw. Use <see cref="Qstr(Hjson.JsonValue)"/>
+	/// to get a string value from number or boolean types as well.</summary>
+	public static string Qs(this JsonValue json)
+	{
+		if (json == null) return null;
+		else if (json.JsonType == JsonType.String) return ((JsonPrimitive) json).AsString();
+		else throw FailQ(json, "Qs");
+	}
+
+	/// <summary>Gets the value of the member specified by key, then calls <see cref="Qs(Hjson.JsonValue)"/>.
+	/// If the object does not contain the key, the defaultValue is returned.</summary>
+	public static string Qs(this JsonObject json, string key, string defaultValue = "")
+	{
+		try
 		{
-			try
-			{
-				if (json.ContainsKey(key)) return json[key].Ql();
-				else return defaultValue;
-			}
-			catch (Exception e) { throw FailM(e, key); }
+			if (json.ContainsKey(key)) return json[key].Qs();
+			else return defaultValue;
 		}
+		catch (Exception e) { throw FailM(e, key); }
+	}
 
-		/// <summary>For JsonValues with type number, this method will return its
-		/// value as double, otherwise it will throw.</summary>
-		public static double Qd(this JsonValue json)
+	/// <summary>For JsonValues with type string, number or boolean, this method will return
+	/// its value as a string (converted if necessary). For arrays or objects it will throw.</summary>
+	public static string Qstr(this JsonValue json)
+	{
+		if (json == null) return null;
+		else if (json.JsonType == JsonType.String) return (string) json;
+		else if (json.JsonType == JsonType.Boolean || json.JsonType == JsonType.Number) return json.ToString();
+		else throw FailQ(json, "Qstr");
+	}
+
+	/// <summary>Gets the value of the member specified by key, then,
+	/// for string, number or boolean JsonValues, this method will return
+	/// its value as a string (converted if necessary).</summary>
+	public static string Qstr(this JsonObject json, string key, string defaultValue = "")
+	{
+		try
 		{
-			if (json != null && json.JsonType == JsonType.Number) return Convert.ToDouble(json.ToValue());
-			else throw FailQ(json, "Qd");
+			if (json.ContainsKey(key)) return json[key].Qstr();
+			else return defaultValue;
 		}
+		catch (Exception e) { throw FailM(e, key); }
+	}
 
-		/// <summary>Gets the value of the member specified by key, then calls <see cref="Qd(Hjson.JsonValue)"/>.
-		/// If the object does not contain the key, the defaultValue is returned.</summary>
-		public static double Qd(this JsonObject json, string key, double defaultValue = 0)
-		{
-			try
-			{
-				if (json.ContainsKey(key)) return json[key].Qd();
-				else return defaultValue;
-			}
-			catch (Exception e) { throw FailM(e, key); }
-		}
+	/// <summary>Gets the JsonValue of the member specified by key.</summary>
+	public static JsonValue Qv(this JsonObject json, string key)
+	{
+		if (json.ContainsKey(key)) return json[key];
+		else return null;
+	}
 
-		/// <summary>For JsonValues with type string, this method will return its
-		/// value as string, otherwise it will throw. Use <see cref="Qstr(Hjson.JsonValue)"/>
-		/// to get a string value from number or boolean types as well.</summary>
-		public static string Qs(this JsonValue json)
-		{
-			if (json == null) return null;
-			else if (json.JsonType == JsonType.String) return (string) json;
-			else throw FailQ(json, "Qs");
-		}
+	/// <summary>Gets a JsonObject from a JsonObject.</summary>
+	public static JsonObject Qo(this JsonObject json, string key)
+	{
+		try { return (JsonObject) json.Qv(key); }
+		catch (Exception e) { throw FailM(e, key); }
+	}
 
-		/// <summary>Gets the value of the member specified by key, then calls <see cref="Qs(Hjson.JsonValue)"/>.
-		/// If the object does not contain the key, the defaultValue is returned.</summary>
-		public static string Qs(this JsonObject json, string key, string defaultValue = "")
-		{
-			try
-			{
-				if (json.ContainsKey(key)) return json[key].Qs();
-				else return defaultValue;
-			}
-			catch (Exception e) { throw FailM(e, key); }
-		}
+	/// <summary>Gets the JsonObject from a JsonValue.</summary>
+	public static JsonObject Qo(this JsonValue json)
+	{
+		try { return (JsonObject) json; }
+		catch { throw FailQ(json, "Qo"); }
+	}
 
-		/// <summary>For JsonValues with type string, number or boolean, this method will return
-		/// its value as a string (converted if necessary). For arrays or objects it will throw.</summary>
-		public static string Qstr(this JsonValue json)
-		{
-			if (json == null) return null;
-			else if (json.JsonType == JsonType.String) return (string) json;
-			else if (json.JsonType == JsonType.Boolean || json.JsonType == JsonType.Number) return json.ToString();
-			else throw FailQ(json, "Qstr");
-		}
+	/// <summary>Gets a JsonArray from a JsonObject.</summary>
+	public static JsonArray Qa(this JsonObject json, string key)
+	{
+		try { return (JsonArray) json.Qv(key); }
+		catch (Exception e) { throw FailM(e, key); }
+	}
 
-		/// <summary>Gets the value of the member specified by key, then,
-		/// for string, number or boolean JsonValues, this method will return
-		/// its value as a string (converted if necessary).</summary>
-		public static string Qstr(this JsonObject json, string key, string defaultValue = "")
-		{
-			try
-			{
-				if (json.ContainsKey(key)) return json[key].Qstr();
-				else return defaultValue;
-			}
-			catch (Exception e) { throw FailM(e, key); }
-		}
+	/// <summary>Gets the JsonArray from a JsonValue.</summary>
+	public static JsonArray Qa(this JsonValue json)
+	{
+		try { return (JsonArray) json; }
+		catch { throw FailQ(json, "Qo"); }
+	}
 
-		/// <summary>Gets the JsonValue of the member specified by key.</summary>
-		public static JsonValue Qv(this JsonObject json, string key)
-		{
-			if (json.ContainsKey(key)) return json[key];
-			else return null;
-		}
+	/// <summary>Enumerates JsonObjects from a JsonObject.</summary>
+	public static IEnumerable<KeyValuePair<string, JsonObject>> Qqo(this JsonObject json)
+	{
+		return System.Linq.Enumerable.Select(json, x => new KeyValuePair<string, JsonObject>(x.Key, x.Value.Qo()));
+	}
+}
 
-		/// <summary>Gets a JsonObject from a JsonObject.</summary>
-		public static JsonObject Qo(this JsonObject json, string key)
-		{
-			try { return (JsonObject) json.Qv(key); }
-			catch (Exception e) { throw FailM(e, key); }
-		}
-
-		/// <summary>Gets the JsonObject from a JsonValue.</summary>
-		public static JsonObject Qo(this JsonValue json)
-		{
-			try { return (JsonObject) json; }
-			catch { throw FailQ(json, "Qo"); }
-		}
-
-		/// <summary>Gets a JsonArray from a JsonObject.</summary>
-		public static JsonArray Qa(this JsonObject json, string key)
-		{
-			try { return (JsonArray) json.Qv(key); }
-			catch (Exception e) { throw FailM(e, key); }
-		}
-
-		/// <summary>Gets the JsonArray from a JsonValue.</summary>
-		public static JsonArray Qa(this JsonValue json)
-		{
-			try { return (JsonArray) json; }
-			catch { throw FailQ(json, "Qo"); }
-		}
-
-		/// <summary>Enumerates JsonObjects from a JsonObject.</summary>
-		public static IEnumerable<KeyValuePair<string, JsonObject>> Qqo(this JsonObject json)
-		{
-			return json.Select(x => new KeyValuePair<string, JsonObject>(x.Key, x.Value.Qo()));
-		}
-
-		static readonly DateTime UnixEpochUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+namespace Ju.Extensions
+{
+	public static class JsonUtilDateTimeExtensions
+	{
+		private static readonly DateTime UnixEpochUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
 		/// <summary>Convert the date to json (unix epoch date offset).</summary>
 		public static long ToJsonDate(this DateTime dt)

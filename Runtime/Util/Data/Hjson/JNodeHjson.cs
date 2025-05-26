@@ -52,27 +52,28 @@ namespace Ju.Data
 
 					break;
 				case JsonType.Number:
-					var valueType = value.ToValue().GetType();
+					var jsonPrimitive = (JsonPrimitive) value;
 
-					if (valueType == typeof(int))
+					switch (jsonPrimitive.JsonNumericKind)
 					{
-						result = new JData<int>(value.Qi(), default(int));
-					}
-					else if (valueType == typeof(long))
-					{
-						result = new JData<long>(value.Ql(), default(long));
-					}
-					else if (valueType == typeof(float))
-					{
-						result = new JData<float>((float)value.Qd(), default(float));
-					}
-					else if (valueType == typeof(double))
-					{
-						result = new JData<double>(value.Qd(), default(double));
-					}
-					else
-					{
-						throw new Exception($"JsonValue of type Number contains an invalid type of: {valueType.GetFriendlyName()}.");
+						case JsonPrimitive.NumericKind.Int:
+							result = new JData<int>(jsonPrimitive.AsInt(), default(int));
+							break;
+						case JsonPrimitive.NumericKind.Long:
+							result = new JData<long>(jsonPrimitive.AsLong(), default(long));
+							break;
+						case JsonPrimitive.NumericKind.Float:
+							result = new JData<float>(jsonPrimitive.AsFloat(), default(float));
+							break;
+						case JsonPrimitive.NumericKind.Double:
+							result = new JData<double>(jsonPrimitive.AsDouble(), default(double));
+							break;
+						case JsonPrimitive.NumericKind.Decimal:
+							result = new JData<decimal>(jsonPrimitive.AsDecimal(), default(decimal));
+							break;
+						default:
+							var valueType = value.AsObject().GetType();
+							throw new Exception($"JsonValue of type Number contains an invalid type of: {valueType.GetFriendlyName()}.");
 					}
 
 					break;

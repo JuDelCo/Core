@@ -4,15 +4,13 @@
 #if GODOT4_3_OR_GREATER
 
 using Godot;
+using Ju.Data.Conversion;
 
-namespace Ju.Data.Conversion
+public static class CastSourceGodotVector2Extensions
 {
-	public static class CastSourceGodotVector2Extensions
+	public static string AsString(this CastSource<Vector2> source)
 	{
-		public static string AsString(this CastSource<Vector2> source)
-		{
-			return $"{Cast.This(source.value.X).AsString()}, {Cast.This(source.value.Y).AsString()}";
-		}
+		return $"{Cast.This(source.value.X).AsString()}, {Cast.This(source.value.Y).AsString()}";
 	}
 }
 

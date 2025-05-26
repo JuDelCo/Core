@@ -2,7 +2,6 @@
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
 using System;
-using Ju.Extensions;
 using Ju.Services;
 
 namespace Ju.Input
@@ -13,6 +12,8 @@ namespace Ju.Input
 		public MouseLockMode LockMode { get => input.GetMouseCurrentLockMode(); set => input.SetMouseLockMode(value); }
 		public bool Visible { get => input.GetMouseVisibleStatus(); set => input.SetMouseCursorVisible(value); }
 
+		private static readonly MouseButton[] mouseButtonEnum = (MouseButton[]) Enum.GetValues(typeof(MouseButton));
+
 		private readonly IInputServiceRaw input;
 
 		public MouseController(IInputServiceRaw input)
@@ -22,9 +23,7 @@ namespace Ju.Input
 
 		public bool IsAnyButtonPressed()
 		{
-			var buttons = IEnumerableExtensions.Cast<MouseButton>(Enum.GetValues(typeof(MouseButton)));
-
-			foreach (var button in buttons)
+			foreach (var button in mouseButtonEnum)
 			{
 				if (button == MouseButton.None)
 				{
@@ -57,9 +56,7 @@ namespace Ju.Input
 
 		public MouseButton FirstPressedButton()
 		{
-			var buttons = IEnumerableExtensions.Cast<MouseButton>(Enum.GetValues(typeof(MouseButton)));
-
-			foreach (var button in buttons)
+			foreach (var button in mouseButtonEnum)
 			{
 				if (button == MouseButton.None)
 				{

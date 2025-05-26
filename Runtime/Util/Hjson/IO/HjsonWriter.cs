@@ -5,7 +5,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Ju.Hjson
@@ -16,7 +15,7 @@ namespace Ju.Hjson
 	{
 		readonly bool writeWsc;
 		readonly bool emitRootBraces;
-		readonly IEnumerable<IHjsonDsfProvider> dsfProviders = Enumerable.Empty<IHjsonDsfProvider>();
+		readonly IEnumerable<IHjsonDsfProvider> dsfProviders = System.Linq.Enumerable.Empty<IHjsonDsfProvider>();
 		static readonly Regex needsEscapeName = new Regex(@"[,\{\[\}\]\s:#""']|\/\/|\/\*|'''");
 
 		public HjsonWriter(HjsonOptions options)
@@ -84,7 +83,7 @@ namespace Ju.Hjson
 					if (kw != null)
 					{
 						var kwl = GetWsc(kw.Comments, "");
-						foreach (string key in kw.Order.Concat(kw.Keys).Distinct())
+						foreach (string key in System.Linq.Enumerable.Distinct(System.Linq.Enumerable.Concat(kw.Order, kw.Keys)))
 						{
 							if (!obj.ContainsKey(key)) continue;
 							var val = obj[key];
@@ -141,14 +140,14 @@ namespace Ju.Hjson
 					break;
 				case JsonType.Boolean:
 					tw.Write(separator);
-					tw.Write((bool)value ? "true" : "false");
+					tw.Write((bool) value ? "true" : "false");
 					break;
 				case JsonType.String:
-					WriteString(((JsonPrimitive)value).GetRawString(), tw, level, hasComment, separator);
+					WriteString(((JsonPrimitive) value).GetRawString(), tw, level, hasComment, separator);
 					break;
 				default:
 					tw.Write(separator);
-					tw.Write(((JsonPrimitive)value).GetRawString());
+					tw.Write(((JsonPrimitive) value).GetRawString());
 					break;
 			}
 		}
@@ -167,7 +166,7 @@ namespace Ju.Hjson
 
 			char left = value[0], right = value[value.Length - 1];
 			char left1 = value.Length > 1 ? value[1] : '\0', left2 = value.Length > 2 ? value[2] : '\0';
-			bool doEscape = hasComment || value.Any(c => NeedsQuotes(c));
+			bool doEscape = hasComment || System.Linq.Enumerable.Any(value, c => NeedsQuotes(c));
 
 			if (doEscape ||
 			  BaseReader.IsWhite(left) || BaseReader.IsWhite(right) ||
@@ -185,8 +184,8 @@ namespace Ju.Hjson
 				// format or we must replace the offending characters with safe escape
 				// sequences.
 
-				if (!value.Any(c => NeedsEscape(c))) tw.Write(separator + "\"" + value + "\"");
-				else if (!value.Any(c => NeedsEscapeML(c)) && !value.Contains("'''") && !value.All(c => BaseReader.IsWhite(c))) WriteMLString(value, tw, level, separator);
+				if (!System.Linq.Enumerable.Any(value, c => NeedsEscape(c))) tw.Write(separator + "\"" + value + "\"");
+				else if (!System.Linq.Enumerable.Any(value, c => NeedsEscapeML(c)) && !value.Contains("'''") && !System.Linq.Enumerable.All(value, c => BaseReader.IsWhite(c))) WriteMLString(value, tw, level, separator);
 				else tw.Write(separator + "\"" + JsonWriter.EscapeString(value) + "\"");
 			}
 			else tw.Write(separator + value);

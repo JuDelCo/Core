@@ -29,7 +29,7 @@ namespace Ju.Hjson
 	{
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-		private void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+		protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
 		{
 			if (CollectionChanged != null)
 			{
@@ -105,6 +105,40 @@ namespace Ju.Hjson
 
 				--callStackCounter;
 			}
+		}
+
+		public JsonArray Clone()
+		{
+			var clone = new JsonArray();
+
+			foreach (var item in list)
+			{
+				switch (item)
+				{
+					case null:
+						clone.Add(null);
+						break;
+					case JsonArray jsonArray:
+						clone.Add(jsonArray.Clone());
+						break;
+					case JsonObject jsonObject:
+						clone.Add(jsonObject.Clone());
+						break;
+					case JsonPrimitive jsonPrimitive:
+						if (jsonPrimitive.JsonType == JsonType.Unknown)
+						{
+							Ju.Log.Log.Warning("JsonObject clone: Reference type found (cloned by reference)");
+						}
+						clone.Add(jsonPrimitive);
+						break;
+					default:
+						Ju.Log.Log.Warning("JsonObject clone: Unknown type found (cloned by reference)");
+						clone.Add(item);
+						break;
+				}
+			}
+
+			return clone;
 		}
 
 		/// <summary>Gets the count of the contained items.</summary>

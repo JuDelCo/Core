@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Ju.Hjson
@@ -50,7 +49,11 @@ namespace Ju.Hjson
 				try
 				{
 					var res = dsf.Parse(value);
-					if (res != null) return res;
+
+					if (res != null)
+					{
+						return res;
+					}
 				}
 				catch (Exception e)
 				{
@@ -67,10 +70,14 @@ namespace Ju.Hjson
 				try
 				{
 					var text = dsf.Stringify(value);
+
 					if (text != null)
 					{
-						if (text.Length == 0 || text.FirstOrDefault() == '"' || text.Any(c => IsInvalidDsfChar(c)))
+						if (text.Length == 0 || System.Linq.Enumerable.FirstOrDefault(text) == '"' || System.Linq.Enumerable.Any(text, c => IsInvalidDsfChar(c)))
+						{
 							throw new Exception("value may not be empty, start with a quote or contain a punctuator character except colon: " + text);
+						}
+
 						return text;
 					}
 				}
@@ -141,16 +148,18 @@ namespace Ju.Hjson
 		public JsonValue Parse(string text)
 		{
 			if (isHex.IsMatch(text))
+			{
 				return long.Parse(text.Substring(2), NumberStyles.HexNumber);
+			}
 			else
+			{
 				return null;
+			}
 		}
 
 		public string Stringify(JsonValue value)
 		{
-			if (stringify &&
-			  value.JsonType == JsonType.Number &&
-			  value.Ql() == value.Qd())
+			if (stringify && value.JsonType == JsonType.Number && value.Ql() == value.Qd())
 			{
 				return "0x" + value.Ql().ToString("x");
 			}
@@ -172,16 +181,20 @@ namespace Ju.Hjson
 		public JsonValue Parse(string text)
 		{
 			if (isDate.IsMatch(text) || isDateTime.IsMatch(text))
+			{
 				return JsonValue.FromObject(DateTime.Parse(text));
+			}
 			else
+			{
 				return null;
+			}
 		}
 
 		public string Stringify(JsonValue value)
 		{
-			if (value.JsonType == JsonType.Unknown && value.ToValue().GetType() == typeof(DateTime))
+			if (value.JsonType == JsonType.Unknown && value.AsObject().GetType() == typeof(DateTime))
 			{
-				var dt = (DateTime)value.ToValue();
+				var dt = (DateTime) value.AsObject();
 				return dt.ToString("yyyy-MM-ddTHH:mm:ssZ");
 			}
 			else

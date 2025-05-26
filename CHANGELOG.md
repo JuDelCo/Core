@@ -1,6 +1,26 @@
 
 # Changelog
 
+## [1.51.0] - 2025-05-26
+
+### Add
+
+- Add new List<T> method extensions.
+- Add new ICollection<T> method extensions.
+- Add new Clone() method to JsonArray and JsonObject classes.
+
+### Changed
+
+- Expose many extension methods (applicable only to objects from this library) available without requiring namespace imports.
+- Move several extension methods into the unified Ju.Extensions namespace.
+- Expose OnCollectionChanged method in JsonArray and JsonObject classes as a protected method.
+
+### Improved
+
+- Optimize many IEnumerable<T> extension methods to avoid GC allocations in most scenarios.
+- Optimize several Input methods to avoid GC allocations.
+- Overhaul the internal JsonPrimitive class to avoid GC allocations when working with Json/HJson.
+
 ## [1.50.0] - 2025-05-12
 
 ### Add

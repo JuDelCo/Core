@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
-using System.Linq;
-
-namespace Ju.Crypt
+namespace Ju.Extensions
 {
 	public static class SimpleHashStringExtensions
 	{
 		public static int GetSimpleHash(this string self)
 		{
-			return self.Select(c => (int)c).Sum();
+			return self.Reduce(0, (result, c) => result + c);
 		}
 
 		public static int GetDeterministicHashCode(this string self)

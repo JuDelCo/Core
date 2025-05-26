@@ -4,7 +4,7 @@
 using System;
 using System.Text;
 
-namespace Ju.Crypt
+namespace Ju.Extensions
 {
 	public static class Base64StringExtensions
 	{

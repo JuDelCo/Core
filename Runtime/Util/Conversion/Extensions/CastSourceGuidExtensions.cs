@@ -2,14 +2,12 @@
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
 using System;
+using Ju.Data.Conversion;
 
-namespace Ju.Data.Conversion
+public static class CastSourceGuidExtensions
 {
-	public static class CastSourceGuidExtensions
+	public static string AsString(this CastSource<Guid> source)
 	{
-		public static string AsString(this CastSource<Guid> source)
-		{
-			return source.value.ToString();
-		}
+		return source.value.ToString();
 	}
 }

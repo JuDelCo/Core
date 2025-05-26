@@ -4,7 +4,6 @@
 // Based on System.Json from https://github.com/mono/mono (MIT X11)
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Ju.Hjson
 {
@@ -30,8 +29,8 @@ namespace Ju.Hjson
 		/// </summary>
 		public IEnumerable<IHjsonDsfProvider> DsfProviders
 		{
-			get { return dsf ?? Enumerable.Empty<IHjsonDsfProvider>(); }
-			set { dsf = value.ToArray(); }
+			get { return dsf ?? System.Linq.Enumerable.Empty<IHjsonDsfProvider>(); }
+			set { dsf = System.Linq.Enumerable.ToArray(value); }
 		}
 	}
 }

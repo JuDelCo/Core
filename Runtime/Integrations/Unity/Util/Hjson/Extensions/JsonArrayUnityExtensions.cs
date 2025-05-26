@@ -6,16 +6,14 @@
 using System;
 using System.Collections.Specialized;
 using Ju.Handlers;
+using Ju.Hjson;
 using UnityEngine;
 
-namespace Ju.Hjson
+public static class JsonArrayUnityExtensions
 {
-	public static class JsonArrayUnityExtensions
+	public static void Subscribe(this JsonArray array, Behaviour behaviour, Action<NotifyCollectionChangedEventArgs> action, bool alwaysActive = false)
 	{
-		public static void Subscribe(this JsonArray array, Behaviour behaviour, Action<NotifyCollectionChangedEventArgs> action, bool alwaysActive = false)
-		{
-			array.Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action);
-		}
+		array.Subscribe(new BehaviourLinkHandler(behaviour, alwaysActive), action);
 	}
 }
 

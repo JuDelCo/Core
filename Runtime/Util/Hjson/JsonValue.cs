@@ -103,16 +103,15 @@ namespace Ju.Hjson
 			return ToString(Stringify.Plain);
 		}
 
-		/// <summary>Returns the contained primitive value.</summary>
-		public object ToValue()
+		internal object AsObject()
 		{
-			return ((JsonPrimitive) this).Value;
+			return ((JsonPrimitive) this).AsObject();
 		}
 
 		/// <summary>Wraps an unknown object into a JSON value (to be used with DSF).</summary>
-		public static JsonValue FromObject(object value)
+		internal static JsonValue FromObject(object value)
 		{
-			return JsonPrimitive.FromObject(value);
+			return new JsonPrimitive(value);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -178,71 +177,71 @@ namespace Ju.Hjson
 		/// <summary>Converts to bool. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator bool(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToBoolean(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsBool();
 		}
 
 		/// <summary>Converts to byte. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator byte(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToByte(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsByte();
 		}
 
 		/// <summary>Converts to char. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator char(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToChar(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsString()[0];
 		}
 
 		/// <summary>Converts to decimal. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator decimal(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToDecimal(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsDecimal();
 		}
 
 		/// <summary>Converts to double. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator double(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToDouble(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsDouble();
 		}
 
 		/// <summary>Converts to float. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator float(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToSingle(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsFloat();
 		}
 
 		/// <summary>Converts to int. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator int(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToInt32(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsInt();
 		}
 
 		/// <summary>Converts to long. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator long(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToInt64(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsLong();
 		}
 
 		/// <summary>Converts to short. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator short(JsonValue value)
 		{
-			if (value == null) throw new ArgumentNullException("value");
-			return Convert.ToInt16(((JsonPrimitive) value).Value);
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return ((JsonPrimitive) value).AsShort();
 		}
 
 		/// <summary>Converts to string. Also see <see cref="JsonUtil"/>.</summary>
 		public static implicit operator string(JsonValue value)
 		{
 			if (value == null) return null;
-			return (string) ((JsonPrimitive) value).Value;
+			return ((JsonPrimitive) value).AsString();
 		}
 	}
 }

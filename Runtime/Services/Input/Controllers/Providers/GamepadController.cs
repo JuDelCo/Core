@@ -2,7 +2,6 @@
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
 using System;
-using Ju.Extensions;
 using Ju.Services;
 
 namespace Ju.Input
@@ -12,6 +11,11 @@ namespace Ju.Input
 		public string Id { get; }
 		public bool Enabled { get; set; }
 		public float Deadzone { get; set; }
+
+		private static readonly GamepadButton[] gamepadButtonEnum = (GamepadButton[]) Enum.GetValues(typeof(GamepadButton));
+		private static readonly GamepadButtonRaw[] gamepadButtonRawEnum = (GamepadButtonRaw[]) Enum.GetValues(typeof(GamepadButtonRaw));
+		private static readonly GamepadAxis[] gamepadAxisEnum = (GamepadAxis[]) Enum.GetValues(typeof(GamepadAxis));
+		private static readonly GamepadAxisRaw[] gamepadAxisRawEnum = (GamepadAxisRaw[]) Enum.GetValues(typeof(GamepadAxisRaw));
 
 		private readonly IInputServiceRaw input;
 
@@ -30,9 +34,7 @@ namespace Ju.Input
 				return false;
 			}
 
-			var buttons = IEnumerableExtensions.Cast<GamepadButtonRaw>(Enum.GetValues(typeof(GamepadButtonRaw)));
-
-			foreach (var button in buttons)
+			foreach (var button in gamepadButtonRawEnum)
 			{
 				if (button == GamepadButtonRaw.None)
 				{
@@ -115,9 +117,7 @@ namespace Ju.Input
 				return GamepadButton.None;
 			}
 
-			var buttons = IEnumerableExtensions.Cast<GamepadButton>(Enum.GetValues(typeof(GamepadButton)));
-
-			foreach (var button in buttons)
+			foreach (var button in gamepadButtonEnum)
 			{
 				if (button == GamepadButton.None)
 				{
@@ -140,9 +140,7 @@ namespace Ju.Input
 				return false;
 			}
 
-			var gamepadAxis = IEnumerableExtensions.Cast<GamepadAxisRaw>(Enum.GetValues(typeof(GamepadAxisRaw)));
-
-			foreach (var axis in gamepadAxis)
+			foreach (var axis in gamepadAxisRawEnum)
 			{
 				if (axis == GamepadAxisRaw.None)
 				{
@@ -198,9 +196,7 @@ namespace Ju.Input
 				return GamepadAxis.None;
 			}
 
-			var gamepadAxis = IEnumerableExtensions.Cast<GamepadAxis>(Enum.GetValues(typeof(GamepadAxis)));
-
-			foreach (var axis in gamepadAxis)
+			foreach (var axis in gamepadAxisEnum)
 			{
 				if (axis == GamepadAxis.None || axis == GamepadAxis.D_Pad || axis == GamepadAxis.L_Stick || axis == GamepadAxis.R_Stick)
 				{

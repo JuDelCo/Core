@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading;
 using Ju.Extensions;
 using Ju.Handlers;
-using Ju.Services.Extensions;
 using Ju.Time;
 using ChannelId = System.Byte;
 using EventAction = System.Delegate;
@@ -111,7 +110,7 @@ namespace Ju.Services
 					return;
 				}
 
-				DispatchEvent(type, action, (T)stickyData[type]);
+				DispatchEvent(type, action, (T) stickyData[type]);
 			}
 		}
 
@@ -176,7 +175,7 @@ namespace Ju.Services
 					continue;
 				}
 
-				DispatchEvent(type, (Action<T>)subscriberList[i].action, data);
+				DispatchEvent(type, (Action<T>) subscriberList[i].action, data);
 
 				if (cancelEventStatus[callStackCounter])
 				{
@@ -224,7 +223,7 @@ namespace Ju.Services
 			{
 				if (stickyData.ContainsKey(type))
 				{
-					data = (T)stickyData[type];
+					data = (T) stickyData[type];
 				}
 			}
 

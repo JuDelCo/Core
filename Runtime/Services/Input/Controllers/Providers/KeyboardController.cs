@@ -2,7 +2,6 @@
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
 using System;
-using Ju.Extensions;
 using Ju.Services;
 
 namespace Ju.Input
@@ -10,6 +9,8 @@ namespace Ju.Input
 	public class KeyboardController : IKeyboardController
 	{
 		public string Id => "keyboard";
+
+		private static readonly KeyboardKey[] keyboardKeyEnum = (KeyboardKey[]) Enum.GetValues(typeof(KeyboardKey));
 
 		private readonly IInputServiceRaw input;
 
@@ -20,9 +21,7 @@ namespace Ju.Input
 
 		public bool IsAnyKeyPressed()
 		{
-			var keys = IEnumerableExtensions.Cast<KeyboardKey>(Enum.GetValues(typeof(KeyboardKey)));
-
-			foreach (var key in keys)
+			foreach (var key in keyboardKeyEnum)
 			{
 				if (key == KeyboardKey.None)
 				{
@@ -55,9 +54,7 @@ namespace Ju.Input
 
 		public KeyboardKey FirstPressedKey()
 		{
-			var keys = IEnumerableExtensions.Cast<KeyboardKey>(Enum.GetValues(typeof(KeyboardKey)));
-
-			foreach (var key in keys)
+			foreach (var key in keyboardKeyEnum)
 			{
 				if (key == KeyboardKey.None)
 				{

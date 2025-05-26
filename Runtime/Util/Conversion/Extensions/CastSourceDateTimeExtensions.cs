@@ -2,26 +2,24 @@
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
 using System;
+using Ju.Data.Conversion;
 
-namespace Ju.Data.Conversion
+public static class CastSourceDateTimeExtensions
 {
-	public static class CastSourceDateTimeExtensions
+	public static readonly DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+	public static string AsString(this CastSource<DateTime> source, string format = "yyyyMMdd_HHmmss")
 	{
-		public static readonly DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+		return source.value.ToUniversalTime().ToString(format);
+	}
 
-		public static string AsString(this CastSource<DateTime> source, string format = "yyyyMMdd_HHmmss")
-		{
-			return source.value.ToUniversalTime().ToString(format);
-		}
+	public static double AsUnixTimeStamp(this CastSource<DateTime> source)
+	{
+		return System.Math.Truncate((source.value.ToUniversalTime() - unixEpoch).TotalSeconds);
+	}
 
-		public static double AsUnixTimeStamp(this CastSource<DateTime> source)
-		{
-			return System.Math.Truncate((source.value.ToUniversalTime() - unixEpoch).TotalSeconds);
-		}
-
-		public static string AsUnixTimeStampString(this CastSource<DateTime> source)
-		{
-			return source.AsUnixTimeStamp().ToString();
-		}
+	public static string AsUnixTimeStampString(this CastSource<DateTime> source)
+	{
+		return source.AsUnixTimeStamp().ToString();
 	}
 }

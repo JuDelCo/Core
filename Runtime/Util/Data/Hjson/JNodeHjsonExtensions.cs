@@ -2,188 +2,185 @@
 // Copyright (c) 2016-2025 Juan Delgado (@JuDelCo)
 
 using System;
+using Ju.Data;
 using Ju.Data.Conversion;
 using Ju.Extensions;
 using Ju.Hjson;
+using Ju.Log;
 
-namespace Ju.Data
+public static class JNodeHjsonExtensions
 {
-	using Ju.Log;
-
-	public static class JNodeHjsonExtensions
+	public static string ToHjson(this JNode node, int maxDepth = -1)
 	{
-		public static string ToHjson(this JNode node, int maxDepth = -1)
+		return Process(node, maxDepth).ToString(Stringify.Hjson);
+	}
+
+	public static string ToJson(this JNode node, int maxDepth)
+	{
+		return node.ToJson(false, maxDepth);
+	}
+
+	public static string ToJson(this JNode node, bool compact = false, int maxDepth = -1)
+	{
+		return Process(node, maxDepth).ToString(compact ? Stringify.Plain : Stringify.Formatted);
+	}
+
+	private static JsonValue Process(JNode node, int maxDepth)
+	{
+		JsonValue result;
+
+		if (node == null)
 		{
-			return Process(node, maxDepth).ToString(Stringify.Hjson);
+			result = null;
 		}
-
-		public static string ToJson(this JNode node, int maxDepth)
+		else if (node.IsRef())
 		{
-			return node.ToJson(false, maxDepth);
-		}
-
-		public static string ToJson(this JNode node, bool compact = false, int maxDepth = -1)
-		{
-			return Process(node, maxDepth).ToString(compact ? Stringify.Plain : Stringify.Formatted);
-		}
-
-		private static JsonValue Process(JNode node, int maxDepth)
-		{
-			JsonValue result;
-
-			if (node == null)
+			if (node.AsRef().Reference != null)
 			{
-				result = null;
+				result = new JsonPrimitive($"Ref{{{node.AsRef().Reference.Path}}}");
 			}
-			else if (node.IsRef())
+			else
 			{
-				if (node.AsRef().Reference != null)
+				result = new JsonPrimitive(null);
+			}
+		}
+		else
+		{
+			if (node.IsDict())
+			{
+				if (maxDepth == 0)
 				{
-					result = new JsonPrimitive($"Ref{{{node.AsRef().Reference.Path}}}");
+					result = new JsonObject();
 				}
 				else
 				{
-					result = new JsonPrimitive(null);
+					var o = new JsonObject();
+					result = o;
+
+					foreach (var kvp in node.AsDict().AsEnumerableDict())
+					{
+						o.Add(kvp.Key, Process(kvp.Value, maxDepth - 1));
+					}
 				}
 			}
-			else
+			else if (node.IsList())
 			{
-				if (node.IsDict())
+				if (maxDepth == 0)
 				{
-					if (maxDepth == 0)
-					{
-						result = new JsonObject();
-					}
-					else
-					{
-						var o = new JsonObject();
-						result = o;
-
-						foreach (var kvp in node.AsDict().AsEnumerableDict())
-						{
-							o.Add(kvp.Key, Process(kvp.Value, maxDepth - 1));
-						}
-					}
+					result = new JsonArray();
 				}
-				else if (node.IsList())
+				else
 				{
-					if (maxDepth == 0)
-					{
-						result = new JsonArray();
-					}
-					else
-					{
-						var a = new JsonArray();
-						result = a;
+					var a = new JsonArray();
+					result = a;
 
-						foreach (var item in node.AsList())
-						{
-							a.Add(Process(item, maxDepth - 1));
-						}
+					foreach (var item in node.AsList())
+					{
+						a.Add(Process(item, maxDepth - 1));
 					}
 				}
-				else // JData
-				{
-					result = ProcessData(node);
-				}
 			}
-
-			return result;
+			else // JData
+			{
+				result = ProcessData(node);
+			}
 		}
 
-		private static JsonPrimitive ProcessData(JNode node)
+		return result;
+	}
+
+	private static JsonPrimitive ProcessData(JNode node)
+	{
+		JsonPrimitive result = null;
+
+		if (!node.IsData())
 		{
-			JsonPrimitive result = null;
-
-			if (!node.IsData())
-			{
-				throw new Exception("Hjson serializer error: Unknown JNode type.");
-			}
-
-			var dataType = node.GetDataType();
-
-			if (dataType == typeof(string))
-			{
-				result = new JsonPrimitive(node.AsData<string>().Value);
-			}
-			else if (dataType == typeof(bool))
-			{
-				result = new JsonPrimitive(node.AsData<bool>().Value);
-			}
-			else if (dataType == typeof(byte))
-			{
-				result = new JsonPrimitive(node.AsData<byte>().Value);
-			}
-			else if (dataType == typeof(sbyte))
-			{
-				result = new JsonPrimitive(node.AsData<sbyte>().Value);
-			}
-			else if (dataType == typeof(char))
-			{
-				result = new JsonPrimitive(node.AsData<char>().Value);
-			}
-			else if (dataType == typeof(float))
-			{
-				result = new JsonPrimitive(node.AsData<float>().Value);
-			}
-			else if (dataType == typeof(double))
-			{
-				result = new JsonPrimitive(node.AsData<double>().Value);
-			}
-			else if (dataType == typeof(decimal))
-			{
-				result = new JsonPrimitive(node.AsData<decimal>().Value);
-			}
-			else if (dataType == typeof(short))
-			{
-				result = new JsonPrimitive(node.AsData<short>().Value);
-			}
-			else if (dataType == typeof(int))
-			{
-				result = new JsonPrimitive(node.AsData<int>().Value);
-			}
-			else if (dataType == typeof(long))
-			{
-				result = new JsonPrimitive(node.AsData<long>().Value);
-			}
-			else if (dataType == typeof(ushort))
-			{
-				result = new JsonPrimitive(node.AsData<ushort>().Value);
-			}
-			else if (dataType == typeof(uint))
-			{
-				result = new JsonPrimitive(node.AsData<uint>().Value);
-			}
-			else if (dataType == typeof(ulong))
-			{
-				result = new JsonPrimitive(Cast.This(node.AsData<ulong>().Value).AsString());
-			}
-			else if (dataType.IsEnum)
-			{
-				result = new JsonPrimitive(node.GetRawData().ToString());
-			}
-			else if (DataTypeConverter.HasConverter(new ConversionType(dataType, typeof(string))))
-			{
-				result = new JsonPrimitive((string)DataTypeConverter.GetConverter(new ConversionType(dataType, typeof(string)))(node.GetRawData()));
-			}
-			else
-			{
-				Log.Warning($"No string converter found for the type {dataType.GetFriendlyName()}, falling back to default ToString() method");
-
-				result = new JsonPrimitive(node.GetRawData().ToString());
-			}
-
-			return result;
+			throw new Exception("Hjson serializer error: Unknown JNode type.");
 		}
 
-		public static void UpdateFromHjson(this JNode node, string hjson, bool clearLists = true)
+		var dataType = node.GetDataType();
+
+		if (dataType == typeof(string))
 		{
-			node.Merge(JNodeHjson.Parse(hjson), clearLists);
+			result = new JsonPrimitive(node.AsData<string>().Value);
+		}
+		else if (dataType == typeof(bool))
+		{
+			result = new JsonPrimitive(node.AsData<bool>().Value);
+		}
+		else if (dataType == typeof(byte))
+		{
+			result = new JsonPrimitive(node.AsData<byte>().Value);
+		}
+		else if (dataType == typeof(sbyte))
+		{
+			result = new JsonPrimitive(node.AsData<sbyte>().Value);
+		}
+		else if (dataType == typeof(char))
+		{
+			result = new JsonPrimitive(node.AsData<char>().Value);
+		}
+		else if (dataType == typeof(float))
+		{
+			result = new JsonPrimitive(node.AsData<float>().Value);
+		}
+		else if (dataType == typeof(double))
+		{
+			result = new JsonPrimitive(node.AsData<double>().Value);
+		}
+		else if (dataType == typeof(decimal))
+		{
+			result = new JsonPrimitive(node.AsData<decimal>().Value);
+		}
+		else if (dataType == typeof(short))
+		{
+			result = new JsonPrimitive(node.AsData<short>().Value);
+		}
+		else if (dataType == typeof(int))
+		{
+			result = new JsonPrimitive(node.AsData<int>().Value);
+		}
+		else if (dataType == typeof(long))
+		{
+			result = new JsonPrimitive(node.AsData<long>().Value);
+		}
+		else if (dataType == typeof(ushort))
+		{
+			result = new JsonPrimitive(node.AsData<ushort>().Value);
+		}
+		else if (dataType == typeof(uint))
+		{
+			result = new JsonPrimitive(node.AsData<uint>().Value);
+		}
+		else if (dataType == typeof(ulong))
+		{
+			result = new JsonPrimitive(Cast.This(node.AsData<ulong>().Value).AsString());
+		}
+		else if (dataType.IsEnum)
+		{
+			result = new JsonPrimitive(node.GetRawData().ToString());
+		}
+		else if (DataTypeConverter.HasConverter(new ConversionType(dataType, typeof(string))))
+		{
+			result = new JsonPrimitive((string) DataTypeConverter.GetConverter(new ConversionType(dataType, typeof(string)))(node.GetRawData()));
+		}
+		else
+		{
+			Log.Warning($"No string converter found for the type {dataType.GetFriendlyName()}, falling back to default ToString() method");
+
+			result = new JsonPrimitive(node.GetRawData().ToString());
 		}
 
-		public static void UpdateFromJson(this JNode node, string json, bool clearLists = true)
-		{
-			node.UpdateFromHjson(json, clearLists);
-		}
+		return result;
+	}
+
+	public static void UpdateFromHjson(this JNode node, string hjson, bool clearLists = true)
+	{
+		node.Merge(JNodeHjson.Parse(hjson), clearLists);
+	}
+
+	public static void UpdateFromJson(this JNode node, string json, bool clearLists = true)
+	{
+		node.UpdateFromHjson(json, clearLists);
 	}
 }
