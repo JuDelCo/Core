@@ -1,6 +1,12 @@
 
 # Changelog
 
+## [1.52.0] - 2025-06-02
+
+### Changed
+
+- Remove IsInLayerMask extension methods for Collision and Collider to eliminate the dependency on the Unity Physics built-in package.
+
 ## [1.51.0] - 2025-05-26
 
 ### Add

@@ -9,14 +9,9 @@ namespace Ju.Extensions
 {
 	public static class LayerMaskExtensions
 	{
-		public static bool IsInLayerMask(this Collision collision, LayerMask layerMask)
+		public static bool IsInLayerMask(this Component component, LayerMask layerMask)
 		{
-			return collision.gameObject.IsInLayerMask(layerMask);
-		}
-
-		public static bool IsInLayerMask(this Collider collider, LayerMask layerMask)
-		{
-			return collider.gameObject.IsInLayerMask(layerMask);
+			return component.gameObject.IsInLayerMask(layerMask);
 		}
 
 		public static bool IsInLayerMask(this GameObject obj, LayerMask layerMask)
